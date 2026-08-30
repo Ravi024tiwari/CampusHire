@@ -4,9 +4,10 @@ import { cookies } from 'next/headers';
 import { Role } from '@/src/generated/prisma';
 
 export const AUTH_COOKIE_NAME = 'campushire_session';
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET
-);
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET || 'campushire-fallback-secret-key-for-development';
+  return new TextEncoder().encode(secret);
+}
 
 const SALT_ROUNDS = 12;
 
@@ -17,31 +18,27 @@ export interface TokenPayload {
   name: string;
 }
 
-
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   return bcrypt.compare(password, hash);
 }
-
 
 export async function signToken(payload: TokenPayload): Promise<string> {
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
-
 
 export async function verifyToken(token: string): Promise<TokenPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as unknown as TokenPayload;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

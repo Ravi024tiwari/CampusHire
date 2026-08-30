@@ -42,7 +42,15 @@ export const tpoRegisterSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters long'),
 });
 
+export const registerSchema = z.discriminatedUnion('role', [
+  studentRegisterSchema,
+  recruiterRegisterSchema,
+  tpoRegisterSchema,
+]);
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type StudentRegisterInput = z.infer<typeof studentRegisterSchema>;
 export type RecruiterRegisterInput = z.infer<typeof recruiterRegisterSchema>;
 export type TpoRegisterInput = z.infer<typeof tpoRegisterSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;
+
