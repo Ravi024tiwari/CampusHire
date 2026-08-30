@@ -19,6 +19,16 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model College
+ * 
+ */
+export type College = $Result.DefaultSelection<Prisma.$CollegePayload>
+/**
+ * Model TpoProfile
+ * 
+ */
+export type TpoProfile = $Result.DefaultSelection<Prisma.$TpoProfilePayload>
+/**
  * Model StudentProfile
  * 
  */
@@ -237,6 +247,26 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.college`: Exposes CRUD operations for the **College** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Colleges
+    * const colleges = await prisma.college.findMany()
+    * ```
+    */
+  get college(): Prisma.CollegeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tpoProfile`: Exposes CRUD operations for the **TpoProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TpoProfiles
+    * const tpoProfiles = await prisma.tpoProfile.findMany()
+    * ```
+    */
+  get tpoProfile(): Prisma.TpoProfileDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.studentProfile`: Exposes CRUD operations for the **StudentProfile** model.
@@ -735,6 +765,8 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    College: 'College',
+    TpoProfile: 'TpoProfile',
     StudentProfile: 'StudentProfile',
     Company: 'Company',
     RecruiterProfile: 'RecruiterProfile',
@@ -755,7 +787,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "studentProfile" | "company" | "recruiterProfile" | "job" | "application"
+      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "company" | "recruiterProfile" | "job" | "application"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -830,6 +862,154 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      College: {
+        payload: Prisma.$CollegePayload<ExtArgs>
+        fields: Prisma.CollegeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CollegeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CollegeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>
+          }
+          findFirst: {
+            args: Prisma.CollegeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CollegeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>
+          }
+          findMany: {
+            args: Prisma.CollegeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>[]
+          }
+          create: {
+            args: Prisma.CollegeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>
+          }
+          createMany: {
+            args: Prisma.CollegeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CollegeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>[]
+          }
+          delete: {
+            args: Prisma.CollegeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>
+          }
+          update: {
+            args: Prisma.CollegeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>
+          }
+          deleteMany: {
+            args: Prisma.CollegeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CollegeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CollegeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>[]
+          }
+          upsert: {
+            args: Prisma.CollegeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CollegePayload>
+          }
+          aggregate: {
+            args: Prisma.CollegeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCollege>
+          }
+          groupBy: {
+            args: Prisma.CollegeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CollegeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CollegeCountArgs<ExtArgs>
+            result: $Utils.Optional<CollegeCountAggregateOutputType> | number
+          }
+        }
+      }
+      TpoProfile: {
+        payload: Prisma.$TpoProfilePayload<ExtArgs>
+        fields: Prisma.TpoProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TpoProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TpoProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.TpoProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TpoProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>
+          }
+          findMany: {
+            args: Prisma.TpoProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>[]
+          }
+          create: {
+            args: Prisma.TpoProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>
+          }
+          createMany: {
+            args: Prisma.TpoProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TpoProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.TpoProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>
+          }
+          update: {
+            args: Prisma.TpoProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.TpoProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TpoProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TpoProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.TpoProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TpoProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.TpoProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTpoProfile>
+          }
+          groupBy: {
+            args: Prisma.TpoProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TpoProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TpoProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<TpoProfileCountAggregateOutputType> | number
           }
         }
       }
@@ -1327,6 +1507,8 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    college?: CollegeOmit
+    tpoProfile?: TpoProfileOmit
     studentProfile?: StudentProfileOmit
     company?: CompanyOmit
     recruiterProfile?: RecruiterProfileOmit
@@ -1405,6 +1587,55 @@ export namespace Prisma {
   /**
    * Count Types
    */
+
+
+  /**
+   * Count Type CollegeCountOutputType
+   */
+
+  export type CollegeCountOutputType = {
+    tpos: number
+    students: number
+    jobs: number
+  }
+
+  export type CollegeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tpos?: boolean | CollegeCountOutputTypeCountTposArgs
+    students?: boolean | CollegeCountOutputTypeCountStudentsArgs
+    jobs?: boolean | CollegeCountOutputTypeCountJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CollegeCountOutputType without action
+   */
+  export type CollegeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CollegeCountOutputType
+     */
+    select?: CollegeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CollegeCountOutputType without action
+   */
+  export type CollegeCountOutputTypeCountTposArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TpoProfileWhereInput
+  }
+
+  /**
+   * CollegeCountOutputType without action
+   */
+  export type CollegeCountOutputTypeCountStudentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentProfileWhereInput
+  }
+
+  /**
+   * CollegeCountOutputType without action
+   */
+  export type CollegeCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
+  }
 
 
   /**
@@ -1711,6 +1942,7 @@ export namespace Prisma {
     updatedAt?: boolean
     student?: boolean | User$studentArgs<ExtArgs>
     recruiter?: boolean | User$recruiterArgs<ExtArgs>
+    tpo?: boolean | User$tpoArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1753,6 +1985,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | User$studentArgs<ExtArgs>
     recruiter?: boolean | User$recruiterArgs<ExtArgs>
+    tpo?: boolean | User$tpoArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1762,6 +1995,7 @@ export namespace Prisma {
     objects: {
       student: Prisma.$StudentProfilePayload<ExtArgs> | null
       recruiter: Prisma.$RecruiterProfilePayload<ExtArgs> | null
+      tpo: Prisma.$TpoProfilePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2169,6 +2403,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     student<T extends User$studentArgs<ExtArgs> = {}>(args?: Subset<T, User$studentArgs<ExtArgs>>): Prisma__StudentProfileClient<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recruiter<T extends User$recruiterArgs<ExtArgs> = {}>(args?: Subset<T, User$recruiterArgs<ExtArgs>>): Prisma__RecruiterProfileClient<$Result.GetResult<Prisma.$RecruiterProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    tpo<T extends User$tpoArgs<ExtArgs> = {}>(args?: Subset<T, User$tpoArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2638,6 +2873,25 @@ export namespace Prisma {
   }
 
   /**
+   * User.tpo
+   */
+  export type User$tpoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    where?: TpoProfileWhereInput
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2653,6 +2907,2273 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model College
+   */
+
+  export type AggregateCollege = {
+    _count: CollegeCountAggregateOutputType | null
+    _min: CollegeMinAggregateOutputType | null
+    _max: CollegeMaxAggregateOutputType | null
+  }
+
+  export type CollegeMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    code: string | null
+    domain: string | null
+    city: string | null
+    state: string | null
+    logoUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CollegeMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    code: string | null
+    domain: string | null
+    city: string | null
+    state: string | null
+    logoUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CollegeCountAggregateOutputType = {
+    id: number
+    name: number
+    code: number
+    domain: number
+    city: number
+    state: number
+    logoUrl: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CollegeMinAggregateInputType = {
+    id?: true
+    name?: true
+    code?: true
+    domain?: true
+    city?: true
+    state?: true
+    logoUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CollegeMaxAggregateInputType = {
+    id?: true
+    name?: true
+    code?: true
+    domain?: true
+    city?: true
+    state?: true
+    logoUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CollegeCountAggregateInputType = {
+    id?: true
+    name?: true
+    code?: true
+    domain?: true
+    city?: true
+    state?: true
+    logoUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CollegeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which College to aggregate.
+     */
+    where?: CollegeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Colleges to fetch.
+     */
+    orderBy?: CollegeOrderByWithRelationInput | CollegeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CollegeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Colleges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Colleges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Colleges
+    **/
+    _count?: true | CollegeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CollegeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CollegeMaxAggregateInputType
+  }
+
+  export type GetCollegeAggregateType<T extends CollegeAggregateArgs> = {
+        [P in keyof T & keyof AggregateCollege]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCollege[P]>
+      : GetScalarType<T[P], AggregateCollege[P]>
+  }
+
+
+
+
+  export type CollegeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CollegeWhereInput
+    orderBy?: CollegeOrderByWithAggregationInput | CollegeOrderByWithAggregationInput[]
+    by: CollegeScalarFieldEnum[] | CollegeScalarFieldEnum
+    having?: CollegeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CollegeCountAggregateInputType | true
+    _min?: CollegeMinAggregateInputType
+    _max?: CollegeMaxAggregateInputType
+  }
+
+  export type CollegeGroupByOutputType = {
+    id: string
+    name: string
+    code: string | null
+    domain: string | null
+    city: string | null
+    state: string | null
+    logoUrl: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CollegeCountAggregateOutputType | null
+    _min: CollegeMinAggregateOutputType | null
+    _max: CollegeMaxAggregateOutputType | null
+  }
+
+  type GetCollegeGroupByPayload<T extends CollegeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CollegeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CollegeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CollegeGroupByOutputType[P]>
+            : GetScalarType<T[P], CollegeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CollegeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    code?: boolean
+    domain?: boolean
+    city?: boolean
+    state?: boolean
+    logoUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tpos?: boolean | College$tposArgs<ExtArgs>
+    students?: boolean | College$studentsArgs<ExtArgs>
+    jobs?: boolean | College$jobsArgs<ExtArgs>
+    _count?: boolean | CollegeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["college"]>
+
+  export type CollegeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    code?: boolean
+    domain?: boolean
+    city?: boolean
+    state?: boolean
+    logoUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["college"]>
+
+  export type CollegeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    code?: boolean
+    domain?: boolean
+    city?: boolean
+    state?: boolean
+    logoUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["college"]>
+
+  export type CollegeSelectScalar = {
+    id?: boolean
+    name?: boolean
+    code?: boolean
+    domain?: boolean
+    city?: boolean
+    state?: boolean
+    logoUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CollegeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "domain" | "city" | "state" | "logoUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["college"]>
+  export type CollegeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tpos?: boolean | College$tposArgs<ExtArgs>
+    students?: boolean | College$studentsArgs<ExtArgs>
+    jobs?: boolean | College$jobsArgs<ExtArgs>
+    _count?: boolean | CollegeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CollegeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CollegeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $CollegePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "College"
+    objects: {
+      tpos: Prisma.$TpoProfilePayload<ExtArgs>[]
+      students: Prisma.$StudentProfilePayload<ExtArgs>[]
+      jobs: Prisma.$JobPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      code: string | null
+      domain: string | null
+      city: string | null
+      state: string | null
+      logoUrl: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["college"]>
+    composites: {}
+  }
+
+  type CollegeGetPayload<S extends boolean | null | undefined | CollegeDefaultArgs> = $Result.GetResult<Prisma.$CollegePayload, S>
+
+  type CollegeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CollegeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CollegeCountAggregateInputType | true
+    }
+
+  export interface CollegeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['College'], meta: { name: 'College' } }
+    /**
+     * Find zero or one College that matches the filter.
+     * @param {CollegeFindUniqueArgs} args - Arguments to find a College
+     * @example
+     * // Get one College
+     * const college = await prisma.college.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CollegeFindUniqueArgs>(args: SelectSubset<T, CollegeFindUniqueArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one College that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CollegeFindUniqueOrThrowArgs} args - Arguments to find a College
+     * @example
+     * // Get one College
+     * const college = await prisma.college.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CollegeFindUniqueOrThrowArgs>(args: SelectSubset<T, CollegeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first College that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeFindFirstArgs} args - Arguments to find a College
+     * @example
+     * // Get one College
+     * const college = await prisma.college.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CollegeFindFirstArgs>(args?: SelectSubset<T, CollegeFindFirstArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first College that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeFindFirstOrThrowArgs} args - Arguments to find a College
+     * @example
+     * // Get one College
+     * const college = await prisma.college.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CollegeFindFirstOrThrowArgs>(args?: SelectSubset<T, CollegeFindFirstOrThrowArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Colleges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Colleges
+     * const colleges = await prisma.college.findMany()
+     * 
+     * // Get first 10 Colleges
+     * const colleges = await prisma.college.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const collegeWithIdOnly = await prisma.college.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CollegeFindManyArgs>(args?: SelectSubset<T, CollegeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a College.
+     * @param {CollegeCreateArgs} args - Arguments to create a College.
+     * @example
+     * // Create one College
+     * const College = await prisma.college.create({
+     *   data: {
+     *     // ... data to create a College
+     *   }
+     * })
+     * 
+     */
+    create<T extends CollegeCreateArgs>(args: SelectSubset<T, CollegeCreateArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Colleges.
+     * @param {CollegeCreateManyArgs} args - Arguments to create many Colleges.
+     * @example
+     * // Create many Colleges
+     * const college = await prisma.college.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CollegeCreateManyArgs>(args?: SelectSubset<T, CollegeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Colleges and returns the data saved in the database.
+     * @param {CollegeCreateManyAndReturnArgs} args - Arguments to create many Colleges.
+     * @example
+     * // Create many Colleges
+     * const college = await prisma.college.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Colleges and only return the `id`
+     * const collegeWithIdOnly = await prisma.college.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CollegeCreateManyAndReturnArgs>(args?: SelectSubset<T, CollegeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a College.
+     * @param {CollegeDeleteArgs} args - Arguments to delete one College.
+     * @example
+     * // Delete one College
+     * const College = await prisma.college.delete({
+     *   where: {
+     *     // ... filter to delete one College
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CollegeDeleteArgs>(args: SelectSubset<T, CollegeDeleteArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one College.
+     * @param {CollegeUpdateArgs} args - Arguments to update one College.
+     * @example
+     * // Update one College
+     * const college = await prisma.college.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CollegeUpdateArgs>(args: SelectSubset<T, CollegeUpdateArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Colleges.
+     * @param {CollegeDeleteManyArgs} args - Arguments to filter Colleges to delete.
+     * @example
+     * // Delete a few Colleges
+     * const { count } = await prisma.college.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CollegeDeleteManyArgs>(args?: SelectSubset<T, CollegeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Colleges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Colleges
+     * const college = await prisma.college.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CollegeUpdateManyArgs>(args: SelectSubset<T, CollegeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Colleges and returns the data updated in the database.
+     * @param {CollegeUpdateManyAndReturnArgs} args - Arguments to update many Colleges.
+     * @example
+     * // Update many Colleges
+     * const college = await prisma.college.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Colleges and only return the `id`
+     * const collegeWithIdOnly = await prisma.college.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CollegeUpdateManyAndReturnArgs>(args: SelectSubset<T, CollegeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one College.
+     * @param {CollegeUpsertArgs} args - Arguments to update or create a College.
+     * @example
+     * // Update or create a College
+     * const college = await prisma.college.upsert({
+     *   create: {
+     *     // ... data to create a College
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the College we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CollegeUpsertArgs>(args: SelectSubset<T, CollegeUpsertArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Colleges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeCountArgs} args - Arguments to filter Colleges to count.
+     * @example
+     * // Count the number of Colleges
+     * const count = await prisma.college.count({
+     *   where: {
+     *     // ... the filter for the Colleges we want to count
+     *   }
+     * })
+    **/
+    count<T extends CollegeCountArgs>(
+      args?: Subset<T, CollegeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CollegeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a College.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CollegeAggregateArgs>(args: Subset<T, CollegeAggregateArgs>): Prisma.PrismaPromise<GetCollegeAggregateType<T>>
+
+    /**
+     * Group by College.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CollegeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CollegeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CollegeGroupByArgs['orderBy'] }
+        : { orderBy?: CollegeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CollegeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCollegeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the College model
+   */
+  readonly fields: CollegeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for College.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CollegeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tpos<T extends College$tposArgs<ExtArgs> = {}>(args?: Subset<T, College$tposArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    students<T extends College$studentsArgs<ExtArgs> = {}>(args?: Subset<T, College$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    jobs<T extends College$jobsArgs<ExtArgs> = {}>(args?: Subset<T, College$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the College model
+   */
+  interface CollegeFieldRefs {
+    readonly id: FieldRef<"College", 'String'>
+    readonly name: FieldRef<"College", 'String'>
+    readonly code: FieldRef<"College", 'String'>
+    readonly domain: FieldRef<"College", 'String'>
+    readonly city: FieldRef<"College", 'String'>
+    readonly state: FieldRef<"College", 'String'>
+    readonly logoUrl: FieldRef<"College", 'String'>
+    readonly createdAt: FieldRef<"College", 'DateTime'>
+    readonly updatedAt: FieldRef<"College", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * College findUnique
+   */
+  export type CollegeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * Filter, which College to fetch.
+     */
+    where: CollegeWhereUniqueInput
+  }
+
+  /**
+   * College findUniqueOrThrow
+   */
+  export type CollegeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * Filter, which College to fetch.
+     */
+    where: CollegeWhereUniqueInput
+  }
+
+  /**
+   * College findFirst
+   */
+  export type CollegeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * Filter, which College to fetch.
+     */
+    where?: CollegeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Colleges to fetch.
+     */
+    orderBy?: CollegeOrderByWithRelationInput | CollegeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Colleges.
+     */
+    cursor?: CollegeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Colleges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Colleges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Colleges.
+     */
+    distinct?: CollegeScalarFieldEnum | CollegeScalarFieldEnum[]
+  }
+
+  /**
+   * College findFirstOrThrow
+   */
+  export type CollegeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * Filter, which College to fetch.
+     */
+    where?: CollegeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Colleges to fetch.
+     */
+    orderBy?: CollegeOrderByWithRelationInput | CollegeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Colleges.
+     */
+    cursor?: CollegeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Colleges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Colleges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Colleges.
+     */
+    distinct?: CollegeScalarFieldEnum | CollegeScalarFieldEnum[]
+  }
+
+  /**
+   * College findMany
+   */
+  export type CollegeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * Filter, which Colleges to fetch.
+     */
+    where?: CollegeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Colleges to fetch.
+     */
+    orderBy?: CollegeOrderByWithRelationInput | CollegeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Colleges.
+     */
+    cursor?: CollegeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Colleges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Colleges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Colleges.
+     */
+    distinct?: CollegeScalarFieldEnum | CollegeScalarFieldEnum[]
+  }
+
+  /**
+   * College create
+   */
+  export type CollegeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a College.
+     */
+    data: XOR<CollegeCreateInput, CollegeUncheckedCreateInput>
+  }
+
+  /**
+   * College createMany
+   */
+  export type CollegeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Colleges.
+     */
+    data: CollegeCreateManyInput | CollegeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * College createManyAndReturn
+   */
+  export type CollegeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Colleges.
+     */
+    data: CollegeCreateManyInput | CollegeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * College update
+   */
+  export type CollegeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a College.
+     */
+    data: XOR<CollegeUpdateInput, CollegeUncheckedUpdateInput>
+    /**
+     * Choose, which College to update.
+     */
+    where: CollegeWhereUniqueInput
+  }
+
+  /**
+   * College updateMany
+   */
+  export type CollegeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Colleges.
+     */
+    data: XOR<CollegeUpdateManyMutationInput, CollegeUncheckedUpdateManyInput>
+    /**
+     * Filter which Colleges to update
+     */
+    where?: CollegeWhereInput
+    /**
+     * Limit how many Colleges to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * College updateManyAndReturn
+   */
+  export type CollegeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * The data used to update Colleges.
+     */
+    data: XOR<CollegeUpdateManyMutationInput, CollegeUncheckedUpdateManyInput>
+    /**
+     * Filter which Colleges to update
+     */
+    where?: CollegeWhereInput
+    /**
+     * Limit how many Colleges to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * College upsert
+   */
+  export type CollegeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the College to update in case it exists.
+     */
+    where: CollegeWhereUniqueInput
+    /**
+     * In case the College found by the `where` argument doesn't exist, create a new College with this data.
+     */
+    create: XOR<CollegeCreateInput, CollegeUncheckedCreateInput>
+    /**
+     * In case the College was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CollegeUpdateInput, CollegeUncheckedUpdateInput>
+  }
+
+  /**
+   * College delete
+   */
+  export type CollegeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    /**
+     * Filter which College to delete.
+     */
+    where: CollegeWhereUniqueInput
+  }
+
+  /**
+   * College deleteMany
+   */
+  export type CollegeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Colleges to delete
+     */
+    where?: CollegeWhereInput
+    /**
+     * Limit how many Colleges to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * College.tpos
+   */
+  export type College$tposArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    where?: TpoProfileWhereInput
+    orderBy?: TpoProfileOrderByWithRelationInput | TpoProfileOrderByWithRelationInput[]
+    cursor?: TpoProfileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TpoProfileScalarFieldEnum | TpoProfileScalarFieldEnum[]
+  }
+
+  /**
+   * College.students
+   */
+  export type College$studentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentProfile
+     */
+    select?: StudentProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentProfile
+     */
+    omit?: StudentProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentProfileInclude<ExtArgs> | null
+    where?: StudentProfileWhereInput
+    orderBy?: StudentProfileOrderByWithRelationInput | StudentProfileOrderByWithRelationInput[]
+    cursor?: StudentProfileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudentProfileScalarFieldEnum | StudentProfileScalarFieldEnum[]
+  }
+
+  /**
+   * College.jobs
+   */
+  export type College$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * College without action
+   */
+  export type CollegeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TpoProfile
+   */
+
+  export type AggregateTpoProfile = {
+    _count: TpoProfileCountAggregateOutputType | null
+    _min: TpoProfileMinAggregateOutputType | null
+    _max: TpoProfileMaxAggregateOutputType | null
+  }
+
+  export type TpoProfileMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    collegeId: string | null
+    designation: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TpoProfileMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    collegeId: string | null
+    designation: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TpoProfileCountAggregateOutputType = {
+    id: number
+    userId: number
+    collegeId: number
+    designation: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TpoProfileMinAggregateInputType = {
+    id?: true
+    userId?: true
+    collegeId?: true
+    designation?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TpoProfileMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    collegeId?: true
+    designation?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TpoProfileCountAggregateInputType = {
+    id?: true
+    userId?: true
+    collegeId?: true
+    designation?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TpoProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TpoProfile to aggregate.
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TpoProfiles to fetch.
+     */
+    orderBy?: TpoProfileOrderByWithRelationInput | TpoProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TpoProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TpoProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TpoProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TpoProfiles
+    **/
+    _count?: true | TpoProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TpoProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TpoProfileMaxAggregateInputType
+  }
+
+  export type GetTpoProfileAggregateType<T extends TpoProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateTpoProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTpoProfile[P]>
+      : GetScalarType<T[P], AggregateTpoProfile[P]>
+  }
+
+
+
+
+  export type TpoProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TpoProfileWhereInput
+    orderBy?: TpoProfileOrderByWithAggregationInput | TpoProfileOrderByWithAggregationInput[]
+    by: TpoProfileScalarFieldEnum[] | TpoProfileScalarFieldEnum
+    having?: TpoProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TpoProfileCountAggregateInputType | true
+    _min?: TpoProfileMinAggregateInputType
+    _max?: TpoProfileMaxAggregateInputType
+  }
+
+  export type TpoProfileGroupByOutputType = {
+    id: string
+    userId: string
+    collegeId: string
+    designation: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TpoProfileCountAggregateOutputType | null
+    _min: TpoProfileMinAggregateOutputType | null
+    _max: TpoProfileMaxAggregateOutputType | null
+  }
+
+  type GetTpoProfileGroupByPayload<T extends TpoProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TpoProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TpoProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TpoProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], TpoProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TpoProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tpoProfile"]>
+
+  export type TpoProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tpoProfile"]>
+
+  export type TpoProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tpoProfile"]>
+
+  export type TpoProfileSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TpoProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "collegeId" | "designation" | "createdAt" | "updatedAt", ExtArgs["result"]["tpoProfile"]>
+  export type TpoProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }
+  export type TpoProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }
+  export type TpoProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }
+
+  export type $TpoProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TpoProfile"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      college: Prisma.$CollegePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      collegeId: string
+      designation: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["tpoProfile"]>
+    composites: {}
+  }
+
+  type TpoProfileGetPayload<S extends boolean | null | undefined | TpoProfileDefaultArgs> = $Result.GetResult<Prisma.$TpoProfilePayload, S>
+
+  type TpoProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TpoProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TpoProfileCountAggregateInputType | true
+    }
+
+  export interface TpoProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TpoProfile'], meta: { name: 'TpoProfile' } }
+    /**
+     * Find zero or one TpoProfile that matches the filter.
+     * @param {TpoProfileFindUniqueArgs} args - Arguments to find a TpoProfile
+     * @example
+     * // Get one TpoProfile
+     * const tpoProfile = await prisma.tpoProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TpoProfileFindUniqueArgs>(args: SelectSubset<T, TpoProfileFindUniqueArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TpoProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TpoProfileFindUniqueOrThrowArgs} args - Arguments to find a TpoProfile
+     * @example
+     * // Get one TpoProfile
+     * const tpoProfile = await prisma.tpoProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TpoProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, TpoProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TpoProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileFindFirstArgs} args - Arguments to find a TpoProfile
+     * @example
+     * // Get one TpoProfile
+     * const tpoProfile = await prisma.tpoProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TpoProfileFindFirstArgs>(args?: SelectSubset<T, TpoProfileFindFirstArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TpoProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileFindFirstOrThrowArgs} args - Arguments to find a TpoProfile
+     * @example
+     * // Get one TpoProfile
+     * const tpoProfile = await prisma.tpoProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TpoProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, TpoProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TpoProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TpoProfiles
+     * const tpoProfiles = await prisma.tpoProfile.findMany()
+     * 
+     * // Get first 10 TpoProfiles
+     * const tpoProfiles = await prisma.tpoProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tpoProfileWithIdOnly = await prisma.tpoProfile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TpoProfileFindManyArgs>(args?: SelectSubset<T, TpoProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TpoProfile.
+     * @param {TpoProfileCreateArgs} args - Arguments to create a TpoProfile.
+     * @example
+     * // Create one TpoProfile
+     * const TpoProfile = await prisma.tpoProfile.create({
+     *   data: {
+     *     // ... data to create a TpoProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends TpoProfileCreateArgs>(args: SelectSubset<T, TpoProfileCreateArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TpoProfiles.
+     * @param {TpoProfileCreateManyArgs} args - Arguments to create many TpoProfiles.
+     * @example
+     * // Create many TpoProfiles
+     * const tpoProfile = await prisma.tpoProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TpoProfileCreateManyArgs>(args?: SelectSubset<T, TpoProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TpoProfiles and returns the data saved in the database.
+     * @param {TpoProfileCreateManyAndReturnArgs} args - Arguments to create many TpoProfiles.
+     * @example
+     * // Create many TpoProfiles
+     * const tpoProfile = await prisma.tpoProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TpoProfiles and only return the `id`
+     * const tpoProfileWithIdOnly = await prisma.tpoProfile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TpoProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, TpoProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TpoProfile.
+     * @param {TpoProfileDeleteArgs} args - Arguments to delete one TpoProfile.
+     * @example
+     * // Delete one TpoProfile
+     * const TpoProfile = await prisma.tpoProfile.delete({
+     *   where: {
+     *     // ... filter to delete one TpoProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TpoProfileDeleteArgs>(args: SelectSubset<T, TpoProfileDeleteArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TpoProfile.
+     * @param {TpoProfileUpdateArgs} args - Arguments to update one TpoProfile.
+     * @example
+     * // Update one TpoProfile
+     * const tpoProfile = await prisma.tpoProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TpoProfileUpdateArgs>(args: SelectSubset<T, TpoProfileUpdateArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TpoProfiles.
+     * @param {TpoProfileDeleteManyArgs} args - Arguments to filter TpoProfiles to delete.
+     * @example
+     * // Delete a few TpoProfiles
+     * const { count } = await prisma.tpoProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TpoProfileDeleteManyArgs>(args?: SelectSubset<T, TpoProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TpoProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TpoProfiles
+     * const tpoProfile = await prisma.tpoProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TpoProfileUpdateManyArgs>(args: SelectSubset<T, TpoProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TpoProfiles and returns the data updated in the database.
+     * @param {TpoProfileUpdateManyAndReturnArgs} args - Arguments to update many TpoProfiles.
+     * @example
+     * // Update many TpoProfiles
+     * const tpoProfile = await prisma.tpoProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TpoProfiles and only return the `id`
+     * const tpoProfileWithIdOnly = await prisma.tpoProfile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TpoProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, TpoProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TpoProfile.
+     * @param {TpoProfileUpsertArgs} args - Arguments to update or create a TpoProfile.
+     * @example
+     * // Update or create a TpoProfile
+     * const tpoProfile = await prisma.tpoProfile.upsert({
+     *   create: {
+     *     // ... data to create a TpoProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TpoProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TpoProfileUpsertArgs>(args: SelectSubset<T, TpoProfileUpsertArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TpoProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileCountArgs} args - Arguments to filter TpoProfiles to count.
+     * @example
+     * // Count the number of TpoProfiles
+     * const count = await prisma.tpoProfile.count({
+     *   where: {
+     *     // ... the filter for the TpoProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends TpoProfileCountArgs>(
+      args?: Subset<T, TpoProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TpoProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TpoProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TpoProfileAggregateArgs>(args: Subset<T, TpoProfileAggregateArgs>): Prisma.PrismaPromise<GetTpoProfileAggregateType<T>>
+
+    /**
+     * Group by TpoProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TpoProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TpoProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TpoProfileGroupByArgs['orderBy'] }
+        : { orderBy?: TpoProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TpoProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTpoProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TpoProfile model
+   */
+  readonly fields: TpoProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TpoProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TpoProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TpoProfile model
+   */
+  interface TpoProfileFieldRefs {
+    readonly id: FieldRef<"TpoProfile", 'String'>
+    readonly userId: FieldRef<"TpoProfile", 'String'>
+    readonly collegeId: FieldRef<"TpoProfile", 'String'>
+    readonly designation: FieldRef<"TpoProfile", 'String'>
+    readonly createdAt: FieldRef<"TpoProfile", 'DateTime'>
+    readonly updatedAt: FieldRef<"TpoProfile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TpoProfile findUnique
+   */
+  export type TpoProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which TpoProfile to fetch.
+     */
+    where: TpoProfileWhereUniqueInput
+  }
+
+  /**
+   * TpoProfile findUniqueOrThrow
+   */
+  export type TpoProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which TpoProfile to fetch.
+     */
+    where: TpoProfileWhereUniqueInput
+  }
+
+  /**
+   * TpoProfile findFirst
+   */
+  export type TpoProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which TpoProfile to fetch.
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TpoProfiles to fetch.
+     */
+    orderBy?: TpoProfileOrderByWithRelationInput | TpoProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TpoProfiles.
+     */
+    cursor?: TpoProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TpoProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TpoProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TpoProfiles.
+     */
+    distinct?: TpoProfileScalarFieldEnum | TpoProfileScalarFieldEnum[]
+  }
+
+  /**
+   * TpoProfile findFirstOrThrow
+   */
+  export type TpoProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which TpoProfile to fetch.
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TpoProfiles to fetch.
+     */
+    orderBy?: TpoProfileOrderByWithRelationInput | TpoProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TpoProfiles.
+     */
+    cursor?: TpoProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TpoProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TpoProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TpoProfiles.
+     */
+    distinct?: TpoProfileScalarFieldEnum | TpoProfileScalarFieldEnum[]
+  }
+
+  /**
+   * TpoProfile findMany
+   */
+  export type TpoProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which TpoProfiles to fetch.
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TpoProfiles to fetch.
+     */
+    orderBy?: TpoProfileOrderByWithRelationInput | TpoProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TpoProfiles.
+     */
+    cursor?: TpoProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TpoProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TpoProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TpoProfiles.
+     */
+    distinct?: TpoProfileScalarFieldEnum | TpoProfileScalarFieldEnum[]
+  }
+
+  /**
+   * TpoProfile create
+   */
+  export type TpoProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TpoProfile.
+     */
+    data: XOR<TpoProfileCreateInput, TpoProfileUncheckedCreateInput>
+  }
+
+  /**
+   * TpoProfile createMany
+   */
+  export type TpoProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TpoProfiles.
+     */
+    data: TpoProfileCreateManyInput | TpoProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TpoProfile createManyAndReturn
+   */
+  export type TpoProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many TpoProfiles.
+     */
+    data: TpoProfileCreateManyInput | TpoProfileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TpoProfile update
+   */
+  export type TpoProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TpoProfile.
+     */
+    data: XOR<TpoProfileUpdateInput, TpoProfileUncheckedUpdateInput>
+    /**
+     * Choose, which TpoProfile to update.
+     */
+    where: TpoProfileWhereUniqueInput
+  }
+
+  /**
+   * TpoProfile updateMany
+   */
+  export type TpoProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TpoProfiles.
+     */
+    data: XOR<TpoProfileUpdateManyMutationInput, TpoProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which TpoProfiles to update
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * Limit how many TpoProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TpoProfile updateManyAndReturn
+   */
+  export type TpoProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update TpoProfiles.
+     */
+    data: XOR<TpoProfileUpdateManyMutationInput, TpoProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which TpoProfiles to update
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * Limit how many TpoProfiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TpoProfile upsert
+   */
+  export type TpoProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TpoProfile to update in case it exists.
+     */
+    where: TpoProfileWhereUniqueInput
+    /**
+     * In case the TpoProfile found by the `where` argument doesn't exist, create a new TpoProfile with this data.
+     */
+    create: XOR<TpoProfileCreateInput, TpoProfileUncheckedCreateInput>
+    /**
+     * In case the TpoProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TpoProfileUpdateInput, TpoProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * TpoProfile delete
+   */
+  export type TpoProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
+    /**
+     * Filter which TpoProfile to delete.
+     */
+    where: TpoProfileWhereUniqueInput
+  }
+
+  /**
+   * TpoProfile deleteMany
+   */
+  export type TpoProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TpoProfiles to delete
+     */
+    where?: TpoProfileWhereInput
+    /**
+     * Limit how many TpoProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TpoProfile without action
+   */
+  export type TpoProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TpoProfile
+     */
+    select?: TpoProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TpoProfile
+     */
+    omit?: TpoProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TpoProfileInclude<ExtArgs> | null
   }
 
 
@@ -2685,6 +5206,7 @@ export namespace Prisma {
   export type StudentProfileMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    collegeId: string | null
     enrollmentNumber: string | null
     branch: string | null
     batchYear: number | null
@@ -2703,6 +5225,7 @@ export namespace Prisma {
   export type StudentProfileMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    collegeId: string | null
     enrollmentNumber: string | null
     branch: string | null
     batchYear: number | null
@@ -2721,6 +5244,7 @@ export namespace Prisma {
   export type StudentProfileCountAggregateOutputType = {
     id: number
     userId: number
+    collegeId: number
     enrollmentNumber: number
     branch: number
     batchYear: number
@@ -2756,6 +5280,7 @@ export namespace Prisma {
   export type StudentProfileMinAggregateInputType = {
     id?: true
     userId?: true
+    collegeId?: true
     enrollmentNumber?: true
     branch?: true
     batchYear?: true
@@ -2774,6 +5299,7 @@ export namespace Prisma {
   export type StudentProfileMaxAggregateInputType = {
     id?: true
     userId?: true
+    collegeId?: true
     enrollmentNumber?: true
     branch?: true
     batchYear?: true
@@ -2792,6 +5318,7 @@ export namespace Prisma {
   export type StudentProfileCountAggregateInputType = {
     id?: true
     userId?: true
+    collegeId?: true
     enrollmentNumber?: true
     branch?: true
     batchYear?: true
@@ -2898,6 +5425,7 @@ export namespace Prisma {
   export type StudentProfileGroupByOutputType = {
     id: string
     userId: string
+    collegeId: string
     enrollmentNumber: string
     branch: string
     batchYear: number
@@ -2936,6 +5464,7 @@ export namespace Prisma {
   export type StudentProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    collegeId?: boolean
     enrollmentNumber?: boolean
     branch?: boolean
     batchYear?: boolean
@@ -2951,6 +5480,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["studentProfile"]>
@@ -2958,6 +5488,7 @@ export namespace Prisma {
   export type StudentProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    collegeId?: boolean
     enrollmentNumber?: boolean
     branch?: boolean
     batchYear?: boolean
@@ -2973,11 +5504,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["studentProfile"]>
 
   export type StudentProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    collegeId?: boolean
     enrollmentNumber?: boolean
     branch?: boolean
     batchYear?: boolean
@@ -2993,11 +5526,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["studentProfile"]>
 
   export type StudentProfileSelectScalar = {
     id?: boolean
     userId?: boolean
+    collegeId?: boolean
     enrollmentNumber?: boolean
     branch?: boolean
     batchYear?: boolean
@@ -3014,28 +5549,33 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StudentProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "enrollmentNumber" | "branch" | "batchYear" | "cgpa" | "tenthMarks" | "twelfthMarks" | "resumeUrl" | "skills" | "linkedinUrl" | "githubUrl" | "portfolioUrl" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["studentProfile"]>
+  export type StudentProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "collegeId" | "enrollmentNumber" | "branch" | "batchYear" | "cgpa" | "tenthMarks" | "twelfthMarks" | "resumeUrl" | "skills" | "linkedinUrl" | "githubUrl" | "portfolioUrl" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["studentProfile"]>
   export type StudentProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }
   export type StudentProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }
 
   export type $StudentProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StudentProfile"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      college: Prisma.$CollegePayload<ExtArgs>
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      collegeId: string
       enrollmentNumber: string
       branch: string
       batchYear: number
@@ -3445,6 +5985,7 @@ export namespace Prisma {
   export interface Prisma__StudentProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     applications<T extends StudentProfile$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3477,6 +6018,7 @@ export namespace Prisma {
   interface StudentProfileFieldRefs {
     readonly id: FieldRef<"StudentProfile", 'String'>
     readonly userId: FieldRef<"StudentProfile", 'String'>
+    readonly collegeId: FieldRef<"StudentProfile", 'String'>
     readonly enrollmentNumber: FieldRef<"StudentProfile", 'String'>
     readonly branch: FieldRef<"StudentProfile", 'String'>
     readonly batchYear: FieldRef<"StudentProfile", 'Int'>
@@ -6211,6 +8753,7 @@ export namespace Prisma {
   export type JobMinAggregateOutputType = {
     id: string | null
     companyId: string | null
+    collegeId: string | null
     title: string | null
     description: string | null
     type: $Enums.JobType | null
@@ -6226,6 +8769,7 @@ export namespace Prisma {
   export type JobMaxAggregateOutputType = {
     id: string | null
     companyId: string | null
+    collegeId: string | null
     title: string | null
     description: string | null
     type: $Enums.JobType | null
@@ -6241,6 +8785,7 @@ export namespace Prisma {
   export type JobCountAggregateOutputType = {
     id: number
     companyId: number
+    collegeId: number
     title: number
     description: number
     type: number
@@ -6270,6 +8815,7 @@ export namespace Prisma {
   export type JobMinAggregateInputType = {
     id?: true
     companyId?: true
+    collegeId?: true
     title?: true
     description?: true
     type?: true
@@ -6285,6 +8831,7 @@ export namespace Prisma {
   export type JobMaxAggregateInputType = {
     id?: true
     companyId?: true
+    collegeId?: true
     title?: true
     description?: true
     type?: true
@@ -6300,6 +8847,7 @@ export namespace Prisma {
   export type JobCountAggregateInputType = {
     id?: true
     companyId?: true
+    collegeId?: true
     title?: true
     description?: true
     type?: true
@@ -6404,6 +8952,7 @@ export namespace Prisma {
   export type JobGroupByOutputType = {
     id: string
     companyId: string
+    collegeId: string
     title: string
     description: string
     type: $Enums.JobType
@@ -6440,6 +8989,7 @@ export namespace Prisma {
   export type JobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     companyId?: boolean
+    collegeId?: boolean
     title?: boolean
     description?: boolean
     type?: boolean
@@ -6453,6 +9003,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | Job$applicationsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
@@ -6460,6 +9011,7 @@ export namespace Prisma {
   export type JobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     companyId?: boolean
+    collegeId?: boolean
     title?: boolean
     description?: boolean
     type?: boolean
@@ -6473,11 +9025,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     companyId?: boolean
+    collegeId?: boolean
     title?: boolean
     description?: boolean
     type?: boolean
@@ -6491,11 +9045,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectScalar = {
     id?: boolean
     companyId?: boolean
+    collegeId?: boolean
     title?: boolean
     description?: boolean
     type?: boolean
@@ -6510,28 +9066,33 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "title" | "description" | "type" | "status" | "location" | "salaryPackage" | "minCgpa" | "allowedBranches" | "eligibleBatches" | "deadline" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "collegeId" | "title" | "description" | "type" | "status" | "location" | "salaryPackage" | "minCgpa" | "allowedBranches" | "eligibleBatches" | "deadline" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | Job$applicationsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }
   export type JobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
   }
 
   export type $JobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Job"
     objects: {
       company: Prisma.$CompanyPayload<ExtArgs>
+      college: Prisma.$CollegePayload<ExtArgs>
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       companyId: string
+      collegeId: string
       title: string
       description: string
       type: $Enums.JobType
@@ -6939,6 +9500,7 @@ export namespace Prisma {
   export interface Prisma__JobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     applications<T extends Job$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, Job$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6971,6 +9533,7 @@ export namespace Prisma {
   interface JobFieldRefs {
     readonly id: FieldRef<"Job", 'String'>
     readonly companyId: FieldRef<"Job", 'String'>
+    readonly collegeId: FieldRef<"Job", 'String'>
     readonly title: FieldRef<"Job", 'String'>
     readonly description: FieldRef<"Job", 'String'>
     readonly type: FieldRef<"Job", 'JobType'>
@@ -8565,9 +11128,37 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const CollegeScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    code: 'code',
+    domain: 'domain',
+    city: 'city',
+    state: 'state',
+    logoUrl: 'logoUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CollegeScalarFieldEnum = (typeof CollegeScalarFieldEnum)[keyof typeof CollegeScalarFieldEnum]
+
+
+  export const TpoProfileScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    collegeId: 'collegeId',
+    designation: 'designation',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TpoProfileScalarFieldEnum = (typeof TpoProfileScalarFieldEnum)[keyof typeof TpoProfileScalarFieldEnum]
+
+
   export const StudentProfileScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    collegeId: 'collegeId',
     enrollmentNumber: 'enrollmentNumber',
     branch: 'branch',
     batchYear: 'batchYear',
@@ -8618,6 +11209,7 @@ export namespace Prisma {
   export const JobScalarFieldEnum: {
     id: 'id',
     companyId: 'companyId',
+    collegeId: 'collegeId',
     title: 'title',
     description: 'description',
     type: 'type',
@@ -8815,6 +11407,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     student?: XOR<StudentProfileNullableScalarRelationFilter, StudentProfileWhereInput> | null
     recruiter?: XOR<RecruiterProfileNullableScalarRelationFilter, RecruiterProfileWhereInput> | null
+    tpo?: XOR<TpoProfileNullableScalarRelationFilter, TpoProfileWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8829,6 +11422,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     student?: StudentProfileOrderByWithRelationInput
     recruiter?: RecruiterProfileOrderByWithRelationInput
+    tpo?: TpoProfileOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8846,6 +11440,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     student?: XOR<StudentProfileNullableScalarRelationFilter, StudentProfileWhereInput> | null
     recruiter?: XOR<RecruiterProfileNullableScalarRelationFilter, RecruiterProfileWhereInput> | null
+    tpo?: XOR<TpoProfileNullableScalarRelationFilter, TpoProfileWhereInput> | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8878,12 +11473,157 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
+  export type CollegeWhereInput = {
+    AND?: CollegeWhereInput | CollegeWhereInput[]
+    OR?: CollegeWhereInput[]
+    NOT?: CollegeWhereInput | CollegeWhereInput[]
+    id?: StringFilter<"College"> | string
+    name?: StringFilter<"College"> | string
+    code?: StringNullableFilter<"College"> | string | null
+    domain?: StringNullableFilter<"College"> | string | null
+    city?: StringNullableFilter<"College"> | string | null
+    state?: StringNullableFilter<"College"> | string | null
+    logoUrl?: StringNullableFilter<"College"> | string | null
+    createdAt?: DateTimeFilter<"College"> | Date | string
+    updatedAt?: DateTimeFilter<"College"> | Date | string
+    tpos?: TpoProfileListRelationFilter
+    students?: StudentProfileListRelationFilter
+    jobs?: JobListRelationFilter
+  }
+
+  export type CollegeOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    code?: SortOrderInput | SortOrder
+    domain?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tpos?: TpoProfileOrderByRelationAggregateInput
+    students?: StudentProfileOrderByRelationAggregateInput
+    jobs?: JobOrderByRelationAggregateInput
+  }
+
+  export type CollegeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    code?: string
+    AND?: CollegeWhereInput | CollegeWhereInput[]
+    OR?: CollegeWhereInput[]
+    NOT?: CollegeWhereInput | CollegeWhereInput[]
+    domain?: StringNullableFilter<"College"> | string | null
+    city?: StringNullableFilter<"College"> | string | null
+    state?: StringNullableFilter<"College"> | string | null
+    logoUrl?: StringNullableFilter<"College"> | string | null
+    createdAt?: DateTimeFilter<"College"> | Date | string
+    updatedAt?: DateTimeFilter<"College"> | Date | string
+    tpos?: TpoProfileListRelationFilter
+    students?: StudentProfileListRelationFilter
+    jobs?: JobListRelationFilter
+  }, "id" | "name" | "code">
+
+  export type CollegeOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    code?: SortOrderInput | SortOrder
+    domain?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CollegeCountOrderByAggregateInput
+    _max?: CollegeMaxOrderByAggregateInput
+    _min?: CollegeMinOrderByAggregateInput
+  }
+
+  export type CollegeScalarWhereWithAggregatesInput = {
+    AND?: CollegeScalarWhereWithAggregatesInput | CollegeScalarWhereWithAggregatesInput[]
+    OR?: CollegeScalarWhereWithAggregatesInput[]
+    NOT?: CollegeScalarWhereWithAggregatesInput | CollegeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"College"> | string
+    name?: StringWithAggregatesFilter<"College"> | string
+    code?: StringNullableWithAggregatesFilter<"College"> | string | null
+    domain?: StringNullableWithAggregatesFilter<"College"> | string | null
+    city?: StringNullableWithAggregatesFilter<"College"> | string | null
+    state?: StringNullableWithAggregatesFilter<"College"> | string | null
+    logoUrl?: StringNullableWithAggregatesFilter<"College"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"College"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"College"> | Date | string
+  }
+
+  export type TpoProfileWhereInput = {
+    AND?: TpoProfileWhereInput | TpoProfileWhereInput[]
+    OR?: TpoProfileWhereInput[]
+    NOT?: TpoProfileWhereInput | TpoProfileWhereInput[]
+    id?: StringFilter<"TpoProfile"> | string
+    userId?: StringFilter<"TpoProfile"> | string
+    collegeId?: StringFilter<"TpoProfile"> | string
+    designation?: StringNullableFilter<"TpoProfile"> | string | null
+    createdAt?: DateTimeFilter<"TpoProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"TpoProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+  }
+
+  export type TpoProfileOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    college?: CollegeOrderByWithRelationInput
+  }
+
+  export type TpoProfileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: TpoProfileWhereInput | TpoProfileWhereInput[]
+    OR?: TpoProfileWhereInput[]
+    NOT?: TpoProfileWhereInput | TpoProfileWhereInput[]
+    collegeId?: StringFilter<"TpoProfile"> | string
+    designation?: StringNullableFilter<"TpoProfile"> | string | null
+    createdAt?: DateTimeFilter<"TpoProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"TpoProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+  }, "id" | "userId">
+
+  export type TpoProfileOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TpoProfileCountOrderByAggregateInput
+    _max?: TpoProfileMaxOrderByAggregateInput
+    _min?: TpoProfileMinOrderByAggregateInput
+  }
+
+  export type TpoProfileScalarWhereWithAggregatesInput = {
+    AND?: TpoProfileScalarWhereWithAggregatesInput | TpoProfileScalarWhereWithAggregatesInput[]
+    OR?: TpoProfileScalarWhereWithAggregatesInput[]
+    NOT?: TpoProfileScalarWhereWithAggregatesInput | TpoProfileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TpoProfile"> | string
+    userId?: StringWithAggregatesFilter<"TpoProfile"> | string
+    collegeId?: StringWithAggregatesFilter<"TpoProfile"> | string
+    designation?: StringNullableWithAggregatesFilter<"TpoProfile"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"TpoProfile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TpoProfile"> | Date | string
+  }
+
   export type StudentProfileWhereInput = {
     AND?: StudentProfileWhereInput | StudentProfileWhereInput[]
     OR?: StudentProfileWhereInput[]
     NOT?: StudentProfileWhereInput | StudentProfileWhereInput[]
     id?: StringFilter<"StudentProfile"> | string
     userId?: StringFilter<"StudentProfile"> | string
+    collegeId?: StringFilter<"StudentProfile"> | string
     enrollmentNumber?: StringFilter<"StudentProfile"> | string
     branch?: StringFilter<"StudentProfile"> | string
     batchYear?: IntFilter<"StudentProfile"> | number
@@ -8899,12 +11639,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StudentProfile"> | Date | string
     updatedAt?: DateTimeFilter<"StudentProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
   }
 
   export type StudentProfileOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    collegeId?: SortOrder
     enrollmentNumber?: SortOrder
     branch?: SortOrder
     batchYear?: SortOrder
@@ -8920,6 +11662,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    college?: CollegeOrderByWithRelationInput
     applications?: ApplicationOrderByRelationAggregateInput
   }
 
@@ -8930,6 +11673,7 @@ export namespace Prisma {
     AND?: StudentProfileWhereInput | StudentProfileWhereInput[]
     OR?: StudentProfileWhereInput[]
     NOT?: StudentProfileWhereInput | StudentProfileWhereInput[]
+    collegeId?: StringFilter<"StudentProfile"> | string
     branch?: StringFilter<"StudentProfile"> | string
     batchYear?: IntFilter<"StudentProfile"> | number
     cgpa?: FloatFilter<"StudentProfile"> | number
@@ -8944,12 +11688,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StudentProfile"> | Date | string
     updatedAt?: DateTimeFilter<"StudentProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
   }, "id" | "userId" | "enrollmentNumber">
 
   export type StudentProfileOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    collegeId?: SortOrder
     enrollmentNumber?: SortOrder
     branch?: SortOrder
     batchYear?: SortOrder
@@ -8977,6 +11723,7 @@ export namespace Prisma {
     NOT?: StudentProfileScalarWhereWithAggregatesInput | StudentProfileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StudentProfile"> | string
     userId?: StringWithAggregatesFilter<"StudentProfile"> | string
+    collegeId?: StringWithAggregatesFilter<"StudentProfile"> | string
     enrollmentNumber?: StringWithAggregatesFilter<"StudentProfile"> | string
     branch?: StringWithAggregatesFilter<"StudentProfile"> | string
     batchYear?: IntWithAggregatesFilter<"StudentProfile"> | number
@@ -9145,6 +11892,7 @@ export namespace Prisma {
     NOT?: JobWhereInput | JobWhereInput[]
     id?: StringFilter<"Job"> | string
     companyId?: StringFilter<"Job"> | string
+    collegeId?: StringFilter<"Job"> | string
     title?: StringFilter<"Job"> | string
     description?: StringFilter<"Job"> | string
     type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
@@ -9158,12 +11906,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
     id?: SortOrder
     companyId?: SortOrder
+    collegeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     type?: SortOrder
@@ -9177,6 +11927,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     company?: CompanyOrderByWithRelationInput
+    college?: CollegeOrderByWithRelationInput
     applications?: ApplicationOrderByRelationAggregateInput
   }
 
@@ -9186,6 +11937,7 @@ export namespace Prisma {
     OR?: JobWhereInput[]
     NOT?: JobWhereInput | JobWhereInput[]
     companyId?: StringFilter<"Job"> | string
+    collegeId?: StringFilter<"Job"> | string
     title?: StringFilter<"Job"> | string
     description?: StringFilter<"Job"> | string
     type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
@@ -9199,12 +11951,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
   }, "id">
 
   export type JobOrderByWithAggregationInput = {
     id?: SortOrder
     companyId?: SortOrder
+    collegeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     type?: SortOrder
@@ -9230,6 +11984,7 @@ export namespace Prisma {
     NOT?: JobScalarWhereWithAggregatesInput | JobScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Job"> | string
     companyId?: StringWithAggregatesFilter<"Job"> | string
+    collegeId?: StringWithAggregatesFilter<"Job"> | string
     title?: StringWithAggregatesFilter<"Job"> | string
     description?: StringWithAggregatesFilter<"Job"> | string
     type?: EnumJobTypeWithAggregatesFilter<"Job"> | $Enums.JobType
@@ -9330,6 +12085,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     student?: StudentProfileCreateNestedOneWithoutUserInput
     recruiter?: RecruiterProfileCreateNestedOneWithoutUserInput
+    tpo?: TpoProfileCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -9344,6 +12100,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     student?: StudentProfileUncheckedCreateNestedOneWithoutUserInput
     recruiter?: RecruiterProfileUncheckedCreateNestedOneWithoutUserInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -9358,6 +12115,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentProfileUpdateOneWithoutUserNestedInput
     recruiter?: RecruiterProfileUpdateOneWithoutUserNestedInput
+    tpo?: TpoProfileUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -9372,6 +12130,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentProfileUncheckedUpdateOneWithoutUserNestedInput
     recruiter?: RecruiterProfileUncheckedUpdateOneWithoutUserNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9410,6 +12169,163 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CollegeCreateInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    students?: StudentProfileCreateNestedManyWithoutCollegeInput
+    jobs?: JobCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeUncheckedCreateInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    students?: StudentProfileUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type CollegeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type CollegeCreateManyInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CollegeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CollegeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TpoProfileCreateInput = {
+    id?: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTpoInput
+    college: CollegeCreateNestedOneWithoutTposInput
+  }
+
+  export type TpoProfileUncheckedCreateInput = {
+    id?: string
+    userId: string
+    collegeId: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TpoProfileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTpoNestedInput
+    college?: CollegeUpdateOneRequiredWithoutTposNestedInput
+  }
+
+  export type TpoProfileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TpoProfileCreateManyInput = {
+    id?: string
+    userId: string
+    collegeId: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TpoProfileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TpoProfileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StudentProfileCreateInput = {
     id?: string
     enrollmentNumber: string
@@ -9427,12 +12343,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
+    college: CollegeCreateNestedOneWithoutStudentsInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateInput = {
     id?: string
     userId: string
+    collegeId: string
     enrollmentNumber: string
     branch: string
     batchYear: number
@@ -9467,12 +12385,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     enrollmentNumber?: StringFieldUpdateOperationsInput | string
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
@@ -9493,6 +12413,7 @@ export namespace Prisma {
   export type StudentProfileCreateManyInput = {
     id?: string
     userId: string
+    collegeId: string
     enrollmentNumber: string
     branch: string
     batchYear: number
@@ -9530,6 +12451,7 @@ export namespace Prisma {
   export type StudentProfileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     enrollmentNumber?: StringFieldUpdateOperationsInput | string
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
@@ -9721,12 +12643,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutJobsInput
+    college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateInput = {
     id?: string
     companyId: string
+    collegeId: string
     title: string
     description: string
     type?: $Enums.JobType
@@ -9757,12 +12681,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
+    college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
@@ -9781,6 +12707,7 @@ export namespace Prisma {
   export type JobCreateManyInput = {
     id?: string
     companyId: string
+    collegeId: string
     title: string
     description: string
     type?: $Enums.JobType
@@ -9814,6 +12741,7 @@ export namespace Prisma {
   export type JobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
@@ -9966,6 +12894,11 @@ export namespace Prisma {
     isNot?: RecruiterProfileWhereInput | null
   }
 
+  export type TpoProfileNullableScalarRelationFilter = {
+    is?: TpoProfileWhereInput | null
+    isNot?: TpoProfileWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -10075,6 +13008,109 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type TpoProfileListRelationFilter = {
+    every?: TpoProfileWhereInput
+    some?: TpoProfileWhereInput
+    none?: TpoProfileWhereInput
+  }
+
+  export type StudentProfileListRelationFilter = {
+    every?: StudentProfileWhereInput
+    some?: StudentProfileWhereInput
+    none?: StudentProfileWhereInput
+  }
+
+  export type JobListRelationFilter = {
+    every?: JobWhereInput
+    some?: JobWhereInput
+    none?: JobWhereInput
+  }
+
+  export type TpoProfileOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StudentProfileOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CollegeCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    code?: SortOrder
+    domain?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    logoUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CollegeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    code?: SortOrder
+    domain?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    logoUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CollegeMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    code?: SortOrder
+    domain?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    logoUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type CollegeScalarRelationFilter = {
+    is?: CollegeWhereInput
+    isNot?: CollegeWhereInput
+  }
+
+  export type TpoProfileCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TpoProfileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TpoProfileMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -10116,11 +13152,6 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type ApplicationListRelationFilter = {
     every?: ApplicationWhereInput
     some?: ApplicationWhereInput
@@ -10134,6 +13165,7 @@ export namespace Prisma {
   export type StudentProfileCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    collegeId?: SortOrder
     enrollmentNumber?: SortOrder
     branch?: SortOrder
     batchYear?: SortOrder
@@ -10160,6 +13192,7 @@ export namespace Prisma {
   export type StudentProfileMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    collegeId?: SortOrder
     enrollmentNumber?: SortOrder
     branch?: SortOrder
     batchYear?: SortOrder
@@ -10178,6 +13211,7 @@ export namespace Prisma {
   export type StudentProfileMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    collegeId?: SortOrder
     enrollmentNumber?: SortOrder
     branch?: SortOrder
     batchYear?: SortOrder
@@ -10254,17 +13288,7 @@ export namespace Prisma {
     none?: RecruiterProfileWhereInput
   }
 
-  export type JobListRelationFilter = {
-    every?: JobWhereInput
-    some?: JobWhereInput
-    none?: JobWhereInput
-  }
-
   export type RecruiterProfileOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type JobOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10364,6 +13388,7 @@ export namespace Prisma {
   export type JobCountOrderByAggregateInput = {
     id?: SortOrder
     companyId?: SortOrder
+    collegeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     type?: SortOrder
@@ -10386,6 +13411,7 @@ export namespace Prisma {
   export type JobMaxOrderByAggregateInput = {
     id?: SortOrder
     companyId?: SortOrder
+    collegeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     type?: SortOrder
@@ -10401,6 +13427,7 @@ export namespace Prisma {
   export type JobMinOrderByAggregateInput = {
     id?: SortOrder
     companyId?: SortOrder
+    collegeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     type?: SortOrder
@@ -10515,6 +13542,12 @@ export namespace Prisma {
     connect?: RecruiterProfileWhereUniqueInput
   }
 
+  export type TpoProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<TpoProfileCreateWithoutUserInput, TpoProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutUserInput
+    connect?: TpoProfileWhereUniqueInput
+  }
+
   export type StudentProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<StudentProfileCreateWithoutUserInput, StudentProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: StudentProfileCreateOrConnectWithoutUserInput
@@ -10525,6 +13558,12 @@ export namespace Prisma {
     create?: XOR<RecruiterProfileCreateWithoutUserInput, RecruiterProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: RecruiterProfileCreateOrConnectWithoutUserInput
     connect?: RecruiterProfileWhereUniqueInput
+  }
+
+  export type TpoProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<TpoProfileCreateWithoutUserInput, TpoProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutUserInput
+    connect?: TpoProfileWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -10567,6 +13606,16 @@ export namespace Prisma {
     update?: XOR<XOR<RecruiterProfileUpdateToOneWithWhereWithoutUserInput, RecruiterProfileUpdateWithoutUserInput>, RecruiterProfileUncheckedUpdateWithoutUserInput>
   }
 
+  export type TpoProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<TpoProfileCreateWithoutUserInput, TpoProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutUserInput
+    upsert?: TpoProfileUpsertWithoutUserInput
+    disconnect?: TpoProfileWhereInput | boolean
+    delete?: TpoProfileWhereInput | boolean
+    connect?: TpoProfileWhereUniqueInput
+    update?: XOR<XOR<TpoProfileUpdateToOneWithWhereWithoutUserInput, TpoProfileUpdateWithoutUserInput>, TpoProfileUncheckedUpdateWithoutUserInput>
+  }
+
   export type StudentProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<StudentProfileCreateWithoutUserInput, StudentProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: StudentProfileCreateOrConnectWithoutUserInput
@@ -10587,6 +13636,170 @@ export namespace Prisma {
     update?: XOR<XOR<RecruiterProfileUpdateToOneWithWhereWithoutUserInput, RecruiterProfileUpdateWithoutUserInput>, RecruiterProfileUncheckedUpdateWithoutUserInput>
   }
 
+  export type TpoProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<TpoProfileCreateWithoutUserInput, TpoProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutUserInput
+    upsert?: TpoProfileUpsertWithoutUserInput
+    disconnect?: TpoProfileWhereInput | boolean
+    delete?: TpoProfileWhereInput | boolean
+    connect?: TpoProfileWhereUniqueInput
+    update?: XOR<XOR<TpoProfileUpdateToOneWithWhereWithoutUserInput, TpoProfileUpdateWithoutUserInput>, TpoProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TpoProfileCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
+    createMany?: TpoProfileCreateManyCollegeInputEnvelope
+    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+  }
+
+  export type StudentProfileCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<StudentProfileCreateWithoutCollegeInput, StudentProfileUncheckedCreateWithoutCollegeInput> | StudentProfileCreateWithoutCollegeInput[] | StudentProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutCollegeInput | StudentProfileCreateOrConnectWithoutCollegeInput[]
+    createMany?: StudentProfileCreateManyCollegeInputEnvelope
+    connect?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+  }
+
+  export type JobCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<JobCreateWithoutCollegeInput, JobUncheckedCreateWithoutCollegeInput> | JobCreateWithoutCollegeInput[] | JobUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutCollegeInput | JobCreateOrConnectWithoutCollegeInput[]
+    createMany?: JobCreateManyCollegeInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type TpoProfileUncheckedCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
+    createMany?: TpoProfileCreateManyCollegeInputEnvelope
+    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+  }
+
+  export type StudentProfileUncheckedCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<StudentProfileCreateWithoutCollegeInput, StudentProfileUncheckedCreateWithoutCollegeInput> | StudentProfileCreateWithoutCollegeInput[] | StudentProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutCollegeInput | StudentProfileCreateOrConnectWithoutCollegeInput[]
+    createMany?: StudentProfileCreateManyCollegeInputEnvelope
+    connect?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<JobCreateWithoutCollegeInput, JobUncheckedCreateWithoutCollegeInput> | JobCreateWithoutCollegeInput[] | JobUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutCollegeInput | JobCreateOrConnectWithoutCollegeInput[]
+    createMany?: JobCreateManyCollegeInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type TpoProfileUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
+    upsert?: TpoProfileUpsertWithWhereUniqueWithoutCollegeInput | TpoProfileUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: TpoProfileCreateManyCollegeInputEnvelope
+    set?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    disconnect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    delete?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    update?: TpoProfileUpdateWithWhereUniqueWithoutCollegeInput | TpoProfileUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: TpoProfileUpdateManyWithWhereWithoutCollegeInput | TpoProfileUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
+  }
+
+  export type StudentProfileUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<StudentProfileCreateWithoutCollegeInput, StudentProfileUncheckedCreateWithoutCollegeInput> | StudentProfileCreateWithoutCollegeInput[] | StudentProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutCollegeInput | StudentProfileCreateOrConnectWithoutCollegeInput[]
+    upsert?: StudentProfileUpsertWithWhereUniqueWithoutCollegeInput | StudentProfileUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: StudentProfileCreateManyCollegeInputEnvelope
+    set?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    disconnect?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    delete?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    connect?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    update?: StudentProfileUpdateWithWhereUniqueWithoutCollegeInput | StudentProfileUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: StudentProfileUpdateManyWithWhereWithoutCollegeInput | StudentProfileUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: StudentProfileScalarWhereInput | StudentProfileScalarWhereInput[]
+  }
+
+  export type JobUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<JobCreateWithoutCollegeInput, JobUncheckedCreateWithoutCollegeInput> | JobCreateWithoutCollegeInput[] | JobUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutCollegeInput | JobCreateOrConnectWithoutCollegeInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutCollegeInput | JobUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: JobCreateManyCollegeInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutCollegeInput | JobUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutCollegeInput | JobUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
+    upsert?: TpoProfileUpsertWithWhereUniqueWithoutCollegeInput | TpoProfileUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: TpoProfileCreateManyCollegeInputEnvelope
+    set?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    disconnect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    delete?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+    update?: TpoProfileUpdateWithWhereUniqueWithoutCollegeInput | TpoProfileUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: TpoProfileUpdateManyWithWhereWithoutCollegeInput | TpoProfileUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
+  }
+
+  export type StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<StudentProfileCreateWithoutCollegeInput, StudentProfileUncheckedCreateWithoutCollegeInput> | StudentProfileCreateWithoutCollegeInput[] | StudentProfileUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutCollegeInput | StudentProfileCreateOrConnectWithoutCollegeInput[]
+    upsert?: StudentProfileUpsertWithWhereUniqueWithoutCollegeInput | StudentProfileUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: StudentProfileCreateManyCollegeInputEnvelope
+    set?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    disconnect?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    delete?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    connect?: StudentProfileWhereUniqueInput | StudentProfileWhereUniqueInput[]
+    update?: StudentProfileUpdateWithWhereUniqueWithoutCollegeInput | StudentProfileUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: StudentProfileUpdateManyWithWhereWithoutCollegeInput | StudentProfileUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: StudentProfileScalarWhereInput | StudentProfileScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<JobCreateWithoutCollegeInput, JobUncheckedCreateWithoutCollegeInput> | JobCreateWithoutCollegeInput[] | JobUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutCollegeInput | JobCreateOrConnectWithoutCollegeInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutCollegeInput | JobUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: JobCreateManyCollegeInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutCollegeInput | JobUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutCollegeInput | JobUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutTpoInput = {
+    create?: XOR<UserCreateWithoutTpoInput, UserUncheckedCreateWithoutTpoInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTpoInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CollegeCreateNestedOneWithoutTposInput = {
+    create?: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutTposInput
+    connect?: CollegeWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTpoNestedInput = {
+    create?: XOR<UserCreateWithoutTpoInput, UserUncheckedCreateWithoutTpoInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTpoInput
+    upsert?: UserUpsertWithoutTpoInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTpoInput, UserUpdateWithoutTpoInput>, UserUncheckedUpdateWithoutTpoInput>
+  }
+
+  export type CollegeUpdateOneRequiredWithoutTposNestedInput = {
+    create?: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutTposInput
+    upsert?: CollegeUpsertWithoutTposInput
+    connect?: CollegeWhereUniqueInput
+    update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutTposInput, CollegeUpdateWithoutTposInput>, CollegeUncheckedUpdateWithoutTposInput>
+  }
+
   export type StudentProfileCreateskillsInput = {
     set: string[]
   }
@@ -10595,6 +13808,12 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutStudentInput, UserUncheckedCreateWithoutStudentInput>
     connectOrCreate?: UserCreateOrConnectWithoutStudentInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type CollegeCreateNestedOneWithoutStudentsInput = {
+    create?: XOR<CollegeCreateWithoutStudentsInput, CollegeUncheckedCreateWithoutStudentsInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutStudentsInput
+    connect?: CollegeWhereUniqueInput
   }
 
   export type ApplicationCreateNestedManyWithoutStudentInput = {
@@ -10646,6 +13865,14 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutStudentInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutStudentInput, UserUpdateWithoutStudentInput>, UserUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type CollegeUpdateOneRequiredWithoutStudentsNestedInput = {
+    create?: XOR<CollegeCreateWithoutStudentsInput, CollegeUncheckedCreateWithoutStudentsInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutStudentsInput
+    upsert?: CollegeUpsertWithoutStudentsInput
+    connect?: CollegeWhereUniqueInput
+    update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutStudentsInput, CollegeUpdateWithoutStudentsInput>, CollegeUncheckedUpdateWithoutStudentsInput>
   }
 
   export type ApplicationUpdateManyWithoutStudentNestedInput = {
@@ -10802,6 +14029,12 @@ export namespace Prisma {
     connect?: CompanyWhereUniqueInput
   }
 
+  export type CollegeCreateNestedOneWithoutJobsInput = {
+    create?: XOR<CollegeCreateWithoutJobsInput, CollegeUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutJobsInput
+    connect?: CollegeWhereUniqueInput
+  }
+
   export type ApplicationCreateNestedManyWithoutJobInput = {
     create?: XOR<ApplicationCreateWithoutJobInput, ApplicationUncheckedCreateWithoutJobInput> | ApplicationCreateWithoutJobInput[] | ApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutJobInput | ApplicationCreateOrConnectWithoutJobInput[]
@@ -10840,6 +14073,14 @@ export namespace Prisma {
     upsert?: CompanyUpsertWithoutJobsInput
     connect?: CompanyWhereUniqueInput
     update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutJobsInput, CompanyUpdateWithoutJobsInput>, CompanyUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type CollegeUpdateOneRequiredWithoutJobsNestedInput = {
+    create?: XOR<CollegeCreateWithoutJobsInput, CollegeUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutJobsInput
+    upsert?: CollegeUpsertWithoutJobsInput
+    connect?: CollegeWhereUniqueInput
+    update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutJobsInput, CollegeUpdateWithoutJobsInput>, CollegeUncheckedUpdateWithoutJobsInput>
   }
 
   export type ApplicationUpdateManyWithoutJobNestedInput = {
@@ -11178,11 +14419,13 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    college: CollegeCreateNestedOneWithoutStudentsInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutUserInput = {
     id?: string
+    collegeId: string
     enrollmentNumber: string
     branch: string
     batchYear: number
@@ -11226,6 +14469,27 @@ export namespace Prisma {
     create: XOR<RecruiterProfileCreateWithoutUserInput, RecruiterProfileUncheckedCreateWithoutUserInput>
   }
 
+  export type TpoProfileCreateWithoutUserInput = {
+    id?: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    college: CollegeCreateNestedOneWithoutTposInput
+  }
+
+  export type TpoProfileUncheckedCreateWithoutUserInput = {
+    id?: string
+    collegeId: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TpoProfileCreateOrConnectWithoutUserInput = {
+    where: TpoProfileWhereUniqueInput
+    create: XOR<TpoProfileCreateWithoutUserInput, TpoProfileUncheckedCreateWithoutUserInput>
+  }
+
   export type StudentProfileUpsertWithoutUserInput = {
     update: XOR<StudentProfileUpdateWithoutUserInput, StudentProfileUncheckedUpdateWithoutUserInput>
     create: XOR<StudentProfileCreateWithoutUserInput, StudentProfileUncheckedCreateWithoutUserInput>
@@ -11253,11 +14517,13 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     enrollmentNumber?: StringFieldUpdateOperationsInput | string
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
@@ -11302,6 +14568,403 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TpoProfileUpsertWithoutUserInput = {
+    update: XOR<TpoProfileUpdateWithoutUserInput, TpoProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<TpoProfileCreateWithoutUserInput, TpoProfileUncheckedCreateWithoutUserInput>
+    where?: TpoProfileWhereInput
+  }
+
+  export type TpoProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: TpoProfileWhereInput
+    data: XOR<TpoProfileUpdateWithoutUserInput, TpoProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TpoProfileUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    college?: CollegeUpdateOneRequiredWithoutTposNestedInput
+  }
+
+  export type TpoProfileUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TpoProfileCreateWithoutCollegeInput = {
+    id?: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTpoInput
+  }
+
+  export type TpoProfileUncheckedCreateWithoutCollegeInput = {
+    id?: string
+    userId: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TpoProfileCreateOrConnectWithoutCollegeInput = {
+    where: TpoProfileWhereUniqueInput
+    create: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type TpoProfileCreateManyCollegeInputEnvelope = {
+    data: TpoProfileCreateManyCollegeInput | TpoProfileCreateManyCollegeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StudentProfileCreateWithoutCollegeInput = {
+    id?: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStudentInput
+    applications?: ApplicationCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileUncheckedCreateWithoutCollegeInput = {
+    id?: string
+    userId: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileCreateOrConnectWithoutCollegeInput = {
+    where: StudentProfileWhereUniqueInput
+    create: XOR<StudentProfileCreateWithoutCollegeInput, StudentProfileUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type StudentProfileCreateManyCollegeInputEnvelope = {
+    data: StudentProfileCreateManyCollegeInput | StudentProfileCreateManyCollegeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobCreateWithoutCollegeInput = {
+    id?: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutJobsInput
+    applications?: ApplicationCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutCollegeInput = {
+    id?: string
+    companyId: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutCollegeInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutCollegeInput, JobUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type JobCreateManyCollegeInputEnvelope = {
+    data: JobCreateManyCollegeInput | JobCreateManyCollegeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TpoProfileUpsertWithWhereUniqueWithoutCollegeInput = {
+    where: TpoProfileWhereUniqueInput
+    update: XOR<TpoProfileUpdateWithoutCollegeInput, TpoProfileUncheckedUpdateWithoutCollegeInput>
+    create: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type TpoProfileUpdateWithWhereUniqueWithoutCollegeInput = {
+    where: TpoProfileWhereUniqueInput
+    data: XOR<TpoProfileUpdateWithoutCollegeInput, TpoProfileUncheckedUpdateWithoutCollegeInput>
+  }
+
+  export type TpoProfileUpdateManyWithWhereWithoutCollegeInput = {
+    where: TpoProfileScalarWhereInput
+    data: XOR<TpoProfileUpdateManyMutationInput, TpoProfileUncheckedUpdateManyWithoutCollegeInput>
+  }
+
+  export type TpoProfileScalarWhereInput = {
+    AND?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
+    OR?: TpoProfileScalarWhereInput[]
+    NOT?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
+    id?: StringFilter<"TpoProfile"> | string
+    userId?: StringFilter<"TpoProfile"> | string
+    collegeId?: StringFilter<"TpoProfile"> | string
+    designation?: StringNullableFilter<"TpoProfile"> | string | null
+    createdAt?: DateTimeFilter<"TpoProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"TpoProfile"> | Date | string
+  }
+
+  export type StudentProfileUpsertWithWhereUniqueWithoutCollegeInput = {
+    where: StudentProfileWhereUniqueInput
+    update: XOR<StudentProfileUpdateWithoutCollegeInput, StudentProfileUncheckedUpdateWithoutCollegeInput>
+    create: XOR<StudentProfileCreateWithoutCollegeInput, StudentProfileUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type StudentProfileUpdateWithWhereUniqueWithoutCollegeInput = {
+    where: StudentProfileWhereUniqueInput
+    data: XOR<StudentProfileUpdateWithoutCollegeInput, StudentProfileUncheckedUpdateWithoutCollegeInput>
+  }
+
+  export type StudentProfileUpdateManyWithWhereWithoutCollegeInput = {
+    where: StudentProfileScalarWhereInput
+    data: XOR<StudentProfileUpdateManyMutationInput, StudentProfileUncheckedUpdateManyWithoutCollegeInput>
+  }
+
+  export type StudentProfileScalarWhereInput = {
+    AND?: StudentProfileScalarWhereInput | StudentProfileScalarWhereInput[]
+    OR?: StudentProfileScalarWhereInput[]
+    NOT?: StudentProfileScalarWhereInput | StudentProfileScalarWhereInput[]
+    id?: StringFilter<"StudentProfile"> | string
+    userId?: StringFilter<"StudentProfile"> | string
+    collegeId?: StringFilter<"StudentProfile"> | string
+    enrollmentNumber?: StringFilter<"StudentProfile"> | string
+    branch?: StringFilter<"StudentProfile"> | string
+    batchYear?: IntFilter<"StudentProfile"> | number
+    cgpa?: FloatFilter<"StudentProfile"> | number
+    tenthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
+    twelfthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
+    resumeUrl?: StringNullableFilter<"StudentProfile"> | string | null
+    skills?: StringNullableListFilter<"StudentProfile">
+    linkedinUrl?: StringNullableFilter<"StudentProfile"> | string | null
+    githubUrl?: StringNullableFilter<"StudentProfile"> | string | null
+    portfolioUrl?: StringNullableFilter<"StudentProfile"> | string | null
+    isVerified?: BoolFilter<"StudentProfile"> | boolean
+    createdAt?: DateTimeFilter<"StudentProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"StudentProfile"> | Date | string
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutCollegeInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutCollegeInput, JobUncheckedUpdateWithoutCollegeInput>
+    create: XOR<JobCreateWithoutCollegeInput, JobUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutCollegeInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutCollegeInput, JobUncheckedUpdateWithoutCollegeInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutCollegeInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutCollegeInput>
+  }
+
+  export type JobScalarWhereInput = {
+    AND?: JobScalarWhereInput | JobScalarWhereInput[]
+    OR?: JobScalarWhereInput[]
+    NOT?: JobScalarWhereInput | JobScalarWhereInput[]
+    id?: StringFilter<"Job"> | string
+    companyId?: StringFilter<"Job"> | string
+    collegeId?: StringFilter<"Job"> | string
+    title?: StringFilter<"Job"> | string
+    description?: StringFilter<"Job"> | string
+    type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
+    status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringFilter<"Job"> | string
+    salaryPackage?: StringFilter<"Job"> | string
+    minCgpa?: FloatFilter<"Job"> | number
+    allowedBranches?: StringNullableListFilter<"Job">
+    eligibleBatches?: IntNullableListFilter<"Job">
+    deadline?: DateTimeFilter<"Job"> | Date | string
+    createdAt?: DateTimeFilter<"Job"> | Date | string
+    updatedAt?: DateTimeFilter<"Job"> | Date | string
+  }
+
+  export type UserCreateWithoutTpoInput = {
+    id?: string
+    email: string
+    passwordHash?: string | null
+    name: string
+    role?: $Enums.Role
+    avatarUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student?: StudentProfileCreateNestedOneWithoutUserInput
+    recruiter?: RecruiterProfileCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTpoInput = {
+    id?: string
+    email: string
+    passwordHash?: string | null
+    name: string
+    role?: $Enums.Role
+    avatarUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student?: StudentProfileUncheckedCreateNestedOneWithoutUserInput
+    recruiter?: RecruiterProfileUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTpoInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTpoInput, UserUncheckedCreateWithoutTpoInput>
+  }
+
+  export type CollegeCreateWithoutTposInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    students?: StudentProfileCreateNestedManyWithoutCollegeInput
+    jobs?: JobCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeUncheckedCreateWithoutTposInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeCreateOrConnectWithoutTposInput = {
+    where: CollegeWhereUniqueInput
+    create: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
+  }
+
+  export type UserUpsertWithoutTpoInput = {
+    update: XOR<UserUpdateWithoutTpoInput, UserUncheckedUpdateWithoutTpoInput>
+    create: XOR<UserCreateWithoutTpoInput, UserUncheckedCreateWithoutTpoInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTpoInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTpoInput, UserUncheckedUpdateWithoutTpoInput>
+  }
+
+  export type UserUpdateWithoutTpoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUpdateOneWithoutUserNestedInput
+    recruiter?: RecruiterProfileUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTpoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUncheckedUpdateOneWithoutUserNestedInput
+    recruiter?: RecruiterProfileUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type CollegeUpsertWithoutTposInput = {
+    update: XOR<CollegeUpdateWithoutTposInput, CollegeUncheckedUpdateWithoutTposInput>
+    create: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
+    where?: CollegeWhereInput
+  }
+
+  export type CollegeUpdateToOneWithWhereWithoutTposInput = {
+    where?: CollegeWhereInput
+    data: XOR<CollegeUpdateWithoutTposInput, CollegeUncheckedUpdateWithoutTposInput>
+  }
+
+  export type CollegeUpdateWithoutTposInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    students?: StudentProfileUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type CollegeUncheckedUpdateWithoutTposInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
+  }
+
   export type UserCreateWithoutStudentInput = {
     id?: string
     email: string
@@ -11313,6 +14976,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recruiter?: RecruiterProfileCreateNestedOneWithoutUserInput
+    tpo?: TpoProfileCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutStudentInput = {
@@ -11326,11 +14990,45 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recruiter?: RecruiterProfileUncheckedCreateNestedOneWithoutUserInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutStudentInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutStudentInput, UserUncheckedCreateWithoutStudentInput>
+  }
+
+  export type CollegeCreateWithoutStudentsInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    jobs?: JobCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeUncheckedCreateWithoutStudentsInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeCreateOrConnectWithoutStudentsInput = {
+    where: CollegeWhereUniqueInput
+    create: XOR<CollegeCreateWithoutStudentsInput, CollegeUncheckedCreateWithoutStudentsInput>
   }
 
   export type ApplicationCreateWithoutStudentInput = {
@@ -11385,6 +15083,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiter?: RecruiterProfileUpdateOneWithoutUserNestedInput
+    tpo?: TpoProfileUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStudentInput = {
@@ -11398,6 +15097,46 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiter?: RecruiterProfileUncheckedUpdateOneWithoutUserNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type CollegeUpsertWithoutStudentsInput = {
+    update: XOR<CollegeUpdateWithoutStudentsInput, CollegeUncheckedUpdateWithoutStudentsInput>
+    create: XOR<CollegeCreateWithoutStudentsInput, CollegeUncheckedCreateWithoutStudentsInput>
+    where?: CollegeWhereInput
+  }
+
+  export type CollegeUpdateToOneWithWhereWithoutStudentsInput = {
+    where?: CollegeWhereInput
+    data: XOR<CollegeUpdateWithoutStudentsInput, CollegeUncheckedUpdateWithoutStudentsInput>
+  }
+
+  export type CollegeUpdateWithoutStudentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type CollegeUncheckedUpdateWithoutStudentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
   export type ApplicationUpsertWithWhereUniqueWithoutStudentInput = {
@@ -11470,11 +15209,13 @@ export namespace Prisma {
     deadline: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCompanyInput = {
     id?: string
+    collegeId: string
     title: string
     description: string
     type?: $Enums.JobType
@@ -11544,26 +15285,6 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutCompanyInput>
   }
 
-  export type JobScalarWhereInput = {
-    AND?: JobScalarWhereInput | JobScalarWhereInput[]
-    OR?: JobScalarWhereInput[]
-    NOT?: JobScalarWhereInput | JobScalarWhereInput[]
-    id?: StringFilter<"Job"> | string
-    companyId?: StringFilter<"Job"> | string
-    title?: StringFilter<"Job"> | string
-    description?: StringFilter<"Job"> | string
-    type?: EnumJobTypeFilter<"Job"> | $Enums.JobType
-    status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
-    location?: StringFilter<"Job"> | string
-    salaryPackage?: StringFilter<"Job"> | string
-    minCgpa?: FloatFilter<"Job"> | number
-    allowedBranches?: StringNullableListFilter<"Job">
-    eligibleBatches?: IntNullableListFilter<"Job">
-    deadline?: DateTimeFilter<"Job"> | Date | string
-    createdAt?: DateTimeFilter<"Job"> | Date | string
-    updatedAt?: DateTimeFilter<"Job"> | Date | string
-  }
-
   export type UserCreateWithoutRecruiterInput = {
     id?: string
     email: string
@@ -11575,6 +15296,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     student?: StudentProfileCreateNestedOneWithoutUserInput
+    tpo?: TpoProfileCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRecruiterInput = {
@@ -11588,6 +15310,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     student?: StudentProfileUncheckedCreateNestedOneWithoutUserInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRecruiterInput = {
@@ -11650,6 +15373,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentProfileUpdateOneWithoutUserNestedInput
+    tpo?: TpoProfileUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRecruiterInput = {
@@ -11663,6 +15387,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentProfileUncheckedUpdateOneWithoutUserNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutRecruitersInput = {
@@ -11737,6 +15462,39 @@ export namespace Prisma {
     create: XOR<CompanyCreateWithoutJobsInput, CompanyUncheckedCreateWithoutJobsInput>
   }
 
+  export type CollegeCreateWithoutJobsInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    students?: StudentProfileCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeUncheckedCreateWithoutJobsInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeCreateOrConnectWithoutJobsInput = {
+    where: CollegeWhereUniqueInput
+    create: XOR<CollegeCreateWithoutJobsInput, CollegeUncheckedCreateWithoutJobsInput>
+  }
+
   export type ApplicationCreateWithoutJobInput = {
     id?: string
     status?: $Enums.ApplicationStatus
@@ -11806,6 +15564,45 @@ export namespace Prisma {
     recruiters?: RecruiterProfileUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
+  export type CollegeUpsertWithoutJobsInput = {
+    update: XOR<CollegeUpdateWithoutJobsInput, CollegeUncheckedUpdateWithoutJobsInput>
+    create: XOR<CollegeCreateWithoutJobsInput, CollegeUncheckedCreateWithoutJobsInput>
+    where?: CollegeWhereInput
+  }
+
+  export type CollegeUpdateToOneWithWhereWithoutJobsInput = {
+    where?: CollegeWhereInput
+    data: XOR<CollegeUpdateWithoutJobsInput, CollegeUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type CollegeUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    students?: StudentProfileUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type CollegeUncheckedUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
+  }
+
   export type ApplicationUpsertWithWhereUniqueWithoutJobInput = {
     where: ApplicationWhereUniqueInput
     update: XOR<ApplicationUpdateWithoutJobInput, ApplicationUncheckedUpdateWithoutJobInput>
@@ -11837,11 +15634,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutJobsInput
+    college: CollegeCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutApplicationsInput = {
     id?: string
     companyId: string
+    collegeId: string
     title: string
     description: string
     type?: $Enums.JobType
@@ -11878,11 +15677,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
+    college: CollegeCreateNestedOneWithoutStudentsInput
   }
 
   export type StudentProfileUncheckedCreateWithoutApplicationsInput = {
     id?: string
     userId: string
+    collegeId: string
     enrollmentNumber: string
     branch: string
     batchYear: number
@@ -11930,11 +15731,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
+    college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutApplicationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
@@ -11977,9 +15780,118 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutApplicationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TpoProfileCreateManyCollegeInput = {
+    id?: string
+    userId: string
+    designation?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StudentProfileCreateManyCollegeInput = {
+    id?: string
+    userId: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobCreateManyCollegeInput = {
+    id?: string
+    companyId: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TpoProfileUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTpoNestedInput
+  }
+
+  export type TpoProfileUncheckedUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TpoProfileUncheckedUpdateManyWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentProfileUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    applications?: ApplicationUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentProfileUncheckedUpdateWithoutCollegeInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     enrollmentNumber?: StringFieldUpdateOperationsInput | string
@@ -11994,6 +15906,79 @@ export namespace Prisma {
     githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentProfileUncheckedUpdateManyWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
+    applications?: ApplicationUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12048,6 +16033,7 @@ export namespace Prisma {
 
   export type JobCreateManyCompanyInput = {
     id?: string
+    collegeId: string
     title: string
     description: string
     type?: $Enums.JobType
@@ -12100,11 +16086,13 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
@@ -12122,6 +16110,7 @@ export namespace Prisma {
 
   export type JobUncheckedUpdateManyWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType

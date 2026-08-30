@@ -51,15 +51,52 @@ model User {
 
   student   StudentProfile?
   recruiter RecruiterProfile?
+  tpo       TpoProfile?
 
   @@index([role])
   @@index([createdAt])
 }
 
+// 2. College & TPO Management
+model College {
+  id      String  @id @default(cuid())
+  name    String  @unique // e.g. "Delhi Technological University"
+  code    String? @unique // e.g. "DTU"
+  domain  String? // e.g. "dtu.ac.in" (for college email domain validation)
+  city    String?
+  state   String?
+  logoUrl String?
+
+  tpos      TpoProfile[]
+  students  StudentProfile[]
+  jobs      Job[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([name])
+}
+
+model TpoProfile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeId   String
+  college     College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  designation String? // e.g. "Head, Training & Placement Cell"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([collegeId])
+}
+
+// 3. Student Profile
 model StudentProfile {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
 
   enrollmentNumber String   @unique
   branch           String // e.g. "Computer Science & Engineering"
@@ -78,11 +115,13 @@ model StudentProfile {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
+  @@index([collegeId])
   @@index([branch, batchYear])
   @@index([cgpa])
   @@index([isVerified])
 }
 
+// 4. Company & Recruiter Profile
 model Company {
   id          String  @id @default(cuid())
   name        String  @unique
@@ -115,10 +154,13 @@ model RecruiterProfile {
   @@index([companyId])
 }
 
+// 5. Job Drive & Eligibility
 model Job {
   id        String  @id @default(cuid())
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
 
   title         String // e.g. "Software Engineer - Full Stack"
   description   String    @db.Text
@@ -137,12 +179,14 @@ model Job {
   updatedAt    DateTime      @updatedAt
 
   // Composite indexes for student job feeds and recruiter listings
+  @@index([collegeId])
   @@index([companyId])
   @@index([status, deadline])
   @@index([type])
   @@index([createdAt])
 }
 
+// 6. Application Pipeline
 model Application {
   id        String         @id @default(cuid())
   jobId     String

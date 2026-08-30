@@ -132,9 +132,31 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CollegeScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  domain: 'domain',
+  city: 'city',
+  state: 'state',
+  logoUrl: 'logoUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TpoProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  collegeId: 'collegeId',
+  designation: 'designation',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.StudentProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  collegeId: 'collegeId',
   enrollmentNumber: 'enrollmentNumber',
   branch: 'branch',
   batchYear: 'batchYear',
@@ -176,6 +198,7 @@ exports.Prisma.RecruiterProfileScalarFieldEnum = {
 exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   companyId: 'companyId',
+  collegeId: 'collegeId',
   title: 'title',
   description: 'description',
   type: 'type',
@@ -247,6 +270,8 @@ exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  College: 'College',
+  TpoProfile: 'TpoProfile',
   StudentProfile: 'StudentProfile',
   Company: 'Company',
   RecruiterProfile: 'RecruiterProfile',

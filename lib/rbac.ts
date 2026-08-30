@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server';
 import { Role } from '@/src/generated/prisma';
 import { getSessionUser, TokenPayload } from './auth';
 
@@ -11,18 +12,32 @@ export class AuthError extends Error {
   }
 }
 
+export async function getAuthContext(req?: NextRequest): Promise<TokenPayload | null> {
+  if (req) {
+    const userId = req.headers.get('x-user-id');
+    const role = req.headers.get('x-user-role') as Role | null;
+    const email = req.headers.get('x-user-email');
+    const rawName = req.headers.get('x-user-name');
+    const name = rawName ? decodeURIComponent(rawName) : '';
 
-export async function requireAuth(): Promise<TokenPayload> {
-  const user = await getSessionUser();
+    if (userId && role && email) {
+      return { userId, role, email, name };
+    }
+  }
+
+  return getSessionUser();
+}
+
+export async function requireAuth(req?: NextRequest): Promise<TokenPayload> {
+  const user = await getAuthContext(req);
   if (!user) {
     throw new AuthError('Authentication required. Please log in.', 401);
   }
   return user;
 }
 
-
-export async function requireRole(allowedRoles: Role[]): Promise<TokenPayload> {
-  const user = await requireAuth();
+export async function requireRole(allowedRoles: Role[], req?: NextRequest): Promise<TokenPayload> {
+  const user = await requireAuth(req);
 
   if (!allowedRoles.includes(user.role)) {
     throw new AuthError(
@@ -33,3 +48,4 @@ export async function requireRole(allowedRoles: Role[]): Promise<TokenPayload> {
 
   return user;
 }
+
