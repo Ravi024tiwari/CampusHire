@@ -123,8 +123,82 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  passwordHash: 'passwordHash',
   name: 'name',
-  createdAt: 'createdAt'
+  role: 'role',
+  avatarUrl: 'avatarUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StudentProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  enrollmentNumber: 'enrollmentNumber',
+  branch: 'branch',
+  batchYear: 'batchYear',
+  cgpa: 'cgpa',
+  tenthMarks: 'tenthMarks',
+  twelfthMarks: 'twelfthMarks',
+  resumeUrl: 'resumeUrl',
+  skills: 'skills',
+  linkedinUrl: 'linkedinUrl',
+  githubUrl: 'githubUrl',
+  portfolioUrl: 'portfolioUrl',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CompanyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  website: 'website',
+  logoUrl: 'logoUrl',
+  industry: 'industry',
+  location: 'location',
+  description: 'description',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RecruiterProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companyId: 'companyId',
+  designation: 'designation',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  title: 'title',
+  description: 'description',
+  type: 'type',
+  status: 'status',
+  location: 'location',
+  salaryPackage: 'salaryPackage',
+  minCgpa: 'minCgpa',
+  allowedBranches: 'allowedBranches',
+  eligibleBatches: 'eligibleBatches',
+  deadline: 'deadline',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApplicationScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  studentId: 'studentId',
+  status: 'status',
+  resumeUrl: 'resumeUrl',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -141,10 +215,43 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Role = exports.$Enums.Role = {
+  STUDENT: 'STUDENT',
+  RECRUITER: 'RECRUITER',
+  TPO_ADMIN: 'TPO_ADMIN'
+};
 
+exports.JobType = exports.$Enums.JobType = {
+  FULL_TIME: 'FULL_TIME',
+  INTERNSHIP: 'INTERNSHIP',
+  INTERN_PLUS_FTE: 'INTERN_PLUS_FTE'
+};
+
+exports.JobStatus = exports.$Enums.JobStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED'
+};
+
+exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
+  APPLIED: 'APPLIED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  SHORTLISTED: 'SHORTLISTED',
+  INTERVIEW_SCHEDULED: 'INTERVIEW_SCHEDULED',
+  OFFERED: 'OFFERED',
+  REJECTED: 'REJECTED',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED'
+};
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  StudentProfile: 'StudentProfile',
+  Company: 'Company',
+  RecruiterProfile: 'RecruiterProfile',
+  Job: 'Job',
+  Application: 'Application'
 };
 
 /**
