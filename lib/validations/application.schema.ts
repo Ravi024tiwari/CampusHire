@@ -9,6 +9,20 @@ export const applyJobSchema = z.object({
 export const updateApplicationStatusSchema = z.object({
   status: z.nativeEnum(ApplicationStatus),
   notes: z.string().optional(),
+  
+  // Specific fields when issuing an OFFER
+  salaryPackage: z.string().trim().optional(),
+  designation: z.string().trim().optional(),
+  location: z.string().trim().optional(),
+  joiningDate: z.string().trim().optional(),
+  offerLetterUrl: z.string().url('Please provide a valid offer letter URL').optional().or(z.literal('')),
+});
+
+export const studentOfferDecisionSchema = z.object({
+  decision: z.enum(['ACCEPTED', 'DECLINED'], {
+    errorMap: () => ({ message: 'Decision must be either ACCEPTED or DECLINED' }),
+  }),
+  notes: z.string().trim().optional(),
 });
 
 export const applicationQuerySchema = z.object({
@@ -19,4 +33,5 @@ export const applicationQuerySchema = z.object({
 
 export type ApplyJobInput = z.infer<typeof applyJobSchema>;
 export type UpdateApplicationStatusInput = z.infer<typeof updateApplicationStatusSchema>;
+export type StudentOfferDecisionInput = z.infer<typeof studentOfferDecisionSchema>;
 export type ApplicationQueryInput = z.infer<typeof applicationQuerySchema>;

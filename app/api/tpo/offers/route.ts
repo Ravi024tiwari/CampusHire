@@ -1,0 +1,151 @@
+import { NextRequest } from 'next/server';
+import { z } from 'zod';
+import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/rbac';
+import { Role, OfferStatus } from '@/src/generated/prisma';
+import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
+
+const tpoOfferQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+  status: z.nativeEnum(OfferStatus).optional(),
+  branch: z.string().trim().optional(),
+  search: z.string().trim().optional(),
+});
+
+export async function GET(req: NextRequest) {
+  try {
+    const authUser = await requireRole([Role.TPO_ADMIN], req);
+
+    const tpo = await prisma.tpoProfile.findUnique({
+      where: { userId: authUser.userId },
+    });
+
+    if (!tpo || !tpo.collegeId) {
+      return errorResponse('TPO profile or associated college not found', 404);
+    }
+
+    const { searchParams } = new URL(req.url);
+    const query = tpoOfferQuerySchema.parse({
+      page: searchParams.get('page') ?? undefined,
+      limit: searchParams.get('limit') ?? undefined,
+      status: searchParams.get('status') ?? undefined,
+      branch: searchParams.get('branch') ?? undefined,
+      search: searchParams.get('search') ?? undefined,
+    });
+
+    const where: any = {
+      collegeId: tpo.collegeId, // Strict campus isolation
+    };
+
+    if (query.status) {
+      where.status = query.status;
+    }
+
+    if (query.branch) {
+      where.student = { branch: { equals: query.branch, mode: 'insensitive' } };
+    }
+
+    if (query.search) {
+      where.OR = [
+        { student: { user: { name: { contains: query.search, mode: 'insensitive' } } } },
+        { student: { enrollmentNumber: { contains: query.search, mode: 'insensitive' } } },
+        { company: { name: { contains: query.search, mode: 'insensitive' } } },
+        { designation: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    const skip = (query.page - 1) * query.limit;
+
+    const [total, offers] = await Promise.all([
+      prisma.offer.count({ where }),
+      prisma.offer.findMany({
+        where,
+        skip,
+        take: query.limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  avatarUrl: true,
+                },
+              },
+            },
+          },
+          company: {
+            select: {
+              id: true,
+              name: true,
+              logoUrl: true,
+              website: true,
+            },
+          },
+          job: {
+            select: {
+              id: true,
+              title: true,
+              type: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const formattedOffers = offers.map((offer) => ({
+      id: offer.id,
+      applicationId: offer.applicationId,
+      status: offer.status,
+      designation: offer.designation,
+      salaryPackage: offer.salaryPackage,
+      location: offer.location,
+      joiningDate: offer.joiningDate,
+      letterUrl: offer.letterUrl,
+      notes: offer.notes,
+      expiresAt: offer.expiresAt,
+      acceptedAt: offer.acceptedAt,
+      declinedAt: offer.declinedAt,
+      createdAt: offer.createdAt,
+      student: {
+        id: offer.student.id,
+        name: offer.student.user.name,
+        email: offer.student.user.email,
+        avatarUrl: offer.student.user.avatarUrl,
+        enrollmentNumber: offer.student.enrollmentNumber,
+        branch: offer.student.branch,
+        batchYear: offer.student.batchYear,
+        cgpa: offer.student.cgpa,
+      },
+      company: offer.company,
+      job: offer.job,
+    }));
+
+    return successResponse(
+      {
+        offers: formattedOffers,
+        pagination: {
+          page: query.page,
+          limit: query.limit,
+          total,
+          totalPages: Math.ceil(total / query.limit),
+          hasMore: query.page * query.limit < total,
+        },
+      },
+      'Campus placement offers retrieved successfully'
+    );
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    }
+
+    if (error.name === 'AuthError') {
+      return errorResponse(error.message, error.statusCode);
+    }
+
+    console.error('[GET_TPO_OFFERS_ERROR]', error);
+    return errorResponse(error.message || 'Failed to fetch college offers', 500);
+  }
+}

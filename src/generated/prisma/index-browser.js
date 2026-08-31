@@ -224,6 +224,27 @@ exports.Prisma.ApplicationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.OfferScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  studentId: 'studentId',
+  jobId: 'jobId',
+  companyId: 'companyId',
+  collegeId: 'collegeId',
+  designation: 'designation',
+  salaryPackage: 'salaryPackage',
+  location: 'location',
+  joiningDate: 'joiningDate',
+  letterUrl: 'letterUrl',
+  notes: 'notes',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  declinedAt: 'declinedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -268,6 +289,14 @@ exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
   DECLINED: 'DECLINED'
 };
 
+exports.OfferStatus = exports.$Enums.OfferStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   College: 'College',
@@ -276,7 +305,8 @@ exports.Prisma.ModelName = {
   Company: 'Company',
   RecruiterProfile: 'RecruiterProfile',
   Job: 'Job',
-  Application: 'Application'
+  Application: 'Application',
+  Offer: 'Offer'
 };
 
 /**

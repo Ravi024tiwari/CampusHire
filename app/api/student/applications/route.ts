@@ -39,6 +39,26 @@ export async function POST(req: NextRequest) {
       return errorResponse('This placement drive is not currently accepting applications', 400);
     }
 
+    // 0. Single Offer Placement Policy Guard: Check if student has already accepted an offer
+    const alreadyAcceptedOffer = await prisma.application.findFirst({
+      where: {
+        studentId: student.id,
+        status: 'ACCEPTED',
+      },
+      include: {
+        job: {
+          include: { company: true },
+        },
+      },
+    });
+
+    if (alreadyAcceptedOffer) {
+      return errorResponse(
+        `Placement Policy Restriction: You have already accepted an on-campus placement offer at ${alreadyAcceptedOffer.job.company.name} and cannot apply to additional placement drives.`,
+        403
+      );
+    }
+
     // 1. Campus Isolation Guard: Verify college match
     if (job.collegeId !== student.collegeId) {
       return errorResponse('Access denied. You can only apply to placement drives hosted for your college.', 403);

@@ -71,14 +71,31 @@ export async function GET(req: NextRequest, context: RouteContext) {
       return errorResponse('Access denied. This placement drive is not open for your college.', 403);
     }
 
+    const acceptedOffer = await prisma.application.findFirst({
+      where: {
+        studentId: student.id,
+        status: 'ACCEPTED',
+      },
+      include: {
+        job: {
+          select: {
+            company: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
+
     const now = new Date();
+    const isAlreadyPlaced = Boolean(acceptedOffer);
     const isCgpaEligible = student.cgpa >= job.minCgpa;
     const isBranchEligible =
       job.allowedBranches.length === 0 || job.allowedBranches.includes(student.branch);
     const isBatchEligible =
       job.eligibleBatches.length === 0 || job.eligibleBatches.includes(student.batchYear);
     const isDeadlineActive = now <= new Date(job.deadline);
-    const isEligible = isCgpaEligible && isBranchEligible && isBatchEligible && isDeadlineActive;
+    const isEligible = !isAlreadyPlaced && isCgpaEligible && isBranchEligible && isBatchEligible && isDeadlineActive;
 
     const application = job.applications[0] || null;
     const { applications: _, ...jobDetails } = job;
@@ -88,6 +105,8 @@ export async function GET(req: NextRequest, context: RouteContext) {
         job: jobDetails,
         eligibility: {
           isEligible,
+          isAlreadyPlaced,
+          placedCompany: acceptedOffer?.job.company.name || null,
           isCgpaEligible,
           isBranchEligible,
           isBatchEligible,

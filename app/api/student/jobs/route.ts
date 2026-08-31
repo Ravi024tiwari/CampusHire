@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
 
     const skip = (query.page - 1) * query.limit;
 
-    const [total, rawJobs] = await Promise.all([
+    const [total, rawJobs, acceptedOffer] = await Promise.all([
       prisma.job.count({ where }),
       prisma.job.findMany({
         where,
@@ -86,9 +86,25 @@ export async function GET(req: NextRequest) {
           },
         },
       }),
+      prisma.application.findFirst({
+        where: {
+          studentId: student.id,
+          status: 'ACCEPTED',
+        },
+        include: {
+          job: {
+            select: {
+              company: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      }),
     ]);
 
     const now = new Date();
+    const isAlreadyPlaced = Boolean(acceptedOffer);
 
     // Map jobs with dynamic eligibility and application status computation
     const jobs = rawJobs.map((job) => {
@@ -99,7 +115,7 @@ export async function GET(req: NextRequest) {
         job.eligibleBatches.length === 0 || job.eligibleBatches.includes(student.batchYear);
       const isDeadlineActive = now <= new Date(job.deadline);
 
-      const isEligible = isCgpaEligible && isBranchEligible && isBatchEligible && isDeadlineActive;
+      const isEligible = !isAlreadyPlaced && isCgpaEligible && isBranchEligible && isBatchEligible && isDeadlineActive;
       const application = job.applications[0] || null;
 
       const { applications: _, ...jobData } = job;
@@ -108,6 +124,8 @@ export async function GET(req: NextRequest) {
         ...jobData,
         eligibility: {
           isEligible,
+          isAlreadyPlaced,
+          placedCompany: acceptedOffer?.job.company.name || null,
           isCgpaEligible,
           isBranchEligible,
           isBatchEligible,

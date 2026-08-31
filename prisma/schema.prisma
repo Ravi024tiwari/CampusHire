@@ -37,6 +37,14 @@ enum ApplicationStatus {
   DECLINED
 }
 
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  REVOKED
+}
+
 // 1. Core User & Authentication
 model User {
   id            String            @id @default(cuid())
@@ -70,6 +78,7 @@ model College {
   tpos        TpoProfile[]
   students    StudentProfile[]
   jobs        Job[]
+  offers      Offer[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
@@ -112,6 +121,7 @@ model StudentProfile {
   isVerified        Boolean         @default(false)
 
   applications      Application[]
+  offers            Offer[]
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
@@ -134,6 +144,7 @@ model Company {
 
   recruiters  RecruiterProfile[]
   jobs        Job[]
+  offers      Offer[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
@@ -175,6 +186,7 @@ model Job {
   deadline        DateTime
 
   applications    Application[]
+  offers          Offer[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -198,6 +210,7 @@ model Application {
   resumeUrl   String?           // Snapshot of resume at time of applying
   notes       String?           @db.Text // Internal recruiter evaluation notes
   
+  offer       Offer?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
@@ -206,6 +219,45 @@ model Application {
   
   // Indexes for applicant pipeline filtering and student tracking history
   @@index([jobId, status])
+  @@index([studentId, status])
+  @@index([createdAt])
+}
+
+// 7. Formal Offer Letter & Placement Contract
+model Offer {
+  id            String          @id @default(cuid())
+  applicationId String          @unique
+  application   Application     @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  
+  studentId     String
+  student       StudentProfile  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  jobId         String
+  job           Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  companyId     String
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  collegeId     String
+  college       College         @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  designation   String          // e.g. "Associate Software Engineer"
+  salaryPackage String          // e.g. "14.5 LPA"
+  location      String          // e.g. "Bangalore (Hybrid)"
+  joiningDate   DateTime?
+  letterUrl     String?         // Link to official PDF Offer Letter
+  notes         String?         @db.Text
+
+  status        OfferStatus     @default(PENDING)
+  expiresAt     DateTime?
+  acceptedAt    DateTime?
+  declinedAt    DateTime?
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([collegeId, status])
+  @@index([companyId, status])
   @@index([studentId, status])
   @@index([createdAt])
 }

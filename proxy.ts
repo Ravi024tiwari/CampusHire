@@ -7,6 +7,7 @@ const PUBLIC_API_ROUTES = [
   '/api/auth/login',
   '/api/auth/register',
   '/api/auth/logout',
+  '/api/colleges',
 ];
 
 // Role-specific protected path prefixes
@@ -21,14 +22,14 @@ const ROLE_ROUTE_PERMISSIONS: Record<string, string[]> = {
 };
 
 function getJwtSecret(): Uint8Array {
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.JWT_SECRET || 'campushire-fallback-secret-key-for-development';
   return new TextEncoder().encode(secret);
 }
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Allow public auth routes to proceed without checks
+  // 1. Allow public auth and college discovery routes to proceed without checks
   if (PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
   }
@@ -102,7 +103,7 @@ export async function proxy(request: NextRequest) {
         headers: forwardHeaders,
       },
     });
-  } catch (error) {
+  } catch {
     // Token is invalid, tampered, or expired
     if (pathname.startsWith('/api/')) {
       return NextResponse.json(

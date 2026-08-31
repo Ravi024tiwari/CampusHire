@@ -53,6 +53,11 @@ export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
  * 
  */
 export type Application = $Result.DefaultSelection<Prisma.$ApplicationPayload>
+/**
+ * Model Offer
+ * 
+ */
+export type Offer = $Result.DefaultSelection<Prisma.$OfferPayload>
 
 /**
  * Enums
@@ -99,6 +104,17 @@ export const ApplicationStatus: {
 
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
 
+
+export const OfferStatus: {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+};
+
+export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -116,6 +132,10 @@ export const JobStatus: typeof $Enums.JobStatus
 export type ApplicationStatus = $Enums.ApplicationStatus
 
 export const ApplicationStatus: typeof $Enums.ApplicationStatus
+
+export type OfferStatus = $Enums.OfferStatus
+
+export const OfferStatus: typeof $Enums.OfferStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -317,6 +337,16 @@ export class PrismaClient<
     * ```
     */
   get application(): Prisma.ApplicationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.offer`: Exposes CRUD operations for the **Offer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Offers
+    * const offers = await prisma.offer.findMany()
+    * ```
+    */
+  get offer(): Prisma.OfferDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -771,7 +801,8 @@ export namespace Prisma {
     Company: 'Company',
     RecruiterProfile: 'RecruiterProfile',
     Job: 'Job',
-    Application: 'Application'
+    Application: 'Application',
+    Offer: 'Offer'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -787,7 +818,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "company" | "recruiterProfile" | "job" | "application"
+      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "company" | "recruiterProfile" | "job" | "application" | "offer"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1383,6 +1414,80 @@ export namespace Prisma {
           }
         }
       }
+      Offer: {
+        payload: Prisma.$OfferPayload<ExtArgs>
+        fields: Prisma.OfferFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OfferFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OfferFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>
+          }
+          findFirst: {
+            args: Prisma.OfferFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OfferFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>
+          }
+          findMany: {
+            args: Prisma.OfferFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>[]
+          }
+          create: {
+            args: Prisma.OfferCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>
+          }
+          createMany: {
+            args: Prisma.OfferCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OfferCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>[]
+          }
+          delete: {
+            args: Prisma.OfferDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>
+          }
+          update: {
+            args: Prisma.OfferUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>
+          }
+          deleteMany: {
+            args: Prisma.OfferDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OfferUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OfferUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>[]
+          }
+          upsert: {
+            args: Prisma.OfferUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OfferPayload>
+          }
+          aggregate: {
+            args: Prisma.OfferAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOffer>
+          }
+          groupBy: {
+            args: Prisma.OfferGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OfferGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OfferCountArgs<ExtArgs>
+            result: $Utils.Optional<OfferCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1514,6 +1619,7 @@ export namespace Prisma {
     recruiterProfile?: RecruiterProfileOmit
     job?: JobOmit
     application?: ApplicationOmit
+    offer?: OfferOmit
   }
 
   /* Types for Logging */
@@ -1597,12 +1703,14 @@ export namespace Prisma {
     tpos: number
     students: number
     jobs: number
+    offers: number
   }
 
   export type CollegeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tpos?: boolean | CollegeCountOutputTypeCountTposArgs
     students?: boolean | CollegeCountOutputTypeCountStudentsArgs
     jobs?: boolean | CollegeCountOutputTypeCountJobsArgs
+    offers?: boolean | CollegeCountOutputTypeCountOffersArgs
   }
 
   // Custom InputTypes
@@ -1637,6 +1745,13 @@ export namespace Prisma {
     where?: JobWhereInput
   }
 
+  /**
+   * CollegeCountOutputType without action
+   */
+  export type CollegeCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OfferWhereInput
+  }
+
 
   /**
    * Count Type StudentProfileCountOutputType
@@ -1644,10 +1759,12 @@ export namespace Prisma {
 
   export type StudentProfileCountOutputType = {
     applications: number
+    offers: number
   }
 
   export type StudentProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applications?: boolean | StudentProfileCountOutputTypeCountApplicationsArgs
+    offers?: boolean | StudentProfileCountOutputTypeCountOffersArgs
   }
 
   // Custom InputTypes
@@ -1668,6 +1785,13 @@ export namespace Prisma {
     where?: ApplicationWhereInput
   }
 
+  /**
+   * StudentProfileCountOutputType without action
+   */
+  export type StudentProfileCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OfferWhereInput
+  }
+
 
   /**
    * Count Type CompanyCountOutputType
@@ -1676,11 +1800,13 @@ export namespace Prisma {
   export type CompanyCountOutputType = {
     recruiters: number
     jobs: number
+    offers: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recruiters?: boolean | CompanyCountOutputTypeCountRecruitersArgs
     jobs?: boolean | CompanyCountOutputTypeCountJobsArgs
+    offers?: boolean | CompanyCountOutputTypeCountOffersArgs
   }
 
   // Custom InputTypes
@@ -1708,6 +1834,13 @@ export namespace Prisma {
     where?: JobWhereInput
   }
 
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OfferWhereInput
+  }
+
 
   /**
    * Count Type JobCountOutputType
@@ -1715,10 +1848,12 @@ export namespace Prisma {
 
   export type JobCountOutputType = {
     applications: number
+    offers: number
   }
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applications?: boolean | JobCountOutputTypeCountApplicationsArgs
+    offers?: boolean | JobCountOutputTypeCountOffersArgs
   }
 
   // Custom InputTypes
@@ -1737,6 +1872,13 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ApplicationWhereInput
+  }
+
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OfferWhereInput
   }
 
 
@@ -3109,6 +3251,7 @@ export namespace Prisma {
     tpos?: boolean | College$tposArgs<ExtArgs>
     students?: boolean | College$studentsArgs<ExtArgs>
     jobs?: boolean | College$jobsArgs<ExtArgs>
+    offers?: boolean | College$offersArgs<ExtArgs>
     _count?: boolean | CollegeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["college"]>
 
@@ -3153,6 +3296,7 @@ export namespace Prisma {
     tpos?: boolean | College$tposArgs<ExtArgs>
     students?: boolean | College$studentsArgs<ExtArgs>
     jobs?: boolean | College$jobsArgs<ExtArgs>
+    offers?: boolean | College$offersArgs<ExtArgs>
     _count?: boolean | CollegeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CollegeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3164,6 +3308,7 @@ export namespace Prisma {
       tpos: Prisma.$TpoProfilePayload<ExtArgs>[]
       students: Prisma.$StudentProfilePayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      offers: Prisma.$OfferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3572,6 +3717,7 @@ export namespace Prisma {
     tpos<T extends College$tposArgs<ExtArgs> = {}>(args?: Subset<T, College$tposArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     students<T extends College$studentsArgs<ExtArgs> = {}>(args?: Subset<T, College$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends College$jobsArgs<ExtArgs> = {}>(args?: Subset<T, College$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    offers<T extends College$offersArgs<ExtArgs> = {}>(args?: Subset<T, College$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4072,6 +4218,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * College.offers
+   */
+  export type College$offersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    where?: OfferWhereInput
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    cursor?: OfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
   }
 
   /**
@@ -5482,6 +5652,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
+    offers?: boolean | StudentProfile$offersArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["studentProfile"]>
 
@@ -5554,6 +5725,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
+    offers?: boolean | StudentProfile$offersArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5571,6 +5743,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       college: Prisma.$CollegePayload<ExtArgs>
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
+      offers: Prisma.$OfferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5987,6 +6160,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     applications<T extends StudentProfile$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    offers<T extends StudentProfile$offersArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6458,6 +6632,30 @@ export namespace Prisma {
   }
 
   /**
+   * StudentProfile.offers
+   */
+  export type StudentProfile$offersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    where?: OfferWhereInput
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    cursor?: OfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
    * StudentProfile without action
    */
   export type StudentProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6682,6 +6880,7 @@ export namespace Prisma {
     updatedAt?: boolean
     recruiters?: boolean | Company$recruitersArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
+    offers?: boolean | Company$offersArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -6728,6 +6927,7 @@ export namespace Prisma {
   export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recruiters?: boolean | Company$recruitersArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
+    offers?: boolean | Company$offersArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -6738,6 +6938,7 @@ export namespace Prisma {
     objects: {
       recruiters: Prisma.$RecruiterProfilePayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      offers: Prisma.$OfferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7146,6 +7347,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     recruiters<T extends Company$recruitersArgs<ExtArgs> = {}>(args?: Subset<T, Company$recruitersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecruiterProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends Company$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Company$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    offers<T extends Company$offersArgs<ExtArgs> = {}>(args?: Subset<T, Company$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7623,6 +7825,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * Company.offers
+   */
+  export type Company$offersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    where?: OfferWhereInput
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    cursor?: OfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
   }
 
   /**
@@ -9005,6 +9231,7 @@ export namespace Prisma {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | Job$applicationsArgs<ExtArgs>
+    offers?: boolean | Job$offersArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -9071,6 +9298,7 @@ export namespace Prisma {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | Job$applicationsArgs<ExtArgs>
+    offers?: boolean | Job$offersArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9088,6 +9316,7 @@ export namespace Prisma {
       company: Prisma.$CompanyPayload<ExtArgs>
       college: Prisma.$CollegePayload<ExtArgs>
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
+      offers: Prisma.$OfferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9502,6 +9731,7 @@ export namespace Prisma {
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     applications<T extends Job$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, Job$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    offers<T extends Job$offersArgs<ExtArgs> = {}>(args?: Subset<T, Job$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9971,6 +10201,30 @@ export namespace Prisma {
   }
 
   /**
+   * Job.offers
+   */
+  export type Job$offersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    where?: OfferWhereInput
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    cursor?: OfferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
    * Job without action
    */
   export type JobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10179,6 +10433,7 @@ export namespace Prisma {
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    offer?: boolean | Application$offerArgs<ExtArgs>
   }, ExtArgs["result"]["application"]>
 
   export type ApplicationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10222,6 +10477,7 @@ export namespace Prisma {
   export type ApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    offer?: boolean | Application$offerArgs<ExtArgs>
   }
   export type ApplicationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -10237,6 +10493,7 @@ export namespace Prisma {
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
       student: Prisma.$StudentProfilePayload<ExtArgs>
+      offer: Prisma.$OfferPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10643,6 +10900,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     student<T extends StudentProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfileDefaultArgs<ExtArgs>>): Prisma__StudentProfileClient<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    offer<T extends Application$offerArgs<ExtArgs> = {}>(args?: Subset<T, Application$offerArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11081,6 +11339,25 @@ export namespace Prisma {
   }
 
   /**
+   * Application.offer
+   */
+  export type Application$offerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    where?: OfferWhereInput
+  }
+
+  /**
    * Application without action
    */
   export type ApplicationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11096,6 +11373,1270 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ApplicationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Offer
+   */
+
+  export type AggregateOffer = {
+    _count: OfferCountAggregateOutputType | null
+    _min: OfferMinAggregateOutputType | null
+    _max: OfferMaxAggregateOutputType | null
+  }
+
+  export type OfferMinAggregateOutputType = {
+    id: string | null
+    applicationId: string | null
+    studentId: string | null
+    jobId: string | null
+    companyId: string | null
+    collegeId: string | null
+    designation: string | null
+    salaryPackage: string | null
+    location: string | null
+    joiningDate: Date | null
+    letterUrl: string | null
+    notes: string | null
+    status: $Enums.OfferStatus | null
+    expiresAt: Date | null
+    acceptedAt: Date | null
+    declinedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OfferMaxAggregateOutputType = {
+    id: string | null
+    applicationId: string | null
+    studentId: string | null
+    jobId: string | null
+    companyId: string | null
+    collegeId: string | null
+    designation: string | null
+    salaryPackage: string | null
+    location: string | null
+    joiningDate: Date | null
+    letterUrl: string | null
+    notes: string | null
+    status: $Enums.OfferStatus | null
+    expiresAt: Date | null
+    acceptedAt: Date | null
+    declinedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OfferCountAggregateOutputType = {
+    id: number
+    applicationId: number
+    studentId: number
+    jobId: number
+    companyId: number
+    collegeId: number
+    designation: number
+    salaryPackage: number
+    location: number
+    joiningDate: number
+    letterUrl: number
+    notes: number
+    status: number
+    expiresAt: number
+    acceptedAt: number
+    declinedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OfferMinAggregateInputType = {
+    id?: true
+    applicationId?: true
+    studentId?: true
+    jobId?: true
+    companyId?: true
+    collegeId?: true
+    designation?: true
+    salaryPackage?: true
+    location?: true
+    joiningDate?: true
+    letterUrl?: true
+    notes?: true
+    status?: true
+    expiresAt?: true
+    acceptedAt?: true
+    declinedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OfferMaxAggregateInputType = {
+    id?: true
+    applicationId?: true
+    studentId?: true
+    jobId?: true
+    companyId?: true
+    collegeId?: true
+    designation?: true
+    salaryPackage?: true
+    location?: true
+    joiningDate?: true
+    letterUrl?: true
+    notes?: true
+    status?: true
+    expiresAt?: true
+    acceptedAt?: true
+    declinedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OfferCountAggregateInputType = {
+    id?: true
+    applicationId?: true
+    studentId?: true
+    jobId?: true
+    companyId?: true
+    collegeId?: true
+    designation?: true
+    salaryPackage?: true
+    location?: true
+    joiningDate?: true
+    letterUrl?: true
+    notes?: true
+    status?: true
+    expiresAt?: true
+    acceptedAt?: true
+    declinedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OfferAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Offer to aggregate.
+     */
+    where?: OfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Offers to fetch.
+     */
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Offers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Offers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Offers
+    **/
+    _count?: true | OfferCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OfferMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OfferMaxAggregateInputType
+  }
+
+  export type GetOfferAggregateType<T extends OfferAggregateArgs> = {
+        [P in keyof T & keyof AggregateOffer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOffer[P]>
+      : GetScalarType<T[P], AggregateOffer[P]>
+  }
+
+
+
+
+  export type OfferGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OfferWhereInput
+    orderBy?: OfferOrderByWithAggregationInput | OfferOrderByWithAggregationInput[]
+    by: OfferScalarFieldEnum[] | OfferScalarFieldEnum
+    having?: OfferScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OfferCountAggregateInputType | true
+    _min?: OfferMinAggregateInputType
+    _max?: OfferMaxAggregateInputType
+  }
+
+  export type OfferGroupByOutputType = {
+    id: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate: Date | null
+    letterUrl: string | null
+    notes: string | null
+    status: $Enums.OfferStatus
+    expiresAt: Date | null
+    acceptedAt: Date | null
+    declinedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: OfferCountAggregateOutputType | null
+    _min: OfferMinAggregateOutputType | null
+    _max: OfferMaxAggregateOutputType | null
+  }
+
+  type GetOfferGroupByPayload<T extends OfferGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OfferGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OfferGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OfferGroupByOutputType[P]>
+            : GetScalarType<T[P], OfferGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OfferSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationId?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    companyId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    salaryPackage?: boolean
+    location?: boolean
+    joiningDate?: boolean
+    letterUrl?: boolean
+    notes?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    declinedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    application?: boolean | ApplicationDefaultArgs<ExtArgs>
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["offer"]>
+
+  export type OfferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationId?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    companyId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    salaryPackage?: boolean
+    location?: boolean
+    joiningDate?: boolean
+    letterUrl?: boolean
+    notes?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    declinedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    application?: boolean | ApplicationDefaultArgs<ExtArgs>
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["offer"]>
+
+  export type OfferSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationId?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    companyId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    salaryPackage?: boolean
+    location?: boolean
+    joiningDate?: boolean
+    letterUrl?: boolean
+    notes?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    declinedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    application?: boolean | ApplicationDefaultArgs<ExtArgs>
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["offer"]>
+
+  export type OfferSelectScalar = {
+    id?: boolean
+    applicationId?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    companyId?: boolean
+    collegeId?: boolean
+    designation?: boolean
+    salaryPackage?: boolean
+    location?: boolean
+    joiningDate?: boolean
+    letterUrl?: boolean
+    notes?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    acceptedAt?: boolean
+    declinedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicationId" | "studentId" | "jobId" | "companyId" | "collegeId" | "designation" | "salaryPackage" | "location" | "joiningDate" | "letterUrl" | "notes" | "status" | "expiresAt" | "acceptedAt" | "declinedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["offer"]>
+  export type OfferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | ApplicationDefaultArgs<ExtArgs>
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }
+  export type OfferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | ApplicationDefaultArgs<ExtArgs>
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }
+  export type OfferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | ApplicationDefaultArgs<ExtArgs>
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    college?: boolean | CollegeDefaultArgs<ExtArgs>
+  }
+
+  export type $OfferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Offer"
+    objects: {
+      application: Prisma.$ApplicationPayload<ExtArgs>
+      student: Prisma.$StudentProfilePayload<ExtArgs>
+      job: Prisma.$JobPayload<ExtArgs>
+      company: Prisma.$CompanyPayload<ExtArgs>
+      college: Prisma.$CollegePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      applicationId: string
+      studentId: string
+      jobId: string
+      companyId: string
+      collegeId: string
+      designation: string
+      salaryPackage: string
+      location: string
+      joiningDate: Date | null
+      letterUrl: string | null
+      notes: string | null
+      status: $Enums.OfferStatus
+      expiresAt: Date | null
+      acceptedAt: Date | null
+      declinedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["offer"]>
+    composites: {}
+  }
+
+  type OfferGetPayload<S extends boolean | null | undefined | OfferDefaultArgs> = $Result.GetResult<Prisma.$OfferPayload, S>
+
+  type OfferCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OfferFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OfferCountAggregateInputType | true
+    }
+
+  export interface OfferDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Offer'], meta: { name: 'Offer' } }
+    /**
+     * Find zero or one Offer that matches the filter.
+     * @param {OfferFindUniqueArgs} args - Arguments to find a Offer
+     * @example
+     * // Get one Offer
+     * const offer = await prisma.offer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OfferFindUniqueArgs>(args: SelectSubset<T, OfferFindUniqueArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Offer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OfferFindUniqueOrThrowArgs} args - Arguments to find a Offer
+     * @example
+     * // Get one Offer
+     * const offer = await prisma.offer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OfferFindUniqueOrThrowArgs>(args: SelectSubset<T, OfferFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Offer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferFindFirstArgs} args - Arguments to find a Offer
+     * @example
+     * // Get one Offer
+     * const offer = await prisma.offer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OfferFindFirstArgs>(args?: SelectSubset<T, OfferFindFirstArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Offer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferFindFirstOrThrowArgs} args - Arguments to find a Offer
+     * @example
+     * // Get one Offer
+     * const offer = await prisma.offer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OfferFindFirstOrThrowArgs>(args?: SelectSubset<T, OfferFindFirstOrThrowArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Offers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Offers
+     * const offers = await prisma.offer.findMany()
+     * 
+     * // Get first 10 Offers
+     * const offers = await prisma.offer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const offerWithIdOnly = await prisma.offer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OfferFindManyArgs>(args?: SelectSubset<T, OfferFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Offer.
+     * @param {OfferCreateArgs} args - Arguments to create a Offer.
+     * @example
+     * // Create one Offer
+     * const Offer = await prisma.offer.create({
+     *   data: {
+     *     // ... data to create a Offer
+     *   }
+     * })
+     * 
+     */
+    create<T extends OfferCreateArgs>(args: SelectSubset<T, OfferCreateArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Offers.
+     * @param {OfferCreateManyArgs} args - Arguments to create many Offers.
+     * @example
+     * // Create many Offers
+     * const offer = await prisma.offer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OfferCreateManyArgs>(args?: SelectSubset<T, OfferCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Offers and returns the data saved in the database.
+     * @param {OfferCreateManyAndReturnArgs} args - Arguments to create many Offers.
+     * @example
+     * // Create many Offers
+     * const offer = await prisma.offer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Offers and only return the `id`
+     * const offerWithIdOnly = await prisma.offer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OfferCreateManyAndReturnArgs>(args?: SelectSubset<T, OfferCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Offer.
+     * @param {OfferDeleteArgs} args - Arguments to delete one Offer.
+     * @example
+     * // Delete one Offer
+     * const Offer = await prisma.offer.delete({
+     *   where: {
+     *     // ... filter to delete one Offer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OfferDeleteArgs>(args: SelectSubset<T, OfferDeleteArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Offer.
+     * @param {OfferUpdateArgs} args - Arguments to update one Offer.
+     * @example
+     * // Update one Offer
+     * const offer = await prisma.offer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OfferUpdateArgs>(args: SelectSubset<T, OfferUpdateArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Offers.
+     * @param {OfferDeleteManyArgs} args - Arguments to filter Offers to delete.
+     * @example
+     * // Delete a few Offers
+     * const { count } = await prisma.offer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OfferDeleteManyArgs>(args?: SelectSubset<T, OfferDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Offers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Offers
+     * const offer = await prisma.offer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OfferUpdateManyArgs>(args: SelectSubset<T, OfferUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Offers and returns the data updated in the database.
+     * @param {OfferUpdateManyAndReturnArgs} args - Arguments to update many Offers.
+     * @example
+     * // Update many Offers
+     * const offer = await prisma.offer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Offers and only return the `id`
+     * const offerWithIdOnly = await prisma.offer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OfferUpdateManyAndReturnArgs>(args: SelectSubset<T, OfferUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Offer.
+     * @param {OfferUpsertArgs} args - Arguments to update or create a Offer.
+     * @example
+     * // Update or create a Offer
+     * const offer = await prisma.offer.upsert({
+     *   create: {
+     *     // ... data to create a Offer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Offer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OfferUpsertArgs>(args: SelectSubset<T, OfferUpsertArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Offers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferCountArgs} args - Arguments to filter Offers to count.
+     * @example
+     * // Count the number of Offers
+     * const count = await prisma.offer.count({
+     *   where: {
+     *     // ... the filter for the Offers we want to count
+     *   }
+     * })
+    **/
+    count<T extends OfferCountArgs>(
+      args?: Subset<T, OfferCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OfferCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Offer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OfferAggregateArgs>(args: Subset<T, OfferAggregateArgs>): Prisma.PrismaPromise<GetOfferAggregateType<T>>
+
+    /**
+     * Group by Offer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OfferGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OfferGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OfferGroupByArgs['orderBy'] }
+        : { orderBy?: OfferGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OfferGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOfferGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Offer model
+   */
+  readonly fields: OfferFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Offer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OfferClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    application<T extends ApplicationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApplicationDefaultArgs<ExtArgs>>): Prisma__ApplicationClient<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    student<T extends StudentProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfileDefaultArgs<ExtArgs>>): Prisma__StudentProfileClient<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Offer model
+   */
+  interface OfferFieldRefs {
+    readonly id: FieldRef<"Offer", 'String'>
+    readonly applicationId: FieldRef<"Offer", 'String'>
+    readonly studentId: FieldRef<"Offer", 'String'>
+    readonly jobId: FieldRef<"Offer", 'String'>
+    readonly companyId: FieldRef<"Offer", 'String'>
+    readonly collegeId: FieldRef<"Offer", 'String'>
+    readonly designation: FieldRef<"Offer", 'String'>
+    readonly salaryPackage: FieldRef<"Offer", 'String'>
+    readonly location: FieldRef<"Offer", 'String'>
+    readonly joiningDate: FieldRef<"Offer", 'DateTime'>
+    readonly letterUrl: FieldRef<"Offer", 'String'>
+    readonly notes: FieldRef<"Offer", 'String'>
+    readonly status: FieldRef<"Offer", 'OfferStatus'>
+    readonly expiresAt: FieldRef<"Offer", 'DateTime'>
+    readonly acceptedAt: FieldRef<"Offer", 'DateTime'>
+    readonly declinedAt: FieldRef<"Offer", 'DateTime'>
+    readonly createdAt: FieldRef<"Offer", 'DateTime'>
+    readonly updatedAt: FieldRef<"Offer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Offer findUnique
+   */
+  export type OfferFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * Filter, which Offer to fetch.
+     */
+    where: OfferWhereUniqueInput
+  }
+
+  /**
+   * Offer findUniqueOrThrow
+   */
+  export type OfferFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * Filter, which Offer to fetch.
+     */
+    where: OfferWhereUniqueInput
+  }
+
+  /**
+   * Offer findFirst
+   */
+  export type OfferFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * Filter, which Offer to fetch.
+     */
+    where?: OfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Offers to fetch.
+     */
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Offers.
+     */
+    cursor?: OfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Offers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Offers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Offers.
+     */
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
+   * Offer findFirstOrThrow
+   */
+  export type OfferFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * Filter, which Offer to fetch.
+     */
+    where?: OfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Offers to fetch.
+     */
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Offers.
+     */
+    cursor?: OfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Offers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Offers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Offers.
+     */
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
+   * Offer findMany
+   */
+  export type OfferFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * Filter, which Offers to fetch.
+     */
+    where?: OfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Offers to fetch.
+     */
+    orderBy?: OfferOrderByWithRelationInput | OfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Offers.
+     */
+    cursor?: OfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Offers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Offers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Offers.
+     */
+    distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
+   * Offer create
+   */
+  export type OfferCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Offer.
+     */
+    data: XOR<OfferCreateInput, OfferUncheckedCreateInput>
+  }
+
+  /**
+   * Offer createMany
+   */
+  export type OfferCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Offers.
+     */
+    data: OfferCreateManyInput | OfferCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Offer createManyAndReturn
+   */
+  export type OfferCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * The data used to create many Offers.
+     */
+    data: OfferCreateManyInput | OfferCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Offer update
+   */
+  export type OfferUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Offer.
+     */
+    data: XOR<OfferUpdateInput, OfferUncheckedUpdateInput>
+    /**
+     * Choose, which Offer to update.
+     */
+    where: OfferWhereUniqueInput
+  }
+
+  /**
+   * Offer updateMany
+   */
+  export type OfferUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Offers.
+     */
+    data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyInput>
+    /**
+     * Filter which Offers to update
+     */
+    where?: OfferWhereInput
+    /**
+     * Limit how many Offers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Offer updateManyAndReturn
+   */
+  export type OfferUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * The data used to update Offers.
+     */
+    data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyInput>
+    /**
+     * Filter which Offers to update
+     */
+    where?: OfferWhereInput
+    /**
+     * Limit how many Offers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Offer upsert
+   */
+  export type OfferUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Offer to update in case it exists.
+     */
+    where: OfferWhereUniqueInput
+    /**
+     * In case the Offer found by the `where` argument doesn't exist, create a new Offer with this data.
+     */
+    create: XOR<OfferCreateInput, OfferUncheckedCreateInput>
+    /**
+     * In case the Offer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OfferUpdateInput, OfferUncheckedUpdateInput>
+  }
+
+  /**
+   * Offer delete
+   */
+  export type OfferDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
+    /**
+     * Filter which Offer to delete.
+     */
+    where: OfferWhereUniqueInput
+  }
+
+  /**
+   * Offer deleteMany
+   */
+  export type OfferDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Offers to delete
+     */
+    where?: OfferWhereInput
+    /**
+     * Limit how many Offers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Offer without action
+   */
+  export type OfferDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Offer
+     */
+    select?: OfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Offer
+     */
+    omit?: OfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OfferInclude<ExtArgs> | null
   }
 
 
@@ -11239,6 +12780,30 @@ export namespace Prisma {
   };
 
   export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+  export const OfferScalarFieldEnum: {
+    id: 'id',
+    applicationId: 'applicationId',
+    studentId: 'studentId',
+    jobId: 'jobId',
+    companyId: 'companyId',
+    collegeId: 'collegeId',
+    designation: 'designation',
+    salaryPackage: 'salaryPackage',
+    location: 'location',
+    joiningDate: 'joiningDate',
+    letterUrl: 'letterUrl',
+    notes: 'notes',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    acceptedAt: 'acceptedAt',
+    declinedAt: 'declinedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OfferScalarFieldEnum = (typeof OfferScalarFieldEnum)[keyof typeof OfferScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -11387,6 +12952,20 @@ export namespace Prisma {
    */
   export type ListEnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'OfferStatus'
+   */
+  export type EnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OfferStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OfferStatus[]'
+   */
+  export type ListEnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OfferStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -11489,6 +13068,7 @@ export namespace Prisma {
     tpos?: TpoProfileListRelationFilter
     students?: StudentProfileListRelationFilter
     jobs?: JobListRelationFilter
+    offers?: OfferListRelationFilter
   }
 
   export type CollegeOrderByWithRelationInput = {
@@ -11504,6 +13084,7 @@ export namespace Prisma {
     tpos?: TpoProfileOrderByRelationAggregateInput
     students?: StudentProfileOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
+    offers?: OfferOrderByRelationAggregateInput
   }
 
   export type CollegeWhereUniqueInput = Prisma.AtLeast<{
@@ -11522,6 +13103,7 @@ export namespace Prisma {
     tpos?: TpoProfileListRelationFilter
     students?: StudentProfileListRelationFilter
     jobs?: JobListRelationFilter
+    offers?: OfferListRelationFilter
   }, "id" | "name" | "code">
 
   export type CollegeOrderByWithAggregationInput = {
@@ -11641,6 +13223,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
+    offers?: OfferListRelationFilter
   }
 
   export type StudentProfileOrderByWithRelationInput = {
@@ -11664,6 +13247,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     college?: CollegeOrderByWithRelationInput
     applications?: ApplicationOrderByRelationAggregateInput
+    offers?: OfferOrderByRelationAggregateInput
   }
 
   export type StudentProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -11690,6 +13274,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
+    offers?: OfferListRelationFilter
   }, "id" | "userId" | "enrollmentNumber">
 
   export type StudentProfileOrderByWithAggregationInput = {
@@ -11756,6 +13341,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Company"> | Date | string
     recruiters?: RecruiterProfileListRelationFilter
     jobs?: JobListRelationFilter
+    offers?: OfferListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -11771,6 +13357,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     recruiters?: RecruiterProfileOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
+    offers?: OfferOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -11789,6 +13376,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Company"> | Date | string
     recruiters?: RecruiterProfileListRelationFilter
     jobs?: JobListRelationFilter
+    offers?: OfferListRelationFilter
   }, "id" | "name">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -11908,6 +13496,7 @@ export namespace Prisma {
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
+    offers?: OfferListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
@@ -11929,6 +13518,7 @@ export namespace Prisma {
     company?: CompanyOrderByWithRelationInput
     college?: CollegeOrderByWithRelationInput
     applications?: ApplicationOrderByRelationAggregateInput
+    offers?: OfferOrderByRelationAggregateInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -11953,6 +13543,7 @@ export namespace Prisma {
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
+    offers?: OfferListRelationFilter
   }, "id">
 
   export type JobOrderByWithAggregationInput = {
@@ -12013,6 +13604,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Application"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    offer?: XOR<OfferNullableScalarRelationFilter, OfferWhereInput> | null
   }
 
   export type ApplicationOrderByWithRelationInput = {
@@ -12026,6 +13618,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     job?: JobOrderByWithRelationInput
     student?: StudentProfileOrderByWithRelationInput
+    offer?: OfferOrderByWithRelationInput
   }
 
   export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -12043,6 +13636,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Application"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    offer?: XOR<OfferNullableScalarRelationFilter, OfferWhereInput> | null
   }, "id" | "jobId_studentId">
 
   export type ApplicationOrderByWithAggregationInput = {
@@ -12071,6 +13665,138 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"Application"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Application"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Application"> | Date | string
+  }
+
+  export type OfferWhereInput = {
+    AND?: OfferWhereInput | OfferWhereInput[]
+    OR?: OfferWhereInput[]
+    NOT?: OfferWhereInput | OfferWhereInput[]
+    id?: StringFilter<"Offer"> | string
+    applicationId?: StringFilter<"Offer"> | string
+    studentId?: StringFilter<"Offer"> | string
+    jobId?: StringFilter<"Offer"> | string
+    companyId?: StringFilter<"Offer"> | string
+    collegeId?: StringFilter<"Offer"> | string
+    designation?: StringFilter<"Offer"> | string
+    salaryPackage?: StringFilter<"Offer"> | string
+    location?: StringFilter<"Offer"> | string
+    joiningDate?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    letterUrl?: StringNullableFilter<"Offer"> | string | null
+    notes?: StringNullableFilter<"Offer"> | string | null
+    status?: EnumOfferStatusFilter<"Offer"> | $Enums.OfferStatus
+    expiresAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    acceptedAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    declinedAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    createdAt?: DateTimeFilter<"Offer"> | Date | string
+    updatedAt?: DateTimeFilter<"Offer"> | Date | string
+    application?: XOR<ApplicationScalarRelationFilter, ApplicationWhereInput>
+    student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+  }
+
+  export type OfferOrderByWithRelationInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    companyId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    salaryPackage?: SortOrder
+    location?: SortOrder
+    joiningDate?: SortOrderInput | SortOrder
+    letterUrl?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    acceptedAt?: SortOrderInput | SortOrder
+    declinedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    application?: ApplicationOrderByWithRelationInput
+    student?: StudentProfileOrderByWithRelationInput
+    job?: JobOrderByWithRelationInput
+    company?: CompanyOrderByWithRelationInput
+    college?: CollegeOrderByWithRelationInput
+  }
+
+  export type OfferWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    applicationId?: string
+    AND?: OfferWhereInput | OfferWhereInput[]
+    OR?: OfferWhereInput[]
+    NOT?: OfferWhereInput | OfferWhereInput[]
+    studentId?: StringFilter<"Offer"> | string
+    jobId?: StringFilter<"Offer"> | string
+    companyId?: StringFilter<"Offer"> | string
+    collegeId?: StringFilter<"Offer"> | string
+    designation?: StringFilter<"Offer"> | string
+    salaryPackage?: StringFilter<"Offer"> | string
+    location?: StringFilter<"Offer"> | string
+    joiningDate?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    letterUrl?: StringNullableFilter<"Offer"> | string | null
+    notes?: StringNullableFilter<"Offer"> | string | null
+    status?: EnumOfferStatusFilter<"Offer"> | $Enums.OfferStatus
+    expiresAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    acceptedAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    declinedAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    createdAt?: DateTimeFilter<"Offer"> | Date | string
+    updatedAt?: DateTimeFilter<"Offer"> | Date | string
+    application?: XOR<ApplicationScalarRelationFilter, ApplicationWhereInput>
+    student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+  }, "id" | "applicationId">
+
+  export type OfferOrderByWithAggregationInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    companyId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    salaryPackage?: SortOrder
+    location?: SortOrder
+    joiningDate?: SortOrderInput | SortOrder
+    letterUrl?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    acceptedAt?: SortOrderInput | SortOrder
+    declinedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OfferCountOrderByAggregateInput
+    _max?: OfferMaxOrderByAggregateInput
+    _min?: OfferMinOrderByAggregateInput
+  }
+
+  export type OfferScalarWhereWithAggregatesInput = {
+    AND?: OfferScalarWhereWithAggregatesInput | OfferScalarWhereWithAggregatesInput[]
+    OR?: OfferScalarWhereWithAggregatesInput[]
+    NOT?: OfferScalarWhereWithAggregatesInput | OfferScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Offer"> | string
+    applicationId?: StringWithAggregatesFilter<"Offer"> | string
+    studentId?: StringWithAggregatesFilter<"Offer"> | string
+    jobId?: StringWithAggregatesFilter<"Offer"> | string
+    companyId?: StringWithAggregatesFilter<"Offer"> | string
+    collegeId?: StringWithAggregatesFilter<"Offer"> | string
+    designation?: StringWithAggregatesFilter<"Offer"> | string
+    salaryPackage?: StringWithAggregatesFilter<"Offer"> | string
+    location?: StringWithAggregatesFilter<"Offer"> | string
+    joiningDate?: DateTimeNullableWithAggregatesFilter<"Offer"> | Date | string | null
+    letterUrl?: StringNullableWithAggregatesFilter<"Offer"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"Offer"> | string | null
+    status?: EnumOfferStatusWithAggregatesFilter<"Offer"> | $Enums.OfferStatus
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"Offer"> | Date | string | null
+    acceptedAt?: DateTimeNullableWithAggregatesFilter<"Offer"> | Date | string | null
+    declinedAt?: DateTimeNullableWithAggregatesFilter<"Offer"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Offer"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Offer"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -12182,6 +13908,7 @@ export namespace Prisma {
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
     jobs?: JobCreateNestedManyWithoutCollegeInput
+    offers?: OfferCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeUncheckedCreateInput = {
@@ -12197,6 +13924,7 @@ export namespace Prisma {
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
     jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeUpdateInput = {
@@ -12212,6 +13940,7 @@ export namespace Prisma {
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
     jobs?: JobUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
 
   export type CollegeUncheckedUpdateInput = {
@@ -12227,6 +13956,7 @@ export namespace Prisma {
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
   export type CollegeCreateManyInput = {
@@ -12345,6 +14075,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStudentInput
     college: CollegeCreateNestedOneWithoutStudentsInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
+    offers?: OfferCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateInput = {
@@ -12366,6 +14097,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+    offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUpdateInput = {
@@ -12387,6 +14119,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
+    offers?: OfferUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateInput = {
@@ -12408,6 +14141,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileCreateManyInput = {
@@ -12481,6 +14215,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     recruiters?: RecruiterProfileCreateNestedManyWithoutCompanyInput
     jobs?: JobCreateNestedManyWithoutCompanyInput
+    offers?: OfferCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -12496,6 +14231,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     recruiters?: RecruiterProfileUncheckedCreateNestedManyWithoutCompanyInput
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -12511,6 +14247,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiters?: RecruiterProfileUpdateManyWithoutCompanyNestedInput
     jobs?: JobUpdateManyWithoutCompanyNestedInput
+    offers?: OfferUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -12526,6 +14263,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiters?: RecruiterProfileUncheckedUpdateManyWithoutCompanyNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -12645,6 +14383,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobsInput
     college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
+    offers?: OfferCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateInput = {
@@ -12664,6 +14403,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+    offers?: OfferUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobUpdateInput = {
@@ -12683,6 +14423,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
+    offers?: OfferUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
@@ -12702,6 +14443,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateManyInput = {
@@ -12765,6 +14507,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutApplicationsInput
     student: StudentProfileCreateNestedOneWithoutApplicationsInput
+    offer?: OfferCreateNestedOneWithoutApplicationInput
   }
 
   export type ApplicationUncheckedCreateInput = {
@@ -12776,6 +14519,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    offer?: OfferUncheckedCreateNestedOneWithoutApplicationInput
   }
 
   export type ApplicationUpdateInput = {
@@ -12787,6 +14531,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
     student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+    offer?: OfferUpdateOneWithoutApplicationNestedInput
   }
 
   export type ApplicationUncheckedUpdateInput = {
@@ -12798,6 +14543,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    offer?: OfferUncheckedUpdateOneWithoutApplicationNestedInput
   }
 
   export type ApplicationCreateManyInput = {
@@ -12827,6 +14573,148 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferCreateInput = {
+    id?: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    application: ApplicationCreateNestedOneWithoutOfferInput
+    student: StudentProfileCreateNestedOneWithoutOffersInput
+    job: JobCreateNestedOneWithoutOffersInput
+    company: CompanyCreateNestedOneWithoutOffersInput
+    college: CollegeCreateNestedOneWithoutOffersInput
+  }
+
+  export type OfferUncheckedCreateInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: ApplicationUpdateOneRequiredWithoutOfferNestedInput
+    student?: StudentProfileUpdateOneRequiredWithoutOffersNestedInput
+    job?: JobUpdateOneRequiredWithoutOffersNestedInput
+    company?: CompanyUpdateOneRequiredWithoutOffersNestedInput
+    college?: CollegeUpdateOneRequiredWithoutOffersNestedInput
+  }
+
+  export type OfferUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferCreateManyInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13026,6 +14914,12 @@ export namespace Prisma {
     none?: JobWhereInput
   }
 
+  export type OfferListRelationFilter = {
+    every?: OfferWhereInput
+    some?: OfferWhereInput
+    none?: OfferWhereInput
+  }
+
   export type TpoProfileOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -13035,6 +14929,10 @@ export namespace Prisma {
   }
 
   export type JobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OfferOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13482,6 +15380,11 @@ export namespace Prisma {
     isNot?: StudentProfileWhereInput
   }
 
+  export type OfferNullableScalarRelationFilter = {
+    is?: OfferWhereInput | null
+    isNot?: OfferWhereInput | null
+  }
+
   export type ApplicationJobIdStudentIdCompoundUniqueInput = {
     jobId: string
     studentId: string
@@ -13528,6 +15431,116 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApplicationStatusFilter<$PrismaModel>
     _max?: NestedEnumApplicationStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type EnumOfferStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OfferStatus | EnumOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOfferStatusFilter<$PrismaModel> | $Enums.OfferStatus
+  }
+
+  export type ApplicationScalarRelationFilter = {
+    is?: ApplicationWhereInput
+    isNot?: ApplicationWhereInput
+  }
+
+  export type OfferCountOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    companyId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    salaryPackage?: SortOrder
+    location?: SortOrder
+    joiningDate?: SortOrder
+    letterUrl?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrder
+    declinedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OfferMaxOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    companyId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    salaryPackage?: SortOrder
+    location?: SortOrder
+    joiningDate?: SortOrder
+    letterUrl?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrder
+    declinedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OfferMinOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    companyId?: SortOrder
+    collegeId?: SortOrder
+    designation?: SortOrder
+    salaryPackage?: SortOrder
+    location?: SortOrder
+    joiningDate?: SortOrder
+    letterUrl?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    acceptedAt?: SortOrder
+    declinedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OfferStatus | EnumOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOfferStatusWithAggregatesFilter<$PrismaModel> | $Enums.OfferStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOfferStatusFilter<$PrismaModel>
+    _max?: NestedEnumOfferStatusFilter<$PrismaModel>
   }
 
   export type StudentProfileCreateNestedOneWithoutUserInput = {
@@ -13667,6 +15680,13 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type OfferCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<OfferCreateWithoutCollegeInput, OfferUncheckedCreateWithoutCollegeInput> | OfferCreateWithoutCollegeInput[] | OfferUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCollegeInput | OfferCreateOrConnectWithoutCollegeInput[]
+    createMany?: OfferCreateManyCollegeInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
   export type TpoProfileUncheckedCreateNestedManyWithoutCollegeInput = {
     create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
     connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
@@ -13686,6 +15706,13 @@ export namespace Prisma {
     connectOrCreate?: JobCreateOrConnectWithoutCollegeInput | JobCreateOrConnectWithoutCollegeInput[]
     createMany?: JobCreateManyCollegeInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type OfferUncheckedCreateNestedManyWithoutCollegeInput = {
+    create?: XOR<OfferCreateWithoutCollegeInput, OfferUncheckedCreateWithoutCollegeInput> | OfferCreateWithoutCollegeInput[] | OfferUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCollegeInput | OfferCreateOrConnectWithoutCollegeInput[]
+    createMany?: OfferCreateManyCollegeInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
   export type TpoProfileUpdateManyWithoutCollegeNestedInput = {
@@ -13730,6 +15757,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type OfferUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<OfferCreateWithoutCollegeInput, OfferUncheckedCreateWithoutCollegeInput> | OfferCreateWithoutCollegeInput[] | OfferUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCollegeInput | OfferCreateOrConnectWithoutCollegeInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutCollegeInput | OfferUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: OfferCreateManyCollegeInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutCollegeInput | OfferUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutCollegeInput | OfferUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
   export type TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput = {
     create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
     connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
@@ -13770,6 +15811,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutCollegeInput | JobUpdateWithWhereUniqueWithoutCollegeInput[]
     updateMany?: JobUpdateManyWithWhereWithoutCollegeInput | JobUpdateManyWithWhereWithoutCollegeInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type OfferUncheckedUpdateManyWithoutCollegeNestedInput = {
+    create?: XOR<OfferCreateWithoutCollegeInput, OfferUncheckedCreateWithoutCollegeInput> | OfferCreateWithoutCollegeInput[] | OfferUncheckedCreateWithoutCollegeInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCollegeInput | OfferCreateOrConnectWithoutCollegeInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutCollegeInput | OfferUpsertWithWhereUniqueWithoutCollegeInput[]
+    createMany?: OfferCreateManyCollegeInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutCollegeInput | OfferUpdateWithWhereUniqueWithoutCollegeInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutCollegeInput | OfferUpdateManyWithWhereWithoutCollegeInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTpoInput = {
@@ -13823,11 +15878,25 @@ export namespace Prisma {
     connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
   }
 
+  export type OfferCreateNestedManyWithoutStudentInput = {
+    create?: XOR<OfferCreateWithoutStudentInput, OfferUncheckedCreateWithoutStudentInput> | OfferCreateWithoutStudentInput[] | OfferUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutStudentInput | OfferCreateOrConnectWithoutStudentInput[]
+    createMany?: OfferCreateManyStudentInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
   export type ApplicationUncheckedCreateNestedManyWithoutStudentInput = {
     create?: XOR<ApplicationCreateWithoutStudentInput, ApplicationUncheckedCreateWithoutStudentInput> | ApplicationCreateWithoutStudentInput[] | ApplicationUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutStudentInput | ApplicationCreateOrConnectWithoutStudentInput[]
     createMany?: ApplicationCreateManyStudentInputEnvelope
     connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+  }
+
+  export type OfferUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<OfferCreateWithoutStudentInput, OfferUncheckedCreateWithoutStudentInput> | OfferCreateWithoutStudentInput[] | OfferUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutStudentInput | OfferCreateOrConnectWithoutStudentInput[]
+    createMany?: OfferCreateManyStudentInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -13889,6 +15958,20 @@ export namespace Prisma {
     deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
   }
 
+  export type OfferUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<OfferCreateWithoutStudentInput, OfferUncheckedCreateWithoutStudentInput> | OfferCreateWithoutStudentInput[] | OfferUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutStudentInput | OfferCreateOrConnectWithoutStudentInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutStudentInput | OfferUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: OfferCreateManyStudentInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutStudentInput | OfferUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutStudentInput | OfferUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
   export type ApplicationUncheckedUpdateManyWithoutStudentNestedInput = {
     create?: XOR<ApplicationCreateWithoutStudentInput, ApplicationUncheckedCreateWithoutStudentInput> | ApplicationCreateWithoutStudentInput[] | ApplicationUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutStudentInput | ApplicationCreateOrConnectWithoutStudentInput[]
@@ -13901,6 +15984,20 @@ export namespace Prisma {
     update?: ApplicationUpdateWithWhereUniqueWithoutStudentInput | ApplicationUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: ApplicationUpdateManyWithWhereWithoutStudentInput | ApplicationUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
+  }
+
+  export type OfferUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<OfferCreateWithoutStudentInput, OfferUncheckedCreateWithoutStudentInput> | OfferCreateWithoutStudentInput[] | OfferUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutStudentInput | OfferCreateOrConnectWithoutStudentInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutStudentInput | OfferUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: OfferCreateManyStudentInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutStudentInput | OfferUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutStudentInput | OfferUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
   export type RecruiterProfileCreateNestedManyWithoutCompanyInput = {
@@ -13917,6 +16014,13 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type OfferCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<OfferCreateWithoutCompanyInput, OfferUncheckedCreateWithoutCompanyInput> | OfferCreateWithoutCompanyInput[] | OfferUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCompanyInput | OfferCreateOrConnectWithoutCompanyInput[]
+    createMany?: OfferCreateManyCompanyInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
   export type RecruiterProfileUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<RecruiterProfileCreateWithoutCompanyInput, RecruiterProfileUncheckedCreateWithoutCompanyInput> | RecruiterProfileCreateWithoutCompanyInput[] | RecruiterProfileUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: RecruiterProfileCreateOrConnectWithoutCompanyInput | RecruiterProfileCreateOrConnectWithoutCompanyInput[]
@@ -13929,6 +16033,13 @@ export namespace Prisma {
     connectOrCreate?: JobCreateOrConnectWithoutCompanyInput | JobCreateOrConnectWithoutCompanyInput[]
     createMany?: JobCreateManyCompanyInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type OfferUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<OfferCreateWithoutCompanyInput, OfferUncheckedCreateWithoutCompanyInput> | OfferCreateWithoutCompanyInput[] | OfferUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCompanyInput | OfferCreateOrConnectWithoutCompanyInput[]
+    createMany?: OfferCreateManyCompanyInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
   export type RecruiterProfileUpdateManyWithoutCompanyNestedInput = {
@@ -13959,6 +16070,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type OfferUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<OfferCreateWithoutCompanyInput, OfferUncheckedCreateWithoutCompanyInput> | OfferCreateWithoutCompanyInput[] | OfferUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCompanyInput | OfferCreateOrConnectWithoutCompanyInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutCompanyInput | OfferUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: OfferCreateManyCompanyInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutCompanyInput | OfferUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutCompanyInput | OfferUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
   export type RecruiterProfileUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<RecruiterProfileCreateWithoutCompanyInput, RecruiterProfileUncheckedCreateWithoutCompanyInput> | RecruiterProfileCreateWithoutCompanyInput[] | RecruiterProfileUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: RecruiterProfileCreateOrConnectWithoutCompanyInput | RecruiterProfileCreateOrConnectWithoutCompanyInput[]
@@ -13985,6 +16110,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutCompanyInput | JobUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: JobUpdateManyWithWhereWithoutCompanyInput | JobUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type OfferUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<OfferCreateWithoutCompanyInput, OfferUncheckedCreateWithoutCompanyInput> | OfferCreateWithoutCompanyInput[] | OfferUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutCompanyInput | OfferCreateOrConnectWithoutCompanyInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutCompanyInput | OfferUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: OfferCreateManyCompanyInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutCompanyInput | OfferUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutCompanyInput | OfferUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutRecruiterInput = {
@@ -14042,11 +16181,25 @@ export namespace Prisma {
     connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
   }
 
+  export type OfferCreateNestedManyWithoutJobInput = {
+    create?: XOR<OfferCreateWithoutJobInput, OfferUncheckedCreateWithoutJobInput> | OfferCreateWithoutJobInput[] | OfferUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutJobInput | OfferCreateOrConnectWithoutJobInput[]
+    createMany?: OfferCreateManyJobInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
   export type ApplicationUncheckedCreateNestedManyWithoutJobInput = {
     create?: XOR<ApplicationCreateWithoutJobInput, ApplicationUncheckedCreateWithoutJobInput> | ApplicationCreateWithoutJobInput[] | ApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutJobInput | ApplicationCreateOrConnectWithoutJobInput[]
     createMany?: ApplicationCreateManyJobInputEnvelope
     connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+  }
+
+  export type OfferUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<OfferCreateWithoutJobInput, OfferUncheckedCreateWithoutJobInput> | OfferCreateWithoutJobInput[] | OfferUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutJobInput | OfferCreateOrConnectWithoutJobInput[]
+    createMany?: OfferCreateManyJobInputEnvelope
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
   export type EnumJobTypeFieldUpdateOperationsInput = {
@@ -14097,6 +16250,20 @@ export namespace Prisma {
     deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
   }
 
+  export type OfferUpdateManyWithoutJobNestedInput = {
+    create?: XOR<OfferCreateWithoutJobInput, OfferUncheckedCreateWithoutJobInput> | OfferCreateWithoutJobInput[] | OfferUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutJobInput | OfferCreateOrConnectWithoutJobInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutJobInput | OfferUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: OfferCreateManyJobInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutJobInput | OfferUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutJobInput | OfferUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
   export type ApplicationUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<ApplicationCreateWithoutJobInput, ApplicationUncheckedCreateWithoutJobInput> | ApplicationCreateWithoutJobInput[] | ApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutJobInput | ApplicationCreateOrConnectWithoutJobInput[]
@@ -14111,6 +16278,20 @@ export namespace Prisma {
     deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
   }
 
+  export type OfferUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<OfferCreateWithoutJobInput, OfferUncheckedCreateWithoutJobInput> | OfferCreateWithoutJobInput[] | OfferUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: OfferCreateOrConnectWithoutJobInput | OfferCreateOrConnectWithoutJobInput[]
+    upsert?: OfferUpsertWithWhereUniqueWithoutJobInput | OfferUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: OfferCreateManyJobInputEnvelope
+    set?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    disconnect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    delete?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+    update?: OfferUpdateWithWhereUniqueWithoutJobInput | OfferUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: OfferUpdateManyWithWhereWithoutJobInput | OfferUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
   export type JobCreateNestedOneWithoutApplicationsInput = {
     create?: XOR<JobCreateWithoutApplicationsInput, JobUncheckedCreateWithoutApplicationsInput>
     connectOrCreate?: JobCreateOrConnectWithoutApplicationsInput
@@ -14121,6 +16302,18 @@ export namespace Prisma {
     create?: XOR<StudentProfileCreateWithoutApplicationsInput, StudentProfileUncheckedCreateWithoutApplicationsInput>
     connectOrCreate?: StudentProfileCreateOrConnectWithoutApplicationsInput
     connect?: StudentProfileWhereUniqueInput
+  }
+
+  export type OfferCreateNestedOneWithoutApplicationInput = {
+    create?: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: OfferCreateOrConnectWithoutApplicationInput
+    connect?: OfferWhereUniqueInput
+  }
+
+  export type OfferUncheckedCreateNestedOneWithoutApplicationInput = {
+    create?: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: OfferCreateOrConnectWithoutApplicationInput
+    connect?: OfferWhereUniqueInput
   }
 
   export type EnumApplicationStatusFieldUpdateOperationsInput = {
@@ -14141,6 +16334,104 @@ export namespace Prisma {
     upsert?: StudentProfileUpsertWithoutApplicationsInput
     connect?: StudentProfileWhereUniqueInput
     update?: XOR<XOR<StudentProfileUpdateToOneWithWhereWithoutApplicationsInput, StudentProfileUpdateWithoutApplicationsInput>, StudentProfileUncheckedUpdateWithoutApplicationsInput>
+  }
+
+  export type OfferUpdateOneWithoutApplicationNestedInput = {
+    create?: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: OfferCreateOrConnectWithoutApplicationInput
+    upsert?: OfferUpsertWithoutApplicationInput
+    disconnect?: OfferWhereInput | boolean
+    delete?: OfferWhereInput | boolean
+    connect?: OfferWhereUniqueInput
+    update?: XOR<XOR<OfferUpdateToOneWithWhereWithoutApplicationInput, OfferUpdateWithoutApplicationInput>, OfferUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type OfferUncheckedUpdateOneWithoutApplicationNestedInput = {
+    create?: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: OfferCreateOrConnectWithoutApplicationInput
+    upsert?: OfferUpsertWithoutApplicationInput
+    disconnect?: OfferWhereInput | boolean
+    delete?: OfferWhereInput | boolean
+    connect?: OfferWhereUniqueInput
+    update?: XOR<XOR<OfferUpdateToOneWithWhereWithoutApplicationInput, OfferUpdateWithoutApplicationInput>, OfferUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type ApplicationCreateNestedOneWithoutOfferInput = {
+    create?: XOR<ApplicationCreateWithoutOfferInput, ApplicationUncheckedCreateWithoutOfferInput>
+    connectOrCreate?: ApplicationCreateOrConnectWithoutOfferInput
+    connect?: ApplicationWhereUniqueInput
+  }
+
+  export type StudentProfileCreateNestedOneWithoutOffersInput = {
+    create?: XOR<StudentProfileCreateWithoutOffersInput, StudentProfileUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutOffersInput
+    connect?: StudentProfileWhereUniqueInput
+  }
+
+  export type JobCreateNestedOneWithoutOffersInput = {
+    create?: XOR<JobCreateWithoutOffersInput, JobUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: JobCreateOrConnectWithoutOffersInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type CompanyCreateNestedOneWithoutOffersInput = {
+    create?: XOR<CompanyCreateWithoutOffersInput, CompanyUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutOffersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type CollegeCreateNestedOneWithoutOffersInput = {
+    create?: XOR<CollegeCreateWithoutOffersInput, CollegeUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutOffersInput
+    connect?: CollegeWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type EnumOfferStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OfferStatus
+  }
+
+  export type ApplicationUpdateOneRequiredWithoutOfferNestedInput = {
+    create?: XOR<ApplicationCreateWithoutOfferInput, ApplicationUncheckedCreateWithoutOfferInput>
+    connectOrCreate?: ApplicationCreateOrConnectWithoutOfferInput
+    upsert?: ApplicationUpsertWithoutOfferInput
+    connect?: ApplicationWhereUniqueInput
+    update?: XOR<XOR<ApplicationUpdateToOneWithWhereWithoutOfferInput, ApplicationUpdateWithoutOfferInput>, ApplicationUncheckedUpdateWithoutOfferInput>
+  }
+
+  export type StudentProfileUpdateOneRequiredWithoutOffersNestedInput = {
+    create?: XOR<StudentProfileCreateWithoutOffersInput, StudentProfileUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutOffersInput
+    upsert?: StudentProfileUpsertWithoutOffersInput
+    connect?: StudentProfileWhereUniqueInput
+    update?: XOR<XOR<StudentProfileUpdateToOneWithWhereWithoutOffersInput, StudentProfileUpdateWithoutOffersInput>, StudentProfileUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type JobUpdateOneRequiredWithoutOffersNestedInput = {
+    create?: XOR<JobCreateWithoutOffersInput, JobUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: JobCreateOrConnectWithoutOffersInput
+    upsert?: JobUpsertWithoutOffersInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutOffersInput, JobUpdateWithoutOffersInput>, JobUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type CompanyUpdateOneRequiredWithoutOffersNestedInput = {
+    create?: XOR<CompanyCreateWithoutOffersInput, CompanyUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutOffersInput
+    upsert?: CompanyUpsertWithoutOffersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutOffersInput, CompanyUpdateWithoutOffersInput>, CompanyUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type CollegeUpdateOneRequiredWithoutOffersNestedInput = {
+    create?: XOR<CollegeCreateWithoutOffersInput, CollegeUncheckedCreateWithoutOffersInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutOffersInput
+    upsert?: CollegeUpsertWithoutOffersInput
+    connect?: CollegeWhereUniqueInput
+    update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutOffersInput, CollegeUpdateWithoutOffersInput>, CollegeUncheckedUpdateWithoutOffersInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -14403,6 +16694,48 @@ export namespace Prisma {
     _max?: NestedEnumApplicationStatusFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumOfferStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OfferStatus | EnumOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOfferStatusFilter<$PrismaModel> | $Enums.OfferStatus
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumOfferStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OfferStatus | EnumOfferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OfferStatus[] | ListEnumOfferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOfferStatusWithAggregatesFilter<$PrismaModel> | $Enums.OfferStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOfferStatusFilter<$PrismaModel>
+    _max?: NestedEnumOfferStatusFilter<$PrismaModel>
+  }
+
   export type StudentProfileCreateWithoutUserInput = {
     id?: string
     enrollmentNumber: string
@@ -14421,6 +16754,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     college: CollegeCreateNestedOneWithoutStudentsInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
+    offers?: OfferCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutUserInput = {
@@ -14441,6 +16775,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+    offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutUserInput = {
@@ -14519,6 +16854,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
+    offers?: OfferUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutUserInput = {
@@ -14539,6 +16875,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type RecruiterProfileUpsertWithoutUserInput = {
@@ -14639,6 +16976,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
+    offers?: OfferCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutCollegeInput = {
@@ -14659,6 +16997,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+    offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutCollegeInput = {
@@ -14687,6 +17026,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
+    offers?: OfferCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCollegeInput = {
@@ -14705,6 +17045,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+    offers?: OfferUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCollegeInput = {
@@ -14714,6 +17055,56 @@ export namespace Prisma {
 
   export type JobCreateManyCollegeInputEnvelope = {
     data: JobCreateManyCollegeInput | JobCreateManyCollegeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OfferCreateWithoutCollegeInput = {
+    id?: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    application: ApplicationCreateNestedOneWithoutOfferInput
+    student: StudentProfileCreateNestedOneWithoutOffersInput
+    job: JobCreateNestedOneWithoutOffersInput
+    company: CompanyCreateNestedOneWithoutOffersInput
+  }
+
+  export type OfferUncheckedCreateWithoutCollegeInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    companyId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateOrConnectWithoutCollegeInput = {
+    where: OfferWhereUniqueInput
+    create: XOR<OfferCreateWithoutCollegeInput, OfferUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type OfferCreateManyCollegeInputEnvelope = {
+    data: OfferCreateManyCollegeInput | OfferCreateManyCollegeInput[]
     skipDuplicates?: boolean
   }
 
@@ -14821,6 +17212,46 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Job"> | Date | string
   }
 
+  export type OfferUpsertWithWhereUniqueWithoutCollegeInput = {
+    where: OfferWhereUniqueInput
+    update: XOR<OfferUpdateWithoutCollegeInput, OfferUncheckedUpdateWithoutCollegeInput>
+    create: XOR<OfferCreateWithoutCollegeInput, OfferUncheckedCreateWithoutCollegeInput>
+  }
+
+  export type OfferUpdateWithWhereUniqueWithoutCollegeInput = {
+    where: OfferWhereUniqueInput
+    data: XOR<OfferUpdateWithoutCollegeInput, OfferUncheckedUpdateWithoutCollegeInput>
+  }
+
+  export type OfferUpdateManyWithWhereWithoutCollegeInput = {
+    where: OfferScalarWhereInput
+    data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutCollegeInput>
+  }
+
+  export type OfferScalarWhereInput = {
+    AND?: OfferScalarWhereInput | OfferScalarWhereInput[]
+    OR?: OfferScalarWhereInput[]
+    NOT?: OfferScalarWhereInput | OfferScalarWhereInput[]
+    id?: StringFilter<"Offer"> | string
+    applicationId?: StringFilter<"Offer"> | string
+    studentId?: StringFilter<"Offer"> | string
+    jobId?: StringFilter<"Offer"> | string
+    companyId?: StringFilter<"Offer"> | string
+    collegeId?: StringFilter<"Offer"> | string
+    designation?: StringFilter<"Offer"> | string
+    salaryPackage?: StringFilter<"Offer"> | string
+    location?: StringFilter<"Offer"> | string
+    joiningDate?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    letterUrl?: StringNullableFilter<"Offer"> | string | null
+    notes?: StringNullableFilter<"Offer"> | string | null
+    status?: EnumOfferStatusFilter<"Offer"> | $Enums.OfferStatus
+    expiresAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    acceptedAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    declinedAt?: DateTimeNullableFilter<"Offer"> | Date | string | null
+    createdAt?: DateTimeFilter<"Offer"> | Date | string
+    updatedAt?: DateTimeFilter<"Offer"> | Date | string
+  }
+
   export type UserCreateWithoutTpoInput = {
     id?: string
     email: string
@@ -14866,6 +17297,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
     jobs?: JobCreateNestedManyWithoutCollegeInput
+    offers?: OfferCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeUncheckedCreateWithoutTposInput = {
@@ -14880,6 +17312,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
     jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeCreateOrConnectWithoutTposInput = {
@@ -14949,6 +17382,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
     jobs?: JobUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
 
   export type CollegeUncheckedUpdateWithoutTposInput = {
@@ -14963,6 +17397,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
   export type UserCreateWithoutStudentInput = {
@@ -15010,6 +17445,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
     jobs?: JobCreateNestedManyWithoutCollegeInput
+    offers?: OfferCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeUncheckedCreateWithoutStudentsInput = {
@@ -15024,6 +17460,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
     jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeCreateOrConnectWithoutStudentsInput = {
@@ -15039,6 +17476,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutApplicationsInput
+    offer?: OfferCreateNestedOneWithoutApplicationInput
   }
 
   export type ApplicationUncheckedCreateWithoutStudentInput = {
@@ -15049,6 +17487,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    offer?: OfferUncheckedCreateNestedOneWithoutApplicationInput
   }
 
   export type ApplicationCreateOrConnectWithoutStudentInput = {
@@ -15058,6 +17497,56 @@ export namespace Prisma {
 
   export type ApplicationCreateManyStudentInputEnvelope = {
     data: ApplicationCreateManyStudentInput | ApplicationCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OfferCreateWithoutStudentInput = {
+    id?: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    application: ApplicationCreateNestedOneWithoutOfferInput
+    job: JobCreateNestedOneWithoutOffersInput
+    company: CompanyCreateNestedOneWithoutOffersInput
+    college: CollegeCreateNestedOneWithoutOffersInput
+  }
+
+  export type OfferUncheckedCreateWithoutStudentInput = {
+    id?: string
+    applicationId: string
+    jobId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateOrConnectWithoutStudentInput = {
+    where: OfferWhereUniqueInput
+    create: XOR<OfferCreateWithoutStudentInput, OfferUncheckedCreateWithoutStudentInput>
+  }
+
+  export type OfferCreateManyStudentInputEnvelope = {
+    data: OfferCreateManyStudentInput | OfferCreateManyStudentInput[]
     skipDuplicates?: boolean
   }
 
@@ -15123,6 +17612,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
     jobs?: JobUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
 
   export type CollegeUncheckedUpdateWithoutStudentsInput = {
@@ -15137,6 +17627,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
   export type ApplicationUpsertWithWhereUniqueWithoutStudentInput = {
@@ -15167,6 +17658,22 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Application"> | string | null
     createdAt?: DateTimeFilter<"Application"> | Date | string
     updatedAt?: DateTimeFilter<"Application"> | Date | string
+  }
+
+  export type OfferUpsertWithWhereUniqueWithoutStudentInput = {
+    where: OfferWhereUniqueInput
+    update: XOR<OfferUpdateWithoutStudentInput, OfferUncheckedUpdateWithoutStudentInput>
+    create: XOR<OfferCreateWithoutStudentInput, OfferUncheckedCreateWithoutStudentInput>
+  }
+
+  export type OfferUpdateWithWhereUniqueWithoutStudentInput = {
+    where: OfferWhereUniqueInput
+    data: XOR<OfferUpdateWithoutStudentInput, OfferUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type OfferUpdateManyWithWhereWithoutStudentInput = {
+    where: OfferScalarWhereInput
+    data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutStudentInput>
   }
 
   export type RecruiterProfileCreateWithoutCompanyInput = {
@@ -15211,6 +17718,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
+    offers?: OfferCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCompanyInput = {
@@ -15229,6 +17737,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+    offers?: OfferUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCompanyInput = {
@@ -15238,6 +17747,56 @@ export namespace Prisma {
 
   export type JobCreateManyCompanyInputEnvelope = {
     data: JobCreateManyCompanyInput | JobCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OfferCreateWithoutCompanyInput = {
+    id?: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    application: ApplicationCreateNestedOneWithoutOfferInput
+    student: StudentProfileCreateNestedOneWithoutOffersInput
+    job: JobCreateNestedOneWithoutOffersInput
+    college: CollegeCreateNestedOneWithoutOffersInput
+  }
+
+  export type OfferUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateOrConnectWithoutCompanyInput = {
+    where: OfferWhereUniqueInput
+    create: XOR<OfferCreateWithoutCompanyInput, OfferUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type OfferCreateManyCompanyInputEnvelope = {
+    data: OfferCreateManyCompanyInput | OfferCreateManyCompanyInput[]
     skipDuplicates?: boolean
   }
 
@@ -15285,6 +17844,22 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutCompanyInput>
   }
 
+  export type OfferUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: OfferWhereUniqueInput
+    update: XOR<OfferUpdateWithoutCompanyInput, OfferUncheckedUpdateWithoutCompanyInput>
+    create: XOR<OfferCreateWithoutCompanyInput, OfferUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type OfferUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: OfferWhereUniqueInput
+    data: XOR<OfferUpdateWithoutCompanyInput, OfferUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type OfferUpdateManyWithWhereWithoutCompanyInput = {
+    where: OfferScalarWhereInput
+    data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutCompanyInput>
+  }
+
   export type UserCreateWithoutRecruiterInput = {
     id?: string
     email: string
@@ -15330,6 +17905,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutCompanyInput
+    offers?: OfferCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutRecruitersInput = {
@@ -15344,6 +17920,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutRecruitersInput = {
@@ -15413,6 +17990,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutCompanyNestedInput
+    offers?: OfferUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutRecruitersInput = {
@@ -15427,6 +18005,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateWithoutJobsInput = {
@@ -15441,6 +18020,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recruiters?: RecruiterProfileCreateNestedManyWithoutCompanyInput
+    offers?: OfferCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutJobsInput = {
@@ -15455,6 +18035,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recruiters?: RecruiterProfileUncheckedCreateNestedManyWithoutCompanyInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutJobsInput = {
@@ -15474,6 +18055,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
+    offers?: OfferCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeUncheckedCreateWithoutJobsInput = {
@@ -15488,6 +18070,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
+    offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
 
   export type CollegeCreateOrConnectWithoutJobsInput = {
@@ -15503,6 +18086,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     student: StudentProfileCreateNestedOneWithoutApplicationsInput
+    offer?: OfferCreateNestedOneWithoutApplicationInput
   }
 
   export type ApplicationUncheckedCreateWithoutJobInput = {
@@ -15513,6 +18097,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    offer?: OfferUncheckedCreateNestedOneWithoutApplicationInput
   }
 
   export type ApplicationCreateOrConnectWithoutJobInput = {
@@ -15522,6 +18107,56 @@ export namespace Prisma {
 
   export type ApplicationCreateManyJobInputEnvelope = {
     data: ApplicationCreateManyJobInput | ApplicationCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OfferCreateWithoutJobInput = {
+    id?: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    application: ApplicationCreateNestedOneWithoutOfferInput
+    student: StudentProfileCreateNestedOneWithoutOffersInput
+    company: CompanyCreateNestedOneWithoutOffersInput
+    college: CollegeCreateNestedOneWithoutOffersInput
+  }
+
+  export type OfferUncheckedCreateWithoutJobInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateOrConnectWithoutJobInput = {
+    where: OfferWhereUniqueInput
+    create: XOR<OfferCreateWithoutJobInput, OfferUncheckedCreateWithoutJobInput>
+  }
+
+  export type OfferCreateManyJobInputEnvelope = {
+    data: OfferCreateManyJobInput | OfferCreateManyJobInput[]
     skipDuplicates?: boolean
   }
 
@@ -15548,6 +18183,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiters?: RecruiterProfileUpdateManyWithoutCompanyNestedInput
+    offers?: OfferUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutJobsInput = {
@@ -15562,6 +18198,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiters?: RecruiterProfileUncheckedUpdateManyWithoutCompanyNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CollegeUpsertWithoutJobsInput = {
@@ -15587,6 +18224,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
 
   export type CollegeUncheckedUpdateWithoutJobsInput = {
@@ -15601,6 +18239,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
   export type ApplicationUpsertWithWhereUniqueWithoutJobInput = {
@@ -15619,6 +18258,22 @@ export namespace Prisma {
     data: XOR<ApplicationUpdateManyMutationInput, ApplicationUncheckedUpdateManyWithoutJobInput>
   }
 
+  export type OfferUpsertWithWhereUniqueWithoutJobInput = {
+    where: OfferWhereUniqueInput
+    update: XOR<OfferUpdateWithoutJobInput, OfferUncheckedUpdateWithoutJobInput>
+    create: XOR<OfferCreateWithoutJobInput, OfferUncheckedCreateWithoutJobInput>
+  }
+
+  export type OfferUpdateWithWhereUniqueWithoutJobInput = {
+    where: OfferWhereUniqueInput
+    data: XOR<OfferUpdateWithoutJobInput, OfferUncheckedUpdateWithoutJobInput>
+  }
+
+  export type OfferUpdateManyWithWhereWithoutJobInput = {
+    where: OfferScalarWhereInput
+    data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutJobInput>
+  }
+
   export type JobCreateWithoutApplicationsInput = {
     id?: string
     title: string
@@ -15635,6 +18290,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutJobsInput
     college: CollegeCreateNestedOneWithoutJobsInput
+    offers?: OfferCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutApplicationsInput = {
@@ -15653,6 +18309,7 @@ export namespace Prisma {
     deadline: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    offers?: OfferUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutApplicationsInput = {
@@ -15678,6 +18335,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
     college: CollegeCreateNestedOneWithoutStudentsInput
+    offers?: OfferCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutApplicationsInput = {
@@ -15698,11 +18356,57 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutApplicationsInput = {
     where: StudentProfileWhereUniqueInput
     create: XOR<StudentProfileCreateWithoutApplicationsInput, StudentProfileUncheckedCreateWithoutApplicationsInput>
+  }
+
+  export type OfferCreateWithoutApplicationInput = {
+    id?: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentProfileCreateNestedOneWithoutOffersInput
+    job: JobCreateNestedOneWithoutOffersInput
+    company: CompanyCreateNestedOneWithoutOffersInput
+    college: CollegeCreateNestedOneWithoutOffersInput
+  }
+
+  export type OfferUncheckedCreateWithoutApplicationInput = {
+    id?: string
+    studentId: string
+    jobId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateOrConnectWithoutApplicationInput = {
+    where: OfferWhereUniqueInput
+    create: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
   }
 
   export type JobUpsertWithoutApplicationsInput = {
@@ -15732,6 +18436,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
+    offers?: OfferUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutApplicationsInput = {
@@ -15750,6 +18455,7 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type StudentProfileUpsertWithoutApplicationsInput = {
@@ -15781,6 +18487,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    offers?: OfferUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutApplicationsInput = {
@@ -15801,6 +18508,462 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type OfferUpsertWithoutApplicationInput = {
+    update: XOR<OfferUpdateWithoutApplicationInput, OfferUncheckedUpdateWithoutApplicationInput>
+    create: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
+    where?: OfferWhereInput
+  }
+
+  export type OfferUpdateToOneWithWhereWithoutApplicationInput = {
+    where?: OfferWhereInput
+    data: XOR<OfferUpdateWithoutApplicationInput, OfferUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type OfferUpdateWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUpdateOneRequiredWithoutOffersNestedInput
+    job?: JobUpdateOneRequiredWithoutOffersNestedInput
+    company?: CompanyUpdateOneRequiredWithoutOffersNestedInput
+    college?: CollegeUpdateOneRequiredWithoutOffersNestedInput
+  }
+
+  export type OfferUncheckedUpdateWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApplicationCreateWithoutOfferInput = {
+    id?: string
+    status?: $Enums.ApplicationStatus
+    resumeUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutApplicationsInput
+    student: StudentProfileCreateNestedOneWithoutApplicationsInput
+  }
+
+  export type ApplicationUncheckedCreateWithoutOfferInput = {
+    id?: string
+    jobId: string
+    studentId: string
+    status?: $Enums.ApplicationStatus
+    resumeUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApplicationCreateOrConnectWithoutOfferInput = {
+    where: ApplicationWhereUniqueInput
+    create: XOR<ApplicationCreateWithoutOfferInput, ApplicationUncheckedCreateWithoutOfferInput>
+  }
+
+  export type StudentProfileCreateWithoutOffersInput = {
+    id?: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStudentInput
+    college: CollegeCreateNestedOneWithoutStudentsInput
+    applications?: ApplicationCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileUncheckedCreateWithoutOffersInput = {
+    id?: string
+    userId: string
+    collegeId: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileCreateOrConnectWithoutOffersInput = {
+    where: StudentProfileWhereUniqueInput
+    create: XOR<StudentProfileCreateWithoutOffersInput, StudentProfileUncheckedCreateWithoutOffersInput>
+  }
+
+  export type JobCreateWithoutOffersInput = {
+    id?: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutJobsInput
+    college: CollegeCreateNestedOneWithoutJobsInput
+    applications?: ApplicationCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutOffersInput = {
+    id?: string
+    companyId: string
+    collegeId: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutOffersInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutOffersInput, JobUncheckedCreateWithoutOffersInput>
+  }
+
+  export type CompanyCreateWithoutOffersInput = {
+    id?: string
+    name: string
+    website?: string | null
+    logoUrl?: string | null
+    industry?: string | null
+    location?: string | null
+    description?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    recruiters?: RecruiterProfileCreateNestedManyWithoutCompanyInput
+    jobs?: JobCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutOffersInput = {
+    id?: string
+    name: string
+    website?: string | null
+    logoUrl?: string | null
+    industry?: string | null
+    location?: string | null
+    description?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    recruiters?: RecruiterProfileUncheckedCreateNestedManyWithoutCompanyInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutOffersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutOffersInput, CompanyUncheckedCreateWithoutOffersInput>
+  }
+
+  export type CollegeCreateWithoutOffersInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    students?: StudentProfileCreateNestedManyWithoutCollegeInput
+    jobs?: JobCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeUncheckedCreateWithoutOffersInput = {
+    id?: string
+    name: string
+    code?: string | null
+    domain?: string | null
+    city?: string | null
+    state?: string | null
+    logoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
+    jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
+  }
+
+  export type CollegeCreateOrConnectWithoutOffersInput = {
+    where: CollegeWhereUniqueInput
+    create: XOR<CollegeCreateWithoutOffersInput, CollegeUncheckedCreateWithoutOffersInput>
+  }
+
+  export type ApplicationUpsertWithoutOfferInput = {
+    update: XOR<ApplicationUpdateWithoutOfferInput, ApplicationUncheckedUpdateWithoutOfferInput>
+    create: XOR<ApplicationCreateWithoutOfferInput, ApplicationUncheckedCreateWithoutOfferInput>
+    where?: ApplicationWhereInput
+  }
+
+  export type ApplicationUpdateToOneWithWhereWithoutOfferInput = {
+    where?: ApplicationWhereInput
+    data: XOR<ApplicationUpdateWithoutOfferInput, ApplicationUncheckedUpdateWithoutOfferInput>
+  }
+
+  export type ApplicationUpdateWithoutOfferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
+    student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+  }
+
+  export type ApplicationUncheckedUpdateWithoutOfferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentProfileUpsertWithoutOffersInput = {
+    update: XOR<StudentProfileUpdateWithoutOffersInput, StudentProfileUncheckedUpdateWithoutOffersInput>
+    create: XOR<StudentProfileCreateWithoutOffersInput, StudentProfileUncheckedCreateWithoutOffersInput>
+    where?: StudentProfileWhereInput
+  }
+
+  export type StudentProfileUpdateToOneWithWhereWithoutOffersInput = {
+    where?: StudentProfileWhereInput
+    data: XOR<StudentProfileUpdateWithoutOffersInput, StudentProfileUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type StudentProfileUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    applications?: ApplicationUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentProfileUncheckedUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type JobUpsertWithoutOffersInput = {
+    update: XOR<JobUpdateWithoutOffersInput, JobUncheckedUpdateWithoutOffersInput>
+    create: XOR<JobCreateWithoutOffersInput, JobUncheckedCreateWithoutOffersInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutOffersInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutOffersInput, JobUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type JobUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
+    college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
+    applications?: ApplicationUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type CompanyUpsertWithoutOffersInput = {
+    update: XOR<CompanyUpdateWithoutOffersInput, CompanyUncheckedUpdateWithoutOffersInput>
+    create: XOR<CompanyCreateWithoutOffersInput, CompanyUncheckedCreateWithoutOffersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutOffersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutOffersInput, CompanyUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type CompanyUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recruiters?: RecruiterProfileUpdateManyWithoutCompanyNestedInput
+    jobs?: JobUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recruiters?: RecruiterProfileUncheckedUpdateManyWithoutCompanyNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CollegeUpsertWithoutOffersInput = {
+    update: XOR<CollegeUpdateWithoutOffersInput, CollegeUncheckedUpdateWithoutOffersInput>
+    create: XOR<CollegeCreateWithoutOffersInput, CollegeUncheckedCreateWithoutOffersInput>
+    where?: CollegeWhereInput
+  }
+
+  export type CollegeUpdateToOneWithWhereWithoutOffersInput = {
+    where?: CollegeWhereInput
+    data: XOR<CollegeUpdateWithoutOffersInput, CollegeUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type CollegeUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    students?: StudentProfileUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type CollegeUncheckedUpdateWithoutOffersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
   export type TpoProfileCreateManyCollegeInput = {
@@ -15847,6 +19010,26 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type OfferCreateManyCollegeInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    companyId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type TpoProfileUpdateWithoutCollegeInput = {
     id?: StringFieldUpdateOperationsInput | string
     designation?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15889,6 +19072,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
+    offers?: OfferUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutCollegeInput = {
@@ -15909,6 +19093,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateManyWithoutCollegeInput = {
@@ -15946,6 +19131,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
+    offers?: OfferUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCollegeInput = {
@@ -15964,6 +19150,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutCollegeInput = {
@@ -15983,12 +19170,92 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OfferUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: ApplicationUpdateOneRequiredWithoutOfferNestedInput
+    student?: StudentProfileUpdateOneRequiredWithoutOffersNestedInput
+    job?: JobUpdateOneRequiredWithoutOffersNestedInput
+    company?: CompanyUpdateOneRequiredWithoutOffersNestedInput
+  }
+
+  export type OfferUncheckedUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUncheckedUpdateManyWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ApplicationCreateManyStudentInput = {
     id?: string
     jobId: string
     status?: $Enums.ApplicationStatus
     resumeUrl?: string | null
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateManyStudentInput = {
+    id?: string
+    applicationId: string
+    jobId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16001,6 +19268,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
+    offer?: OfferUpdateOneWithoutApplicationNestedInput
   }
 
   export type ApplicationUncheckedUpdateWithoutStudentInput = {
@@ -16011,6 +19279,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    offer?: OfferUncheckedUpdateOneWithoutApplicationNestedInput
   }
 
   export type ApplicationUncheckedUpdateManyWithoutStudentInput = {
@@ -16019,6 +19288,66 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: ApplicationUpdateOneRequiredWithoutOfferNestedInput
+    job?: JobUpdateOneRequiredWithoutOffersNestedInput
+    company?: CompanyUpdateOneRequiredWithoutOffersNestedInput
+    college?: CollegeUpdateOneRequiredWithoutOffersNestedInput
+  }
+
+  export type OfferUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16044,6 +19373,26 @@ export namespace Prisma {
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
     deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateManyCompanyInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    jobId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16088,6 +19437,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
+    offers?: OfferUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCompanyInput = {
@@ -16106,6 +19456,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutCompanyInput = {
@@ -16125,12 +19476,92 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OfferUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: ApplicationUpdateOneRequiredWithoutOfferNestedInput
+    student?: StudentProfileUpdateOneRequiredWithoutOffersNestedInput
+    job?: JobUpdateOneRequiredWithoutOffersNestedInput
+    college?: CollegeUpdateOneRequiredWithoutOffersNestedInput
+  }
+
+  export type OfferUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ApplicationCreateManyJobInput = {
     id?: string
     studentId: string
     status?: $Enums.ApplicationStatus
     resumeUrl?: string | null
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OfferCreateManyJobInput = {
+    id?: string
+    applicationId: string
+    studentId: string
+    companyId: string
+    collegeId: string
+    designation: string
+    salaryPackage: string
+    location: string
+    joiningDate?: Date | string | null
+    letterUrl?: string | null
+    notes?: string | null
+    status?: $Enums.OfferStatus
+    expiresAt?: Date | string | null
+    acceptedAt?: Date | string | null
+    declinedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16143,6 +19574,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+    offer?: OfferUpdateOneWithoutApplicationNestedInput
   }
 
   export type ApplicationUncheckedUpdateWithoutJobInput = {
@@ -16153,6 +19585,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    offer?: OfferUncheckedUpdateOneWithoutApplicationNestedInput
   }
 
   export type ApplicationUncheckedUpdateManyWithoutJobInput = {
@@ -16161,6 +19594,66 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: ApplicationUpdateOneRequiredWithoutOfferNestedInput
+    student?: StudentProfileUpdateOneRequiredWithoutOffersNestedInput
+    company?: CompanyUpdateOneRequiredWithoutOffersNestedInput
+    college?: CollegeUpdateOneRequiredWithoutOffersNestedInput
+  }
+
+  export type OfferUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OfferUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    designation?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    joiningDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    letterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumOfferStatusFieldUpdateOperationsInput | $Enums.OfferStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
