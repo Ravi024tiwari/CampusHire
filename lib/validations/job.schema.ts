@@ -2,22 +2,41 @@ import { z } from 'zod';
 import { JobType, JobStatus } from '@/src/generated/prisma';
 
 export const createJobSchema = z.object({
+  collegeId: z.string().min(1, 'Target college ID is required'),
   title: z.string().trim().min(3, 'Job title must be at least 3 characters'),
   description: z.string().trim().min(20, 'Job description must be at least 20 characters'),
   type: z.nativeEnum(JobType).default(JobType.FULL_TIME),
+  status: z.nativeEnum(JobStatus).default(JobStatus.ACTIVE),
   location: z.string().trim().min(2, 'Location is required (e.g. Remote, Bangalore)'),
   salaryPackage: z.string().trim().min(2, 'Salary package or stipend is required (e.g. 14 LPA)'),
   
   // Eligibility criteria
-  minCgpa: z.coerce.number().min(0.0).max(10.0).default(0.0),
-  allowedBranches: z.array(z.string()).default([]),
-  eligibleBatches: z.array(z.coerce.number()).default([]),
-  deadline: z.string().datetime('Please provide a valid ISO deadline timestamp').or(z.coerce.date()),
+  minCgpa: z.coerce.number().min(0.0, 'CGPA cannot be negative').max(10.0, 'CGPA cannot exceed 10.0').default(0.0),
+  allowedBranches: z.array(z.string().trim()).default([]),
+  eligibleBatches: z.array(z.coerce.number().int()).default([]),
+  deadline: z.coerce.date().refine((date) => date > new Date(), {
+    message: 'Application deadline must be a future date and time',
+  }),
 });
 
 export const updateJobSchema = createJobSchema.partial().extend({
   status: z.nativeEnum(JobStatus).optional(),
 });
 
+export const updateJobStatusSchema = z.object({
+  status: z.nativeEnum(JobStatus, {
+    errorMap: () => ({ message: 'Please provide a valid job status (DRAFT, PENDING_APPROVAL, ACTIVE, CLOSED)' }),
+  }),
+});
+
+export const jobQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+  status: z.nativeEnum(JobStatus).optional(),
+  collegeId: z.string().optional(),
+  search: z.string().trim().optional(),
+});
+
 export type CreateJobInput = z.infer<typeof createJobSchema>;
 export type UpdateJobInput = z.infer<typeof updateJobSchema>;
+export type JobQueryInput = z.infer<typeof jobQuerySchema>;

@@ -12,6 +12,7 @@ export const studentRegisterSchema = z.object({
   email: z.string().trim().email('Please enter a valid student email'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
   
+  collegeId: z.string().min(1, 'College ID is required'),
   enrollmentNumber: z.string().trim().min(3, 'Enrollment number is required'),
   branch: z.string().trim().min(2, 'Branch is required (e.g. Computer Science)'),
   batchYear: z.coerce.number().int().min(2020).max(2028, 'Please provide a valid batch year'),
@@ -35,18 +36,40 @@ export const recruiterRegisterSchema = z.object({
   designation: z.string().trim().min(2, 'Designation is required (e.g. Talent Acquisition Lead)'),
 });
 
-export const tpoRegisterSchema = z.object({
+export const baseTpoRegisterSchema = z.object({
   role: z.literal(Role.TPO_ADMIN),
   name: z.string().trim().min(2, 'TPO Officer name is required'),
   email: z.string().trim().email('Please enter a valid institutional email'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
+  designation: z.string().trim().min(2, 'Designation is required (e.g. Head, T&P Cell)').optional(),
+  
+  // Either select an existing college ID or enter new college details to onboard
+  collegeId: z.string().optional(),
+  collegeName: z.string().trim().optional(),
+  collegeCode: z.string().trim().toUpperCase().optional(),
+  collegeDomain: z.string().trim().toLowerCase().optional(),
+  collegeCity: z.string().trim().optional(),
+  collegeState: z.string().trim().optional(),
+});
+
+export const tpoRegisterSchema = baseTpoRegisterSchema.refine((data) => Boolean(data.collegeId || data.collegeName), {
+  message: 'Please select an existing college or enter a college name to onboard your institution',
+  path: ['collegeId'],
 });
 
 export const registerSchema = z.discriminatedUnion('role', [
   studentRegisterSchema,
   recruiterRegisterSchema,
-  tpoRegisterSchema,
-]);
+  baseTpoRegisterSchema,
+]).superRefine((data, ctx) => {
+  if (data.role === Role.TPO_ADMIN && !data.collegeId && !data.collegeName) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Please select an existing college or enter a college name to onboard your institution',
+      path: ['collegeId'],
+    });
+  }
+});
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type StudentRegisterInput = z.infer<typeof studentRegisterSchema>;

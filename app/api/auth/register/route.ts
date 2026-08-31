@@ -28,6 +28,15 @@ export async function POST(req: NextRequest) {
 
     switch (parsedData.role) {
       case Role.STUDENT: {
+        // Verify target college exists
+        const college = await prisma.college.findUnique({
+          where: { id: parsedData.collegeId },
+        });
+
+        if (!college) {
+          return errorResponse('The selected college was not found. Please choose a valid registered college.', 404);
+        }
+
         // Check if enrollment number is already registered
         const existingEnrollment = await prisma.studentProfile.findUnique({
           where: { enrollmentNumber: parsedData.enrollmentNumber.trim() },
@@ -46,6 +55,7 @@ export async function POST(req: NextRequest) {
               role: Role.STUDENT,
               student: {
                 create: {
+                  collegeId: parsedData.collegeId,
                   enrollmentNumber: parsedData.enrollmentNumber.trim(),
                   branch: parsedData.branch.trim(),
                   batchYear: parsedData.batchYear,
@@ -59,7 +69,11 @@ export async function POST(req: NextRequest) {
               },
             },
             include: {
-              student: true,
+              student: {
+                include: {
+                  college: true,
+                },
+              },
             },
           });
           return user;
@@ -117,13 +131,69 @@ export async function POST(req: NextRequest) {
       }
 
       case Role.TPO_ADMIN: {
-        newUser = await prisma.user.create({
-          data: {
-            name: parsedData.name.trim(),
-            email,
-            passwordHash,
-            role: Role.TPO_ADMIN,
-          },
+        newUser = await prisma.$transaction(async (tx) => {
+          let collegeId = parsedData.collegeId;
+
+          // If collegeId is provided, verify it exists
+          if (collegeId) {
+            const existingCollege = await tx.college.findUnique({
+              where: { id: collegeId },
+            });
+            if (!existingCollege) {
+              throw new Error('The selected college was not found');
+            }
+          } else if (parsedData.collegeName) {
+            // Onboard/Find college by name
+            let college = await tx.college.findFirst({
+              where: {
+                name: {
+                  equals: parsedData.collegeName.trim(),
+                  mode: 'insensitive',
+                },
+              },
+            });
+
+            if (!college) {
+              college = await tx.college.create({
+                data: {
+                  name: parsedData.collegeName.trim(),
+                  code: parsedData.collegeCode || null,
+                  domain: parsedData.collegeDomain || null,
+                  city: parsedData.collegeCity || null,
+                  state: parsedData.collegeState || null,
+                },
+              });
+            }
+            collegeId = college.id;
+          }
+
+          if (!collegeId) {
+            throw new Error('College information is required for TPO registration');
+          }
+
+          const user = await tx.user.create({
+            data: {
+              name: parsedData.name.trim(),
+              email,
+              passwordHash,
+              role: Role.TPO_ADMIN,
+              tpo: {
+                create: {
+                  collegeId,
+                  designation: parsedData.designation?.trim() || 'TPO Officer',
+                },
+              },
+            },
+            include: {
+              tpo: {
+                include: {
+                  college: true,
+                },
+              },
+            },
+          });
+
+          return user;
         });
         break;
       }

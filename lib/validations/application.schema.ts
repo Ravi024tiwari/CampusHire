@@ -11,5 +11,12 @@ export const updateApplicationStatusSchema = z.object({
   notes: z.string().optional(),
 });
 
+export const applicationQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+  status: z.nativeEnum(ApplicationStatus).optional(),
+});
+
 export type ApplyJobInput = z.infer<typeof applyJobSchema>;
 export type UpdateApplicationStatusInput = z.infer<typeof updateApplicationStatusSchema>;
+export type ApplicationQueryInput = z.infer<typeof applicationQuerySchema>;

@@ -25,10 +25,19 @@ export async function GET(req: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { id: session.userId },
       include: {
-        student: true,
+        student: {
+          include: {
+            college: true,
+          },
+        },
         recruiter: {
           include: {
             company: true,
+          },
+        },
+        tpo: {
+          include: {
+            college: true,
           },
         },
       },
