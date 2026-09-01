@@ -6,6 +6,8 @@ import { Role } from '@/src/generated/prisma';
 import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
 
 const updateStudentProfileSchema = z.object({
+  name: z.string().trim().min(2).optional(),
+  avatarUrl: z.string().url('Invalid avatar URL').optional().or(z.literal('')),
   skills: z.array(z.string().trim()).optional(),
   resumeUrl: z.string().url('Invalid resume URL').optional().or(z.literal('')),
   linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
@@ -40,6 +42,9 @@ export async function GET(req: NextRequest) {
             state: true,
             logoUrl: true,
           },
+        },
+        resumes: {
+          orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
         },
         _count: {
           select: {
@@ -79,18 +84,42 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const parsedData = updateStudentProfileSchema.parse(body);
 
-    const updatedStudent = await prisma.studentProfile.update({
-      where: { id: student.id },
-      data: {
-        ...(parsedData.skills !== undefined ? { skills: parsedData.skills } : {}),
-        ...(parsedData.resumeUrl !== undefined ? { resumeUrl: parsedData.resumeUrl || null } : {}),
-        ...(parsedData.linkedinUrl !== undefined ? { linkedinUrl: parsedData.linkedinUrl || null } : {}),
-        ...(parsedData.githubUrl !== undefined ? { githubUrl: parsedData.githubUrl || null } : {}),
-        ...(parsedData.portfolioUrl !== undefined ? { portfolioUrl: parsedData.portfolioUrl || null } : {}),
-      },
-      include: {
-        college: true,
-      },
+    const updatedStudent = await prisma.$transaction(async (tx) => {
+      if (parsedData.name !== undefined || parsedData.avatarUrl !== undefined) {
+        await tx.user.update({
+          where: { id: authUser.userId },
+          data: {
+            ...(parsedData.name !== undefined ? { name: parsedData.name } : {}),
+            ...(parsedData.avatarUrl !== undefined ? { avatarUrl: parsedData.avatarUrl || null } : {}),
+          },
+        });
+      }
+
+      return tx.studentProfile.update({
+        where: { id: student.id },
+        data: {
+          ...(parsedData.skills !== undefined ? { skills: parsedData.skills } : {}),
+          ...(parsedData.resumeUrl !== undefined ? { resumeUrl: parsedData.resumeUrl || null } : {}),
+          ...(parsedData.linkedinUrl !== undefined ? { linkedinUrl: parsedData.linkedinUrl || null } : {}),
+          ...(parsedData.githubUrl !== undefined ? { githubUrl: parsedData.githubUrl || null } : {}),
+          ...(parsedData.portfolioUrl !== undefined ? { portfolioUrl: parsedData.portfolioUrl || null } : {}),
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatarUrl: true,
+              role: true,
+            },
+          },
+          college: true,
+          resumes: {
+            orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
+          },
+        },
+      });
     });
 
     return successResponse(updatedStudent, 'Profile updated successfully');

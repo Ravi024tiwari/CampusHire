@@ -19,6 +19,14 @@ export async function POST(req: NextRequest) {
       return errorResponse('Recruiter profile or associated company not found', 404);
     }
 
+    // Company Verification Guard: unverified companies cannot post drives
+    if (!recruiter.company.isVerified) {
+      return errorResponse(
+        `Company Verification Pending: "${recruiter.company.name}" has not yet been verified by the Super Admin. You cannot create placement drives until verification is complete.`,
+        403
+      );
+    }
+
     const body = await req.json();
     const parsedData = createJobSchema.parse(body);
 

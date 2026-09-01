@@ -173,6 +173,19 @@ exports.Prisma.StudentProfileScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.StudentResumeScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  title: 'title',
+  fileUrl: 'fileUrl',
+  publicId: 'publicId',
+  fileType: 'fileType',
+  fileSize: 'fileSize',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CompanyScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -218,6 +231,7 @@ exports.Prisma.ApplicationScalarFieldEnum = {
   jobId: 'jobId',
   studentId: 'studentId',
   status: 'status',
+  resumeId: 'resumeId',
   resumeUrl: 'resumeUrl',
   notes: 'notes',
   createdAt: 'createdAt',
@@ -260,9 +274,10 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 exports.Role = exports.$Enums.Role = {
-  STUDENT: 'STUDENT',
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  TPO_ADMIN: 'TPO_ADMIN',
   RECRUITER: 'RECRUITER',
-  TPO_ADMIN: 'TPO_ADMIN'
+  STUDENT: 'STUDENT'
 };
 
 exports.JobType = exports.$Enums.JobType = {
@@ -302,6 +317,7 @@ exports.Prisma.ModelName = {
   College: 'College',
   TpoProfile: 'TpoProfile',
   StudentProfile: 'StudentProfile',
+  StudentResume: 'StudentResume',
   Company: 'Company',
   RecruiterProfile: 'RecruiterProfile',
   Job: 'Job',

@@ -3,6 +3,7 @@ import { ApplicationStatus } from '@/src/generated/prisma';
 
 export const applyJobSchema = z.object({
   jobId: z.string().min(1, 'Job ID is required'),
+  resumeId: z.string().optional(),
   resumeUrl: z.string().url('Please provide a valid resume URL').optional().or(z.literal('')),
 });
 

@@ -22,6 +22,11 @@ export async function POST(req: NextRequest) {
             company: true,
           },
         },
+        tpo: {
+          include: {
+            college: true,
+          },
+        },
       },
     });
 

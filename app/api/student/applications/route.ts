@@ -107,10 +107,37 @@ export async function POST(req: NextRequest) {
       return errorResponse('You have already applied to this placement drive', 409);
     }
 
-    // Resume snapshot
-    const resumeToUse = parsedData.resumeUrl || student.resumeUrl;
+    // Determine resume to use (Specific Resume ID -> Explicit Resume URL -> Default Profile Resume)
+    let selectedResumeId: string | null = null;
+    let resumeToUse = parsedData.resumeUrl || null;
+
+    if (parsedData.resumeId) {
+      const targetResume = await prisma.studentResume.findFirst({
+        where: { id: parsedData.resumeId, studentId: student.id },
+      });
+
+      if (!targetResume) {
+        return errorResponse('Selected resume not found or does not belong to you', 400);
+      }
+
+      selectedResumeId = targetResume.id;
+      resumeToUse = targetResume.fileUrl;
+    } else if (!resumeToUse) {
+      // Find student default resume
+      const defaultResume = await prisma.studentResume.findFirst({
+        where: { studentId: student.id, isDefault: true },
+      });
+
+      if (defaultResume) {
+        selectedResumeId = defaultResume.id;
+        resumeToUse = defaultResume.fileUrl;
+      } else {
+        resumeToUse = student.resumeUrl;
+      }
+    }
+
     if (!resumeToUse) {
-      return errorResponse('A resume is required to apply. Please provide a resume URL or update your profile.', 400);
+      return errorResponse('A resume is required to apply. Please upload a resume to your profile first.', 400);
     }
 
     // Create Application
@@ -119,6 +146,7 @@ export async function POST(req: NextRequest) {
         jobId: job.id,
         studentId: student.id,
         status: 'APPLIED',
+        resumeId: selectedResumeId,
         resumeUrl: resumeToUse,
       },
       include: {

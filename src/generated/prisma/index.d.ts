@@ -34,6 +34,11 @@ export type TpoProfile = $Result.DefaultSelection<Prisma.$TpoProfilePayload>
  */
 export type StudentProfile = $Result.DefaultSelection<Prisma.$StudentProfilePayload>
 /**
+ * Model StudentResume
+ * 
+ */
+export type StudentResume = $Result.DefaultSelection<Prisma.$StudentResumePayload>
+/**
  * Model Company
  * 
  */
@@ -64,9 +69,10 @@ export type Offer = $Result.DefaultSelection<Prisma.$OfferPayload>
  */
 export namespace $Enums {
   export const Role: {
-  STUDENT: 'STUDENT',
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  TPO_ADMIN: 'TPO_ADMIN',
   RECRUITER: 'RECRUITER',
-  TPO_ADMIN: 'TPO_ADMIN'
+  STUDENT: 'STUDENT'
 };
 
 export type Role = (typeof Role)[keyof typeof Role]
@@ -297,6 +303,16 @@ export class PrismaClient<
     * ```
     */
   get studentProfile(): Prisma.StudentProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.studentResume`: Exposes CRUD operations for the **StudentResume** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StudentResumes
+    * const studentResumes = await prisma.studentResume.findMany()
+    * ```
+    */
+  get studentResume(): Prisma.StudentResumeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.company`: Exposes CRUD operations for the **Company** model.
@@ -798,6 +814,7 @@ export namespace Prisma {
     College: 'College',
     TpoProfile: 'TpoProfile',
     StudentProfile: 'StudentProfile',
+    StudentResume: 'StudentResume',
     Company: 'Company',
     RecruiterProfile: 'RecruiterProfile',
     Job: 'Job',
@@ -818,7 +835,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "company" | "recruiterProfile" | "job" | "application" | "offer"
+      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "studentResume" | "company" | "recruiterProfile" | "job" | "application" | "offer"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1115,6 +1132,80 @@ export namespace Prisma {
           count: {
             args: Prisma.StudentProfileCountArgs<ExtArgs>
             result: $Utils.Optional<StudentProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      StudentResume: {
+        payload: Prisma.$StudentResumePayload<ExtArgs>
+        fields: Prisma.StudentResumeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StudentResumeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StudentResumeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>
+          }
+          findFirst: {
+            args: Prisma.StudentResumeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StudentResumeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>
+          }
+          findMany: {
+            args: Prisma.StudentResumeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>[]
+          }
+          create: {
+            args: Prisma.StudentResumeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>
+          }
+          createMany: {
+            args: Prisma.StudentResumeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StudentResumeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>[]
+          }
+          delete: {
+            args: Prisma.StudentResumeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>
+          }
+          update: {
+            args: Prisma.StudentResumeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>
+          }
+          deleteMany: {
+            args: Prisma.StudentResumeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StudentResumeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StudentResumeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>[]
+          }
+          upsert: {
+            args: Prisma.StudentResumeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StudentResumePayload>
+          }
+          aggregate: {
+            args: Prisma.StudentResumeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStudentResume>
+          }
+          groupBy: {
+            args: Prisma.StudentResumeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StudentResumeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StudentResumeCountArgs<ExtArgs>
+            result: $Utils.Optional<StudentResumeCountAggregateOutputType> | number
           }
         }
       }
@@ -1615,6 +1706,7 @@ export namespace Prisma {
     college?: CollegeOmit
     tpoProfile?: TpoProfileOmit
     studentProfile?: StudentProfileOmit
+    studentResume?: StudentResumeOmit
     company?: CompanyOmit
     recruiterProfile?: RecruiterProfileOmit
     job?: JobOmit
@@ -1758,11 +1850,13 @@ export namespace Prisma {
    */
 
   export type StudentProfileCountOutputType = {
+    resumes: number
     applications: number
     offers: number
   }
 
   export type StudentProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    resumes?: boolean | StudentProfileCountOutputTypeCountResumesArgs
     applications?: boolean | StudentProfileCountOutputTypeCountApplicationsArgs
     offers?: boolean | StudentProfileCountOutputTypeCountOffersArgs
   }
@@ -1781,6 +1875,13 @@ export namespace Prisma {
   /**
    * StudentProfileCountOutputType without action
    */
+  export type StudentProfileCountOutputTypeCountResumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentResumeWhereInput
+  }
+
+  /**
+   * StudentProfileCountOutputType without action
+   */
   export type StudentProfileCountOutputTypeCountApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ApplicationWhereInput
   }
@@ -1790,6 +1891,37 @@ export namespace Prisma {
    */
   export type StudentProfileCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OfferWhereInput
+  }
+
+
+  /**
+   * Count Type StudentResumeCountOutputType
+   */
+
+  export type StudentResumeCountOutputType = {
+    applications: number
+  }
+
+  export type StudentResumeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    applications?: boolean | StudentResumeCountOutputTypeCountApplicationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StudentResumeCountOutputType without action
+   */
+  export type StudentResumeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResumeCountOutputType
+     */
+    select?: StudentResumeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StudentResumeCountOutputType without action
+   */
+  export type StudentResumeCountOutputTypeCountApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApplicationWhereInput
   }
 
 
@@ -5651,6 +5783,7 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
+    resumes?: boolean | StudentProfile$resumesArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
     offers?: boolean | StudentProfile$offersArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -5724,6 +5857,7 @@ export namespace Prisma {
   export type StudentProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
+    resumes?: boolean | StudentProfile$resumesArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
     offers?: boolean | StudentProfile$offersArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -5742,6 +5876,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       college: Prisma.$CollegePayload<ExtArgs>
+      resumes: Prisma.$StudentResumePayload<ExtArgs>[]
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
       offers: Prisma.$OfferPayload<ExtArgs>[]
     }
@@ -6159,6 +6294,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    resumes<T extends StudentProfile$resumesArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     applications<T extends StudentProfile$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     offers<T extends StudentProfile$offersArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -6608,6 +6744,30 @@ export namespace Prisma {
   }
 
   /**
+   * StudentProfile.resumes
+   */
+  export type StudentProfile$resumesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    where?: StudentResumeWhereInput
+    orderBy?: StudentResumeOrderByWithRelationInput | StudentResumeOrderByWithRelationInput[]
+    cursor?: StudentResumeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudentResumeScalarFieldEnum | StudentResumeScalarFieldEnum[]
+  }
+
+  /**
    * StudentProfile.applications
    */
   export type StudentProfile$applicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6671,6 +6831,1198 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: StudentProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StudentResume
+   */
+
+  export type AggregateStudentResume = {
+    _count: StudentResumeCountAggregateOutputType | null
+    _avg: StudentResumeAvgAggregateOutputType | null
+    _sum: StudentResumeSumAggregateOutputType | null
+    _min: StudentResumeMinAggregateOutputType | null
+    _max: StudentResumeMaxAggregateOutputType | null
+  }
+
+  export type StudentResumeAvgAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type StudentResumeSumAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type StudentResumeMinAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    title: string | null
+    fileUrl: string | null
+    publicId: string | null
+    fileType: string | null
+    fileSize: number | null
+    isDefault: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StudentResumeMaxAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    title: string | null
+    fileUrl: string | null
+    publicId: string | null
+    fileType: string | null
+    fileSize: number | null
+    isDefault: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StudentResumeCountAggregateOutputType = {
+    id: number
+    studentId: number
+    title: number
+    fileUrl: number
+    publicId: number
+    fileType: number
+    fileSize: number
+    isDefault: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StudentResumeAvgAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type StudentResumeSumAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type StudentResumeMinAggregateInputType = {
+    id?: true
+    studentId?: true
+    title?: true
+    fileUrl?: true
+    publicId?: true
+    fileType?: true
+    fileSize?: true
+    isDefault?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StudentResumeMaxAggregateInputType = {
+    id?: true
+    studentId?: true
+    title?: true
+    fileUrl?: true
+    publicId?: true
+    fileType?: true
+    fileSize?: true
+    isDefault?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StudentResumeCountAggregateInputType = {
+    id?: true
+    studentId?: true
+    title?: true
+    fileUrl?: true
+    publicId?: true
+    fileType?: true
+    fileSize?: true
+    isDefault?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StudentResumeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StudentResume to aggregate.
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StudentResumes to fetch.
+     */
+    orderBy?: StudentResumeOrderByWithRelationInput | StudentResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StudentResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StudentResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StudentResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StudentResumes
+    **/
+    _count?: true | StudentResumeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StudentResumeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StudentResumeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StudentResumeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StudentResumeMaxAggregateInputType
+  }
+
+  export type GetStudentResumeAggregateType<T extends StudentResumeAggregateArgs> = {
+        [P in keyof T & keyof AggregateStudentResume]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStudentResume[P]>
+      : GetScalarType<T[P], AggregateStudentResume[P]>
+  }
+
+
+
+
+  export type StudentResumeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentResumeWhereInput
+    orderBy?: StudentResumeOrderByWithAggregationInput | StudentResumeOrderByWithAggregationInput[]
+    by: StudentResumeScalarFieldEnum[] | StudentResumeScalarFieldEnum
+    having?: StudentResumeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StudentResumeCountAggregateInputType | true
+    _avg?: StudentResumeAvgAggregateInputType
+    _sum?: StudentResumeSumAggregateInputType
+    _min?: StudentResumeMinAggregateInputType
+    _max?: StudentResumeMaxAggregateInputType
+  }
+
+  export type StudentResumeGroupByOutputType = {
+    id: string
+    studentId: string
+    title: string
+    fileUrl: string
+    publicId: string | null
+    fileType: string | null
+    fileSize: number | null
+    isDefault: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: StudentResumeCountAggregateOutputType | null
+    _avg: StudentResumeAvgAggregateOutputType | null
+    _sum: StudentResumeSumAggregateOutputType | null
+    _min: StudentResumeMinAggregateOutputType | null
+    _max: StudentResumeMaxAggregateOutputType | null
+  }
+
+  type GetStudentResumeGroupByPayload<T extends StudentResumeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StudentResumeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StudentResumeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StudentResumeGroupByOutputType[P]>
+            : GetScalarType<T[P], StudentResumeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StudentResumeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    title?: boolean
+    fileUrl?: boolean
+    publicId?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    isDefault?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    applications?: boolean | StudentResume$applicationsArgs<ExtArgs>
+    _count?: boolean | StudentResumeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["studentResume"]>
+
+  export type StudentResumeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    title?: boolean
+    fileUrl?: boolean
+    publicId?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    isDefault?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["studentResume"]>
+
+  export type StudentResumeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    title?: boolean
+    fileUrl?: boolean
+    publicId?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    isDefault?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["studentResume"]>
+
+  export type StudentResumeSelectScalar = {
+    id?: boolean
+    studentId?: boolean
+    title?: boolean
+    fileUrl?: boolean
+    publicId?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    isDefault?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StudentResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "title" | "fileUrl" | "publicId" | "fileType" | "fileSize" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["studentResume"]>
+  export type StudentResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    applications?: boolean | StudentResume$applicationsArgs<ExtArgs>
+    _count?: boolean | StudentResumeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StudentResumeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+  }
+  export type StudentResumeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+  }
+
+  export type $StudentResumePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StudentResume"
+    objects: {
+      student: Prisma.$StudentProfilePayload<ExtArgs>
+      applications: Prisma.$ApplicationPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      studentId: string
+      title: string
+      fileUrl: string
+      publicId: string | null
+      fileType: string | null
+      fileSize: number | null
+      isDefault: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["studentResume"]>
+    composites: {}
+  }
+
+  type StudentResumeGetPayload<S extends boolean | null | undefined | StudentResumeDefaultArgs> = $Result.GetResult<Prisma.$StudentResumePayload, S>
+
+  type StudentResumeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StudentResumeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StudentResumeCountAggregateInputType | true
+    }
+
+  export interface StudentResumeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StudentResume'], meta: { name: 'StudentResume' } }
+    /**
+     * Find zero or one StudentResume that matches the filter.
+     * @param {StudentResumeFindUniqueArgs} args - Arguments to find a StudentResume
+     * @example
+     * // Get one StudentResume
+     * const studentResume = await prisma.studentResume.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StudentResumeFindUniqueArgs>(args: SelectSubset<T, StudentResumeFindUniqueArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StudentResume that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StudentResumeFindUniqueOrThrowArgs} args - Arguments to find a StudentResume
+     * @example
+     * // Get one StudentResume
+     * const studentResume = await prisma.studentResume.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StudentResumeFindUniqueOrThrowArgs>(args: SelectSubset<T, StudentResumeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StudentResume that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeFindFirstArgs} args - Arguments to find a StudentResume
+     * @example
+     * // Get one StudentResume
+     * const studentResume = await prisma.studentResume.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StudentResumeFindFirstArgs>(args?: SelectSubset<T, StudentResumeFindFirstArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StudentResume that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeFindFirstOrThrowArgs} args - Arguments to find a StudentResume
+     * @example
+     * // Get one StudentResume
+     * const studentResume = await prisma.studentResume.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StudentResumeFindFirstOrThrowArgs>(args?: SelectSubset<T, StudentResumeFindFirstOrThrowArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StudentResumes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StudentResumes
+     * const studentResumes = await prisma.studentResume.findMany()
+     * 
+     * // Get first 10 StudentResumes
+     * const studentResumes = await prisma.studentResume.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const studentResumeWithIdOnly = await prisma.studentResume.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StudentResumeFindManyArgs>(args?: SelectSubset<T, StudentResumeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StudentResume.
+     * @param {StudentResumeCreateArgs} args - Arguments to create a StudentResume.
+     * @example
+     * // Create one StudentResume
+     * const StudentResume = await prisma.studentResume.create({
+     *   data: {
+     *     // ... data to create a StudentResume
+     *   }
+     * })
+     * 
+     */
+    create<T extends StudentResumeCreateArgs>(args: SelectSubset<T, StudentResumeCreateArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StudentResumes.
+     * @param {StudentResumeCreateManyArgs} args - Arguments to create many StudentResumes.
+     * @example
+     * // Create many StudentResumes
+     * const studentResume = await prisma.studentResume.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StudentResumeCreateManyArgs>(args?: SelectSubset<T, StudentResumeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StudentResumes and returns the data saved in the database.
+     * @param {StudentResumeCreateManyAndReturnArgs} args - Arguments to create many StudentResumes.
+     * @example
+     * // Create many StudentResumes
+     * const studentResume = await prisma.studentResume.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StudentResumes and only return the `id`
+     * const studentResumeWithIdOnly = await prisma.studentResume.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StudentResumeCreateManyAndReturnArgs>(args?: SelectSubset<T, StudentResumeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StudentResume.
+     * @param {StudentResumeDeleteArgs} args - Arguments to delete one StudentResume.
+     * @example
+     * // Delete one StudentResume
+     * const StudentResume = await prisma.studentResume.delete({
+     *   where: {
+     *     // ... filter to delete one StudentResume
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StudentResumeDeleteArgs>(args: SelectSubset<T, StudentResumeDeleteArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StudentResume.
+     * @param {StudentResumeUpdateArgs} args - Arguments to update one StudentResume.
+     * @example
+     * // Update one StudentResume
+     * const studentResume = await prisma.studentResume.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StudentResumeUpdateArgs>(args: SelectSubset<T, StudentResumeUpdateArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StudentResumes.
+     * @param {StudentResumeDeleteManyArgs} args - Arguments to filter StudentResumes to delete.
+     * @example
+     * // Delete a few StudentResumes
+     * const { count } = await prisma.studentResume.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StudentResumeDeleteManyArgs>(args?: SelectSubset<T, StudentResumeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StudentResumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StudentResumes
+     * const studentResume = await prisma.studentResume.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StudentResumeUpdateManyArgs>(args: SelectSubset<T, StudentResumeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StudentResumes and returns the data updated in the database.
+     * @param {StudentResumeUpdateManyAndReturnArgs} args - Arguments to update many StudentResumes.
+     * @example
+     * // Update many StudentResumes
+     * const studentResume = await prisma.studentResume.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StudentResumes and only return the `id`
+     * const studentResumeWithIdOnly = await prisma.studentResume.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StudentResumeUpdateManyAndReturnArgs>(args: SelectSubset<T, StudentResumeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StudentResume.
+     * @param {StudentResumeUpsertArgs} args - Arguments to update or create a StudentResume.
+     * @example
+     * // Update or create a StudentResume
+     * const studentResume = await prisma.studentResume.upsert({
+     *   create: {
+     *     // ... data to create a StudentResume
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StudentResume we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StudentResumeUpsertArgs>(args: SelectSubset<T, StudentResumeUpsertArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StudentResumes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeCountArgs} args - Arguments to filter StudentResumes to count.
+     * @example
+     * // Count the number of StudentResumes
+     * const count = await prisma.studentResume.count({
+     *   where: {
+     *     // ... the filter for the StudentResumes we want to count
+     *   }
+     * })
+    **/
+    count<T extends StudentResumeCountArgs>(
+      args?: Subset<T, StudentResumeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StudentResumeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StudentResume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StudentResumeAggregateArgs>(args: Subset<T, StudentResumeAggregateArgs>): Prisma.PrismaPromise<GetStudentResumeAggregateType<T>>
+
+    /**
+     * Group by StudentResume.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StudentResumeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StudentResumeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StudentResumeGroupByArgs['orderBy'] }
+        : { orderBy?: StudentResumeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StudentResumeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStudentResumeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StudentResume model
+   */
+  readonly fields: StudentResumeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StudentResume.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StudentResumeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    student<T extends StudentProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfileDefaultArgs<ExtArgs>>): Prisma__StudentProfileClient<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    applications<T extends StudentResume$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, StudentResume$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StudentResume model
+   */
+  interface StudentResumeFieldRefs {
+    readonly id: FieldRef<"StudentResume", 'String'>
+    readonly studentId: FieldRef<"StudentResume", 'String'>
+    readonly title: FieldRef<"StudentResume", 'String'>
+    readonly fileUrl: FieldRef<"StudentResume", 'String'>
+    readonly publicId: FieldRef<"StudentResume", 'String'>
+    readonly fileType: FieldRef<"StudentResume", 'String'>
+    readonly fileSize: FieldRef<"StudentResume", 'Int'>
+    readonly isDefault: FieldRef<"StudentResume", 'Boolean'>
+    readonly createdAt: FieldRef<"StudentResume", 'DateTime'>
+    readonly updatedAt: FieldRef<"StudentResume", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StudentResume findUnique
+   */
+  export type StudentResumeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which StudentResume to fetch.
+     */
+    where: StudentResumeWhereUniqueInput
+  }
+
+  /**
+   * StudentResume findUniqueOrThrow
+   */
+  export type StudentResumeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which StudentResume to fetch.
+     */
+    where: StudentResumeWhereUniqueInput
+  }
+
+  /**
+   * StudentResume findFirst
+   */
+  export type StudentResumeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which StudentResume to fetch.
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StudentResumes to fetch.
+     */
+    orderBy?: StudentResumeOrderByWithRelationInput | StudentResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StudentResumes.
+     */
+    cursor?: StudentResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StudentResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StudentResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StudentResumes.
+     */
+    distinct?: StudentResumeScalarFieldEnum | StudentResumeScalarFieldEnum[]
+  }
+
+  /**
+   * StudentResume findFirstOrThrow
+   */
+  export type StudentResumeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which StudentResume to fetch.
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StudentResumes to fetch.
+     */
+    orderBy?: StudentResumeOrderByWithRelationInput | StudentResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StudentResumes.
+     */
+    cursor?: StudentResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StudentResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StudentResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StudentResumes.
+     */
+    distinct?: StudentResumeScalarFieldEnum | StudentResumeScalarFieldEnum[]
+  }
+
+  /**
+   * StudentResume findMany
+   */
+  export type StudentResumeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * Filter, which StudentResumes to fetch.
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StudentResumes to fetch.
+     */
+    orderBy?: StudentResumeOrderByWithRelationInput | StudentResumeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StudentResumes.
+     */
+    cursor?: StudentResumeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StudentResumes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StudentResumes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StudentResumes.
+     */
+    distinct?: StudentResumeScalarFieldEnum | StudentResumeScalarFieldEnum[]
+  }
+
+  /**
+   * StudentResume create
+   */
+  export type StudentResumeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StudentResume.
+     */
+    data: XOR<StudentResumeCreateInput, StudentResumeUncheckedCreateInput>
+  }
+
+  /**
+   * StudentResume createMany
+   */
+  export type StudentResumeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StudentResumes.
+     */
+    data: StudentResumeCreateManyInput | StudentResumeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StudentResume createManyAndReturn
+   */
+  export type StudentResumeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * The data used to create many StudentResumes.
+     */
+    data: StudentResumeCreateManyInput | StudentResumeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StudentResume update
+   */
+  export type StudentResumeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StudentResume.
+     */
+    data: XOR<StudentResumeUpdateInput, StudentResumeUncheckedUpdateInput>
+    /**
+     * Choose, which StudentResume to update.
+     */
+    where: StudentResumeWhereUniqueInput
+  }
+
+  /**
+   * StudentResume updateMany
+   */
+  export type StudentResumeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StudentResumes.
+     */
+    data: XOR<StudentResumeUpdateManyMutationInput, StudentResumeUncheckedUpdateManyInput>
+    /**
+     * Filter which StudentResumes to update
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * Limit how many StudentResumes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StudentResume updateManyAndReturn
+   */
+  export type StudentResumeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * The data used to update StudentResumes.
+     */
+    data: XOR<StudentResumeUpdateManyMutationInput, StudentResumeUncheckedUpdateManyInput>
+    /**
+     * Filter which StudentResumes to update
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * Limit how many StudentResumes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StudentResume upsert
+   */
+  export type StudentResumeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StudentResume to update in case it exists.
+     */
+    where: StudentResumeWhereUniqueInput
+    /**
+     * In case the StudentResume found by the `where` argument doesn't exist, create a new StudentResume with this data.
+     */
+    create: XOR<StudentResumeCreateInput, StudentResumeUncheckedCreateInput>
+    /**
+     * In case the StudentResume was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StudentResumeUpdateInput, StudentResumeUncheckedUpdateInput>
+  }
+
+  /**
+   * StudentResume delete
+   */
+  export type StudentResumeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    /**
+     * Filter which StudentResume to delete.
+     */
+    where: StudentResumeWhereUniqueInput
+  }
+
+  /**
+   * StudentResume deleteMany
+   */
+  export type StudentResumeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StudentResumes to delete
+     */
+    where?: StudentResumeWhereInput
+    /**
+     * Limit how many StudentResumes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StudentResume.applications
+   */
+  export type StudentResume$applicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Application
+     */
+    select?: ApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Application
+     */
+    omit?: ApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApplicationInclude<ExtArgs> | null
+    where?: ApplicationWhereInput
+    orderBy?: ApplicationOrderByWithRelationInput | ApplicationOrderByWithRelationInput[]
+    cursor?: ApplicationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApplicationScalarFieldEnum | ApplicationScalarFieldEnum[]
+  }
+
+  /**
+   * StudentResume without action
+   */
+  export type StudentResumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
   }
 
 
@@ -10258,6 +11610,7 @@ export namespace Prisma {
     jobId: string | null
     studentId: string | null
     status: $Enums.ApplicationStatus | null
+    resumeId: string | null
     resumeUrl: string | null
     notes: string | null
     createdAt: Date | null
@@ -10269,6 +11622,7 @@ export namespace Prisma {
     jobId: string | null
     studentId: string | null
     status: $Enums.ApplicationStatus | null
+    resumeId: string | null
     resumeUrl: string | null
     notes: string | null
     createdAt: Date | null
@@ -10280,6 +11634,7 @@ export namespace Prisma {
     jobId: number
     studentId: number
     status: number
+    resumeId: number
     resumeUrl: number
     notes: number
     createdAt: number
@@ -10293,6 +11648,7 @@ export namespace Prisma {
     jobId?: true
     studentId?: true
     status?: true
+    resumeId?: true
     resumeUrl?: true
     notes?: true
     createdAt?: true
@@ -10304,6 +11660,7 @@ export namespace Prisma {
     jobId?: true
     studentId?: true
     status?: true
+    resumeId?: true
     resumeUrl?: true
     notes?: true
     createdAt?: true
@@ -10315,6 +11672,7 @@ export namespace Prisma {
     jobId?: true
     studentId?: true
     status?: true
+    resumeId?: true
     resumeUrl?: true
     notes?: true
     createdAt?: true
@@ -10399,6 +11757,7 @@ export namespace Prisma {
     jobId: string
     studentId: string
     status: $Enums.ApplicationStatus
+    resumeId: string | null
     resumeUrl: string | null
     notes: string | null
     createdAt: Date
@@ -10427,12 +11786,14 @@ export namespace Prisma {
     jobId?: boolean
     studentId?: boolean
     status?: boolean
+    resumeId?: boolean
     resumeUrl?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    resume?: boolean | Application$resumeArgs<ExtArgs>
     offer?: boolean | Application$offerArgs<ExtArgs>
   }, ExtArgs["result"]["application"]>
 
@@ -10441,12 +11802,14 @@ export namespace Prisma {
     jobId?: boolean
     studentId?: boolean
     status?: boolean
+    resumeId?: boolean
     resumeUrl?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    resume?: boolean | Application$resumeArgs<ExtArgs>
   }, ExtArgs["result"]["application"]>
 
   export type ApplicationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10454,12 +11817,14 @@ export namespace Prisma {
     jobId?: boolean
     studentId?: boolean
     status?: boolean
+    resumeId?: boolean
     resumeUrl?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    resume?: boolean | Application$resumeArgs<ExtArgs>
   }, ExtArgs["result"]["application"]>
 
   export type ApplicationSelectScalar = {
@@ -10467,25 +11832,29 @@ export namespace Prisma {
     jobId?: boolean
     studentId?: boolean
     status?: boolean
+    resumeId?: boolean
     resumeUrl?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "studentId" | "status" | "resumeUrl" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+  export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "studentId" | "status" | "resumeId" | "resumeUrl" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
   export type ApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    resume?: boolean | Application$resumeArgs<ExtArgs>
     offer?: boolean | Application$offerArgs<ExtArgs>
   }
   export type ApplicationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    resume?: boolean | Application$resumeArgs<ExtArgs>
   }
   export type ApplicationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    resume?: boolean | Application$resumeArgs<ExtArgs>
   }
 
   export type $ApplicationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10493,6 +11862,7 @@ export namespace Prisma {
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
       student: Prisma.$StudentProfilePayload<ExtArgs>
+      resume: Prisma.$StudentResumePayload<ExtArgs> | null
       offer: Prisma.$OfferPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -10500,6 +11870,7 @@ export namespace Prisma {
       jobId: string
       studentId: string
       status: $Enums.ApplicationStatus
+      resumeId: string | null
       resumeUrl: string | null
       notes: string | null
       createdAt: Date
@@ -10900,6 +12271,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     student<T extends StudentProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfileDefaultArgs<ExtArgs>>): Prisma__StudentProfileClient<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    resume<T extends Application$resumeArgs<ExtArgs> = {}>(args?: Subset<T, Application$resumeArgs<ExtArgs>>): Prisma__StudentResumeClient<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     offer<T extends Application$offerArgs<ExtArgs> = {}>(args?: Subset<T, Application$offerArgs<ExtArgs>>): Prisma__OfferClient<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10934,6 +12306,7 @@ export namespace Prisma {
     readonly jobId: FieldRef<"Application", 'String'>
     readonly studentId: FieldRef<"Application", 'String'>
     readonly status: FieldRef<"Application", 'ApplicationStatus'>
+    readonly resumeId: FieldRef<"Application", 'String'>
     readonly resumeUrl: FieldRef<"Application", 'String'>
     readonly notes: FieldRef<"Application", 'String'>
     readonly createdAt: FieldRef<"Application", 'DateTime'>
@@ -11336,6 +12709,25 @@ export namespace Prisma {
      * Limit how many Applications to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Application.resume
+   */
+  export type Application$resumeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentResume
+     */
+    select?: StudentResumeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentResume
+     */
+    omit?: StudentResumeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentResumeInclude<ExtArgs> | null
+    where?: StudentResumeWhereInput
   }
 
   /**
@@ -12719,6 +14111,22 @@ export namespace Prisma {
   export type StudentProfileScalarFieldEnum = (typeof StudentProfileScalarFieldEnum)[keyof typeof StudentProfileScalarFieldEnum]
 
 
+  export const StudentResumeScalarFieldEnum: {
+    id: 'id',
+    studentId: 'studentId',
+    title: 'title',
+    fileUrl: 'fileUrl',
+    publicId: 'publicId',
+    fileType: 'fileType',
+    fileSize: 'fileSize',
+    isDefault: 'isDefault',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StudentResumeScalarFieldEnum = (typeof StudentResumeScalarFieldEnum)[keyof typeof StudentResumeScalarFieldEnum]
+
+
   export const CompanyScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -12773,6 +14181,7 @@ export namespace Prisma {
     jobId: 'jobId',
     studentId: 'studentId',
     status: 'status',
+    resumeId: 'resumeId',
     resumeUrl: 'resumeUrl',
     notes: 'notes',
     createdAt: 'createdAt',
@@ -13222,6 +14631,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StudentProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+    resumes?: StudentResumeListRelationFilter
     applications?: ApplicationListRelationFilter
     offers?: OfferListRelationFilter
   }
@@ -13246,6 +14656,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     college?: CollegeOrderByWithRelationInput
+    resumes?: StudentResumeOrderByRelationAggregateInput
     applications?: ApplicationOrderByRelationAggregateInput
     offers?: OfferOrderByRelationAggregateInput
   }
@@ -13273,6 +14684,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StudentProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+    resumes?: StudentResumeListRelationFilter
     applications?: ApplicationListRelationFilter
     offers?: OfferListRelationFilter
   }, "id" | "userId" | "enrollmentNumber">
@@ -13323,6 +14735,91 @@ export namespace Prisma {
     isVerified?: BoolWithAggregatesFilter<"StudentProfile"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"StudentProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"StudentProfile"> | Date | string
+  }
+
+  export type StudentResumeWhereInput = {
+    AND?: StudentResumeWhereInput | StudentResumeWhereInput[]
+    OR?: StudentResumeWhereInput[]
+    NOT?: StudentResumeWhereInput | StudentResumeWhereInput[]
+    id?: StringFilter<"StudentResume"> | string
+    studentId?: StringFilter<"StudentResume"> | string
+    title?: StringFilter<"StudentResume"> | string
+    fileUrl?: StringFilter<"StudentResume"> | string
+    publicId?: StringNullableFilter<"StudentResume"> | string | null
+    fileType?: StringNullableFilter<"StudentResume"> | string | null
+    fileSize?: IntNullableFilter<"StudentResume"> | number | null
+    isDefault?: BoolFilter<"StudentResume"> | boolean
+    createdAt?: DateTimeFilter<"StudentResume"> | Date | string
+    updatedAt?: DateTimeFilter<"StudentResume"> | Date | string
+    student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    applications?: ApplicationListRelationFilter
+  }
+
+  export type StudentResumeOrderByWithRelationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    title?: SortOrder
+    fileUrl?: SortOrder
+    publicId?: SortOrderInput | SortOrder
+    fileType?: SortOrderInput | SortOrder
+    fileSize?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    student?: StudentProfileOrderByWithRelationInput
+    applications?: ApplicationOrderByRelationAggregateInput
+  }
+
+  export type StudentResumeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StudentResumeWhereInput | StudentResumeWhereInput[]
+    OR?: StudentResumeWhereInput[]
+    NOT?: StudentResumeWhereInput | StudentResumeWhereInput[]
+    studentId?: StringFilter<"StudentResume"> | string
+    title?: StringFilter<"StudentResume"> | string
+    fileUrl?: StringFilter<"StudentResume"> | string
+    publicId?: StringNullableFilter<"StudentResume"> | string | null
+    fileType?: StringNullableFilter<"StudentResume"> | string | null
+    fileSize?: IntNullableFilter<"StudentResume"> | number | null
+    isDefault?: BoolFilter<"StudentResume"> | boolean
+    createdAt?: DateTimeFilter<"StudentResume"> | Date | string
+    updatedAt?: DateTimeFilter<"StudentResume"> | Date | string
+    student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    applications?: ApplicationListRelationFilter
+  }, "id">
+
+  export type StudentResumeOrderByWithAggregationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    title?: SortOrder
+    fileUrl?: SortOrder
+    publicId?: SortOrderInput | SortOrder
+    fileType?: SortOrderInput | SortOrder
+    fileSize?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StudentResumeCountOrderByAggregateInput
+    _avg?: StudentResumeAvgOrderByAggregateInput
+    _max?: StudentResumeMaxOrderByAggregateInput
+    _min?: StudentResumeMinOrderByAggregateInput
+    _sum?: StudentResumeSumOrderByAggregateInput
+  }
+
+  export type StudentResumeScalarWhereWithAggregatesInput = {
+    AND?: StudentResumeScalarWhereWithAggregatesInput | StudentResumeScalarWhereWithAggregatesInput[]
+    OR?: StudentResumeScalarWhereWithAggregatesInput[]
+    NOT?: StudentResumeScalarWhereWithAggregatesInput | StudentResumeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StudentResume"> | string
+    studentId?: StringWithAggregatesFilter<"StudentResume"> | string
+    title?: StringWithAggregatesFilter<"StudentResume"> | string
+    fileUrl?: StringWithAggregatesFilter<"StudentResume"> | string
+    publicId?: StringNullableWithAggregatesFilter<"StudentResume"> | string | null
+    fileType?: StringNullableWithAggregatesFilter<"StudentResume"> | string | null
+    fileSize?: IntNullableWithAggregatesFilter<"StudentResume"> | number | null
+    isDefault?: BoolWithAggregatesFilter<"StudentResume"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"StudentResume"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StudentResume"> | Date | string
   }
 
   export type CompanyWhereInput = {
@@ -13598,12 +15095,14 @@ export namespace Prisma {
     jobId?: StringFilter<"Application"> | string
     studentId?: StringFilter<"Application"> | string
     status?: EnumApplicationStatusFilter<"Application"> | $Enums.ApplicationStatus
+    resumeId?: StringNullableFilter<"Application"> | string | null
     resumeUrl?: StringNullableFilter<"Application"> | string | null
     notes?: StringNullableFilter<"Application"> | string | null
     createdAt?: DateTimeFilter<"Application"> | Date | string
     updatedAt?: DateTimeFilter<"Application"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    resume?: XOR<StudentResumeNullableScalarRelationFilter, StudentResumeWhereInput> | null
     offer?: XOR<OfferNullableScalarRelationFilter, OfferWhereInput> | null
   }
 
@@ -13612,12 +15111,14 @@ export namespace Prisma {
     jobId?: SortOrder
     studentId?: SortOrder
     status?: SortOrder
+    resumeId?: SortOrderInput | SortOrder
     resumeUrl?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     job?: JobOrderByWithRelationInput
     student?: StudentProfileOrderByWithRelationInput
+    resume?: StudentResumeOrderByWithRelationInput
     offer?: OfferOrderByWithRelationInput
   }
 
@@ -13630,12 +15131,14 @@ export namespace Prisma {
     jobId?: StringFilter<"Application"> | string
     studentId?: StringFilter<"Application"> | string
     status?: EnumApplicationStatusFilter<"Application"> | $Enums.ApplicationStatus
+    resumeId?: StringNullableFilter<"Application"> | string | null
     resumeUrl?: StringNullableFilter<"Application"> | string | null
     notes?: StringNullableFilter<"Application"> | string | null
     createdAt?: DateTimeFilter<"Application"> | Date | string
     updatedAt?: DateTimeFilter<"Application"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    resume?: XOR<StudentResumeNullableScalarRelationFilter, StudentResumeWhereInput> | null
     offer?: XOR<OfferNullableScalarRelationFilter, OfferWhereInput> | null
   }, "id" | "jobId_studentId">
 
@@ -13644,6 +15147,7 @@ export namespace Prisma {
     jobId?: SortOrder
     studentId?: SortOrder
     status?: SortOrder
+    resumeId?: SortOrderInput | SortOrder
     resumeUrl?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -13661,6 +15165,7 @@ export namespace Prisma {
     jobId?: StringWithAggregatesFilter<"Application"> | string
     studentId?: StringWithAggregatesFilter<"Application"> | string
     status?: EnumApplicationStatusWithAggregatesFilter<"Application"> | $Enums.ApplicationStatus
+    resumeId?: StringNullableWithAggregatesFilter<"Application"> | string | null
     resumeUrl?: StringNullableWithAggregatesFilter<"Application"> | string | null
     notes?: StringNullableWithAggregatesFilter<"Application"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Application"> | Date | string
@@ -14074,6 +15579,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
     college: CollegeCreateNestedOneWithoutStudentsInput
+    resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
   }
@@ -14096,6 +15602,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
@@ -14118,6 +15625,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
   }
@@ -14140,6 +15648,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
   }
@@ -14198,6 +15707,100 @@ export namespace Prisma {
     githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentResumeCreateInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentProfileCreateNestedOneWithoutResumesInput
+    applications?: ApplicationCreateNestedManyWithoutResumeInput
+  }
+
+  export type StudentResumeUncheckedCreateInput = {
+    id?: string
+    studentId: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutResumeInput
+  }
+
+  export type StudentResumeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUpdateOneRequiredWithoutResumesNestedInput
+    applications?: ApplicationUpdateManyWithoutResumeNestedInput
+  }
+
+  export type StudentResumeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  }
+
+  export type StudentResumeCreateManyInput = {
+    id?: string
+    studentId: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StudentResumeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentResumeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14507,6 +16110,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutApplicationsInput
     student: StudentProfileCreateNestedOneWithoutApplicationsInput
+    resume?: StudentResumeCreateNestedOneWithoutApplicationsInput
     offer?: OfferCreateNestedOneWithoutApplicationInput
   }
 
@@ -14515,6 +16119,7 @@ export namespace Prisma {
     jobId: string
     studentId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -14531,6 +16136,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
     student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+    resume?: StudentResumeUpdateOneWithoutApplicationsNestedInput
     offer?: OfferUpdateOneWithoutApplicationNestedInput
   }
 
@@ -14539,6 +16145,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14551,6 +16158,7 @@ export namespace Prisma {
     jobId: string
     studentId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -14571,6 +16179,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15050,10 +16659,20 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type StudentResumeListRelationFilter = {
+    every?: StudentResumeWhereInput
+    some?: StudentResumeWhereInput
+    none?: StudentResumeWhereInput
+  }
+
   export type ApplicationListRelationFilter = {
     every?: ApplicationWhereInput
     some?: ApplicationWhereInput
     none?: ApplicationWhereInput
+  }
+
+  export type StudentResumeOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ApplicationOrderByRelationAggregateInput = {
@@ -15178,6 +16797,85 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type StudentProfileScalarRelationFilter = {
+    is?: StudentProfileWhereInput
+    isNot?: StudentProfileWhereInput
+  }
+
+  export type StudentResumeCountOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    title?: SortOrder
+    fileUrl?: SortOrder
+    publicId?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    isDefault?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StudentResumeAvgOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type StudentResumeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    title?: SortOrder
+    fileUrl?: SortOrder
+    publicId?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    isDefault?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StudentResumeMinOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    title?: SortOrder
+    fileUrl?: SortOrder
+    publicId?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    isDefault?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StudentResumeSumOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type RecruiterProfileListRelationFilter = {
@@ -15375,9 +17073,9 @@ export namespace Prisma {
     isNot?: JobWhereInput
   }
 
-  export type StudentProfileScalarRelationFilter = {
-    is?: StudentProfileWhereInput
-    isNot?: StudentProfileWhereInput
+  export type StudentResumeNullableScalarRelationFilter = {
+    is?: StudentResumeWhereInput | null
+    isNot?: StudentResumeWhereInput | null
   }
 
   export type OfferNullableScalarRelationFilter = {
@@ -15395,6 +17093,7 @@ export namespace Prisma {
     jobId?: SortOrder
     studentId?: SortOrder
     status?: SortOrder
+    resumeId?: SortOrder
     resumeUrl?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -15406,6 +17105,7 @@ export namespace Prisma {
     jobId?: SortOrder
     studentId?: SortOrder
     status?: SortOrder
+    resumeId?: SortOrder
     resumeUrl?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -15417,6 +17117,7 @@ export namespace Prisma {
     jobId?: SortOrder
     studentId?: SortOrder
     status?: SortOrder
+    resumeId?: SortOrder
     resumeUrl?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -15871,6 +17572,13 @@ export namespace Prisma {
     connect?: CollegeWhereUniqueInput
   }
 
+  export type StudentResumeCreateNestedManyWithoutStudentInput = {
+    create?: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput> | StudentResumeCreateWithoutStudentInput[] | StudentResumeUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: StudentResumeCreateOrConnectWithoutStudentInput | StudentResumeCreateOrConnectWithoutStudentInput[]
+    createMany?: StudentResumeCreateManyStudentInputEnvelope
+    connect?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+  }
+
   export type ApplicationCreateNestedManyWithoutStudentInput = {
     create?: XOR<ApplicationCreateWithoutStudentInput, ApplicationUncheckedCreateWithoutStudentInput> | ApplicationCreateWithoutStudentInput[] | ApplicationUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutStudentInput | ApplicationCreateOrConnectWithoutStudentInput[]
@@ -15883,6 +17591,13 @@ export namespace Prisma {
     connectOrCreate?: OfferCreateOrConnectWithoutStudentInput | OfferCreateOrConnectWithoutStudentInput[]
     createMany?: OfferCreateManyStudentInputEnvelope
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
+  export type StudentResumeUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput> | StudentResumeCreateWithoutStudentInput[] | StudentResumeUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: StudentResumeCreateOrConnectWithoutStudentInput | StudentResumeCreateOrConnectWithoutStudentInput[]
+    createMany?: StudentResumeCreateManyStudentInputEnvelope
+    connect?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
   }
 
   export type ApplicationUncheckedCreateNestedManyWithoutStudentInput = {
@@ -15944,6 +17659,20 @@ export namespace Prisma {
     update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutStudentsInput, CollegeUpdateWithoutStudentsInput>, CollegeUncheckedUpdateWithoutStudentsInput>
   }
 
+  export type StudentResumeUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput> | StudentResumeCreateWithoutStudentInput[] | StudentResumeUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: StudentResumeCreateOrConnectWithoutStudentInput | StudentResumeCreateOrConnectWithoutStudentInput[]
+    upsert?: StudentResumeUpsertWithWhereUniqueWithoutStudentInput | StudentResumeUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: StudentResumeCreateManyStudentInputEnvelope
+    set?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    disconnect?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    delete?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    connect?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    update?: StudentResumeUpdateWithWhereUniqueWithoutStudentInput | StudentResumeUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: StudentResumeUpdateManyWithWhereWithoutStudentInput | StudentResumeUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: StudentResumeScalarWhereInput | StudentResumeScalarWhereInput[]
+  }
+
   export type ApplicationUpdateManyWithoutStudentNestedInput = {
     create?: XOR<ApplicationCreateWithoutStudentInput, ApplicationUncheckedCreateWithoutStudentInput> | ApplicationCreateWithoutStudentInput[] | ApplicationUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutStudentInput | ApplicationCreateOrConnectWithoutStudentInput[]
@@ -15972,6 +17701,20 @@ export namespace Prisma {
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
+  export type StudentResumeUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput> | StudentResumeCreateWithoutStudentInput[] | StudentResumeUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: StudentResumeCreateOrConnectWithoutStudentInput | StudentResumeCreateOrConnectWithoutStudentInput[]
+    upsert?: StudentResumeUpsertWithWhereUniqueWithoutStudentInput | StudentResumeUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: StudentResumeCreateManyStudentInputEnvelope
+    set?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    disconnect?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    delete?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    connect?: StudentResumeWhereUniqueInput | StudentResumeWhereUniqueInput[]
+    update?: StudentResumeUpdateWithWhereUniqueWithoutStudentInput | StudentResumeUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: StudentResumeUpdateManyWithWhereWithoutStudentInput | StudentResumeUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: StudentResumeScalarWhereInput | StudentResumeScalarWhereInput[]
+  }
+
   export type ApplicationUncheckedUpdateManyWithoutStudentNestedInput = {
     create?: XOR<ApplicationCreateWithoutStudentInput, ApplicationUncheckedCreateWithoutStudentInput> | ApplicationCreateWithoutStudentInput[] | ApplicationUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutStudentInput | ApplicationCreateOrConnectWithoutStudentInput[]
@@ -15998,6 +17741,70 @@ export namespace Prisma {
     update?: OfferUpdateWithWhereUniqueWithoutStudentInput | OfferUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: OfferUpdateManyWithWhereWithoutStudentInput | OfferUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
+  export type StudentProfileCreateNestedOneWithoutResumesInput = {
+    create?: XOR<StudentProfileCreateWithoutResumesInput, StudentProfileUncheckedCreateWithoutResumesInput>
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutResumesInput
+    connect?: StudentProfileWhereUniqueInput
+  }
+
+  export type ApplicationCreateNestedManyWithoutResumeInput = {
+    create?: XOR<ApplicationCreateWithoutResumeInput, ApplicationUncheckedCreateWithoutResumeInput> | ApplicationCreateWithoutResumeInput[] | ApplicationUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: ApplicationCreateOrConnectWithoutResumeInput | ApplicationCreateOrConnectWithoutResumeInput[]
+    createMany?: ApplicationCreateManyResumeInputEnvelope
+    connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+  }
+
+  export type ApplicationUncheckedCreateNestedManyWithoutResumeInput = {
+    create?: XOR<ApplicationCreateWithoutResumeInput, ApplicationUncheckedCreateWithoutResumeInput> | ApplicationCreateWithoutResumeInput[] | ApplicationUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: ApplicationCreateOrConnectWithoutResumeInput | ApplicationCreateOrConnectWithoutResumeInput[]
+    createMany?: ApplicationCreateManyResumeInputEnvelope
+    connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type StudentProfileUpdateOneRequiredWithoutResumesNestedInput = {
+    create?: XOR<StudentProfileCreateWithoutResumesInput, StudentProfileUncheckedCreateWithoutResumesInput>
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutResumesInput
+    upsert?: StudentProfileUpsertWithoutResumesInput
+    connect?: StudentProfileWhereUniqueInput
+    update?: XOR<XOR<StudentProfileUpdateToOneWithWhereWithoutResumesInput, StudentProfileUpdateWithoutResumesInput>, StudentProfileUncheckedUpdateWithoutResumesInput>
+  }
+
+  export type ApplicationUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<ApplicationCreateWithoutResumeInput, ApplicationUncheckedCreateWithoutResumeInput> | ApplicationCreateWithoutResumeInput[] | ApplicationUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: ApplicationCreateOrConnectWithoutResumeInput | ApplicationCreateOrConnectWithoutResumeInput[]
+    upsert?: ApplicationUpsertWithWhereUniqueWithoutResumeInput | ApplicationUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: ApplicationCreateManyResumeInputEnvelope
+    set?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    disconnect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    delete?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    update?: ApplicationUpdateWithWhereUniqueWithoutResumeInput | ApplicationUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: ApplicationUpdateManyWithWhereWithoutResumeInput | ApplicationUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
+  }
+
+  export type ApplicationUncheckedUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<ApplicationCreateWithoutResumeInput, ApplicationUncheckedCreateWithoutResumeInput> | ApplicationCreateWithoutResumeInput[] | ApplicationUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: ApplicationCreateOrConnectWithoutResumeInput | ApplicationCreateOrConnectWithoutResumeInput[]
+    upsert?: ApplicationUpsertWithWhereUniqueWithoutResumeInput | ApplicationUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: ApplicationCreateManyResumeInputEnvelope
+    set?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    disconnect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    delete?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    connect?: ApplicationWhereUniqueInput | ApplicationWhereUniqueInput[]
+    update?: ApplicationUpdateWithWhereUniqueWithoutResumeInput | ApplicationUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: ApplicationUpdateManyWithWhereWithoutResumeInput | ApplicationUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
   }
 
   export type RecruiterProfileCreateNestedManyWithoutCompanyInput = {
@@ -16304,6 +18111,12 @@ export namespace Prisma {
     connect?: StudentProfileWhereUniqueInput
   }
 
+  export type StudentResumeCreateNestedOneWithoutApplicationsInput = {
+    create?: XOR<StudentResumeCreateWithoutApplicationsInput, StudentResumeUncheckedCreateWithoutApplicationsInput>
+    connectOrCreate?: StudentResumeCreateOrConnectWithoutApplicationsInput
+    connect?: StudentResumeWhereUniqueInput
+  }
+
   export type OfferCreateNestedOneWithoutApplicationInput = {
     create?: XOR<OfferCreateWithoutApplicationInput, OfferUncheckedCreateWithoutApplicationInput>
     connectOrCreate?: OfferCreateOrConnectWithoutApplicationInput
@@ -16334,6 +18147,16 @@ export namespace Prisma {
     upsert?: StudentProfileUpsertWithoutApplicationsInput
     connect?: StudentProfileWhereUniqueInput
     update?: XOR<XOR<StudentProfileUpdateToOneWithWhereWithoutApplicationsInput, StudentProfileUpdateWithoutApplicationsInput>, StudentProfileUncheckedUpdateWithoutApplicationsInput>
+  }
+
+  export type StudentResumeUpdateOneWithoutApplicationsNestedInput = {
+    create?: XOR<StudentResumeCreateWithoutApplicationsInput, StudentResumeUncheckedCreateWithoutApplicationsInput>
+    connectOrCreate?: StudentResumeCreateOrConnectWithoutApplicationsInput
+    upsert?: StudentResumeUpsertWithoutApplicationsInput
+    disconnect?: StudentResumeWhereInput | boolean
+    delete?: StudentResumeWhereInput | boolean
+    connect?: StudentResumeWhereUniqueInput
+    update?: XOR<XOR<StudentResumeUpdateToOneWithWhereWithoutApplicationsInput, StudentResumeUpdateWithoutApplicationsInput>, StudentResumeUncheckedUpdateWithoutApplicationsInput>
   }
 
   export type OfferUpdateOneWithoutApplicationNestedInput = {
@@ -16643,6 +18466,22 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
     in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
@@ -16753,6 +18592,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     college: CollegeCreateNestedOneWithoutStudentsInput
+    resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
   }
@@ -16774,6 +18614,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
@@ -16853,6 +18694,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
   }
@@ -16874,6 +18716,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
   }
@@ -16975,6 +18818,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
+    resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
   }
@@ -16996,6 +18840,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
@@ -17468,6 +19313,42 @@ export namespace Prisma {
     create: XOR<CollegeCreateWithoutStudentsInput, CollegeUncheckedCreateWithoutStudentsInput>
   }
 
+  export type StudentResumeCreateWithoutStudentInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationCreateNestedManyWithoutResumeInput
+  }
+
+  export type StudentResumeUncheckedCreateWithoutStudentInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutResumeInput
+  }
+
+  export type StudentResumeCreateOrConnectWithoutStudentInput = {
+    where: StudentResumeWhereUniqueInput
+    create: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput>
+  }
+
+  export type StudentResumeCreateManyStudentInputEnvelope = {
+    data: StudentResumeCreateManyStudentInput | StudentResumeCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ApplicationCreateWithoutStudentInput = {
     id?: string
     status?: $Enums.ApplicationStatus
@@ -17476,6 +19357,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutApplicationsInput
+    resume?: StudentResumeCreateNestedOneWithoutApplicationsInput
     offer?: OfferCreateNestedOneWithoutApplicationInput
   }
 
@@ -17483,6 +19365,7 @@ export namespace Prisma {
     id?: string
     jobId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -17630,6 +19513,38 @@ export namespace Prisma {
     offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
 
+  export type StudentResumeUpsertWithWhereUniqueWithoutStudentInput = {
+    where: StudentResumeWhereUniqueInput
+    update: XOR<StudentResumeUpdateWithoutStudentInput, StudentResumeUncheckedUpdateWithoutStudentInput>
+    create: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput>
+  }
+
+  export type StudentResumeUpdateWithWhereUniqueWithoutStudentInput = {
+    where: StudentResumeWhereUniqueInput
+    data: XOR<StudentResumeUpdateWithoutStudentInput, StudentResumeUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type StudentResumeUpdateManyWithWhereWithoutStudentInput = {
+    where: StudentResumeScalarWhereInput
+    data: XOR<StudentResumeUpdateManyMutationInput, StudentResumeUncheckedUpdateManyWithoutStudentInput>
+  }
+
+  export type StudentResumeScalarWhereInput = {
+    AND?: StudentResumeScalarWhereInput | StudentResumeScalarWhereInput[]
+    OR?: StudentResumeScalarWhereInput[]
+    NOT?: StudentResumeScalarWhereInput | StudentResumeScalarWhereInput[]
+    id?: StringFilter<"StudentResume"> | string
+    studentId?: StringFilter<"StudentResume"> | string
+    title?: StringFilter<"StudentResume"> | string
+    fileUrl?: StringFilter<"StudentResume"> | string
+    publicId?: StringNullableFilter<"StudentResume"> | string | null
+    fileType?: StringNullableFilter<"StudentResume"> | string | null
+    fileSize?: IntNullableFilter<"StudentResume"> | number | null
+    isDefault?: BoolFilter<"StudentResume"> | boolean
+    createdAt?: DateTimeFilter<"StudentResume"> | Date | string
+    updatedAt?: DateTimeFilter<"StudentResume"> | Date | string
+  }
+
   export type ApplicationUpsertWithWhereUniqueWithoutStudentInput = {
     where: ApplicationWhereUniqueInput
     update: XOR<ApplicationUpdateWithoutStudentInput, ApplicationUncheckedUpdateWithoutStudentInput>
@@ -17654,6 +19569,7 @@ export namespace Prisma {
     jobId?: StringFilter<"Application"> | string
     studentId?: StringFilter<"Application"> | string
     status?: EnumApplicationStatusFilter<"Application"> | $Enums.ApplicationStatus
+    resumeId?: StringNullableFilter<"Application"> | string | null
     resumeUrl?: StringNullableFilter<"Application"> | string | null
     notes?: StringNullableFilter<"Application"> | string | null
     createdAt?: DateTimeFilter<"Application"> | Date | string
@@ -17674,6 +19590,160 @@ export namespace Prisma {
   export type OfferUpdateManyWithWhereWithoutStudentInput = {
     where: OfferScalarWhereInput
     data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutStudentInput>
+  }
+
+  export type StudentProfileCreateWithoutResumesInput = {
+    id?: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStudentInput
+    college: CollegeCreateNestedOneWithoutStudentsInput
+    applications?: ApplicationCreateNestedManyWithoutStudentInput
+    offers?: OfferCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileUncheckedCreateWithoutResumesInput = {
+    id?: string
+    userId: string
+    collegeId: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+    offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileCreateOrConnectWithoutResumesInput = {
+    where: StudentProfileWhereUniqueInput
+    create: XOR<StudentProfileCreateWithoutResumesInput, StudentProfileUncheckedCreateWithoutResumesInput>
+  }
+
+  export type ApplicationCreateWithoutResumeInput = {
+    id?: string
+    status?: $Enums.ApplicationStatus
+    resumeUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutApplicationsInput
+    student: StudentProfileCreateNestedOneWithoutApplicationsInput
+    offer?: OfferCreateNestedOneWithoutApplicationInput
+  }
+
+  export type ApplicationUncheckedCreateWithoutResumeInput = {
+    id?: string
+    jobId: string
+    studentId: string
+    status?: $Enums.ApplicationStatus
+    resumeUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    offer?: OfferUncheckedCreateNestedOneWithoutApplicationInput
+  }
+
+  export type ApplicationCreateOrConnectWithoutResumeInput = {
+    where: ApplicationWhereUniqueInput
+    create: XOR<ApplicationCreateWithoutResumeInput, ApplicationUncheckedCreateWithoutResumeInput>
+  }
+
+  export type ApplicationCreateManyResumeInputEnvelope = {
+    data: ApplicationCreateManyResumeInput | ApplicationCreateManyResumeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StudentProfileUpsertWithoutResumesInput = {
+    update: XOR<StudentProfileUpdateWithoutResumesInput, StudentProfileUncheckedUpdateWithoutResumesInput>
+    create: XOR<StudentProfileCreateWithoutResumesInput, StudentProfileUncheckedCreateWithoutResumesInput>
+    where?: StudentProfileWhereInput
+  }
+
+  export type StudentProfileUpdateToOneWithWhereWithoutResumesInput = {
+    where?: StudentProfileWhereInput
+    data: XOR<StudentProfileUpdateWithoutResumesInput, StudentProfileUncheckedUpdateWithoutResumesInput>
+  }
+
+  export type StudentProfileUpdateWithoutResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    applications?: ApplicationUpdateManyWithoutStudentNestedInput
+    offers?: OfferUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentProfileUncheckedUpdateWithoutResumesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type ApplicationUpsertWithWhereUniqueWithoutResumeInput = {
+    where: ApplicationWhereUniqueInput
+    update: XOR<ApplicationUpdateWithoutResumeInput, ApplicationUncheckedUpdateWithoutResumeInput>
+    create: XOR<ApplicationCreateWithoutResumeInput, ApplicationUncheckedCreateWithoutResumeInput>
+  }
+
+  export type ApplicationUpdateWithWhereUniqueWithoutResumeInput = {
+    where: ApplicationWhereUniqueInput
+    data: XOR<ApplicationUpdateWithoutResumeInput, ApplicationUncheckedUpdateWithoutResumeInput>
+  }
+
+  export type ApplicationUpdateManyWithWhereWithoutResumeInput = {
+    where: ApplicationScalarWhereInput
+    data: XOR<ApplicationUpdateManyMutationInput, ApplicationUncheckedUpdateManyWithoutResumeInput>
   }
 
   export type RecruiterProfileCreateWithoutCompanyInput = {
@@ -18086,6 +20156,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     student: StudentProfileCreateNestedOneWithoutApplicationsInput
+    resume?: StudentResumeCreateNestedOneWithoutApplicationsInput
     offer?: OfferCreateNestedOneWithoutApplicationInput
   }
 
@@ -18093,6 +20164,7 @@ export namespace Prisma {
     id?: string
     studentId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -18335,6 +20407,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
     college: CollegeCreateNestedOneWithoutStudentsInput
+    resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
   }
 
@@ -18356,12 +20429,44 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutApplicationsInput = {
     where: StudentProfileWhereUniqueInput
     create: XOR<StudentProfileCreateWithoutApplicationsInput, StudentProfileUncheckedCreateWithoutApplicationsInput>
+  }
+
+  export type StudentResumeCreateWithoutApplicationsInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentProfileCreateNestedOneWithoutResumesInput
+  }
+
+  export type StudentResumeUncheckedCreateWithoutApplicationsInput = {
+    id?: string
+    studentId: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StudentResumeCreateOrConnectWithoutApplicationsInput = {
+    where: StudentResumeWhereUniqueInput
+    create: XOR<StudentResumeCreateWithoutApplicationsInput, StudentResumeUncheckedCreateWithoutApplicationsInput>
   }
 
   export type OfferCreateWithoutApplicationInput = {
@@ -18487,6 +20592,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
   }
 
@@ -18508,7 +20614,45 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentResumeUpsertWithoutApplicationsInput = {
+    update: XOR<StudentResumeUpdateWithoutApplicationsInput, StudentResumeUncheckedUpdateWithoutApplicationsInput>
+    create: XOR<StudentResumeCreateWithoutApplicationsInput, StudentResumeUncheckedCreateWithoutApplicationsInput>
+    where?: StudentResumeWhereInput
+  }
+
+  export type StudentResumeUpdateToOneWithWhereWithoutApplicationsInput = {
+    where?: StudentResumeWhereInput
+    data: XOR<StudentResumeUpdateWithoutApplicationsInput, StudentResumeUncheckedUpdateWithoutApplicationsInput>
+  }
+
+  export type StudentResumeUpdateWithoutApplicationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUpdateOneRequiredWithoutResumesNestedInput
+  }
+
+  export type StudentResumeUncheckedUpdateWithoutApplicationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OfferUpsertWithoutApplicationInput = {
@@ -18571,6 +20715,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutApplicationsInput
     student: StudentProfileCreateNestedOneWithoutApplicationsInput
+    resume?: StudentResumeCreateNestedOneWithoutApplicationsInput
   }
 
   export type ApplicationUncheckedCreateWithoutOfferInput = {
@@ -18578,6 +20723,7 @@ export namespace Prisma {
     jobId: string
     studentId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -18607,6 +20753,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStudentInput
     college: CollegeCreateNestedOneWithoutStudentsInput
+    resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
   }
 
@@ -18628,6 +20775,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
   }
 
@@ -18769,6 +20917,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
     student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+    resume?: StudentResumeUpdateOneWithoutApplicationsNestedInput
   }
 
   export type ApplicationUncheckedUpdateWithoutOfferInput = {
@@ -18776,6 +20925,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18811,6 +20961,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
   }
 
@@ -18832,6 +20983,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
@@ -19071,6 +21223,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
   }
@@ -19092,6 +21245,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
   }
@@ -19230,10 +21384,23 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StudentResumeCreateManyStudentInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    publicId?: string | null
+    fileType?: string | null
+    fileSize?: number | null
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ApplicationCreateManyStudentInput = {
     id?: string
     jobId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -19260,6 +21427,44 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type StudentResumeUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUpdateManyWithoutResumeNestedInput
+  }
+
+  export type StudentResumeUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  }
+
+  export type StudentResumeUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ApplicationUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
@@ -19268,6 +21473,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
+    resume?: StudentResumeUpdateOneWithoutApplicationsNestedInput
     offer?: OfferUpdateOneWithoutApplicationNestedInput
   }
 
@@ -19275,6 +21481,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19286,6 +21493,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19348,6 +21556,52 @@ export namespace Prisma {
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApplicationCreateManyResumeInput = {
+    id?: string
+    jobId: string
+    studentId: string
+    status?: $Enums.ApplicationStatus
+    resumeUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApplicationUpdateWithoutResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutApplicationsNestedInput
+    student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+    offer?: OfferUpdateOneWithoutApplicationNestedInput
+  }
+
+  export type ApplicationUncheckedUpdateWithoutResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    offer?: OfferUncheckedUpdateOneWithoutApplicationNestedInput
+  }
+
+  export type ApplicationUncheckedUpdateManyWithoutResumeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19540,6 +21794,7 @@ export namespace Prisma {
     id?: string
     studentId: string
     status?: $Enums.ApplicationStatus
+    resumeId?: string | null
     resumeUrl?: string | null
     notes?: string | null
     createdAt?: Date | string
@@ -19574,6 +21829,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentProfileUpdateOneRequiredWithoutApplicationsNestedInput
+    resume?: StudentResumeUpdateOneWithoutApplicationsNestedInput
     offer?: OfferUpdateOneWithoutApplicationNestedInput
   }
 
@@ -19581,6 +21837,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19592,6 +21849,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    resumeId?: NullableStringFieldUpdateOperationsInput | string | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
