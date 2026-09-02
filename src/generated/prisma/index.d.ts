@@ -3202,6 +3202,7 @@ export namespace Prisma {
     city: string | null
     state: string | null
     logoUrl: string | null
+    isVerified: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3214,6 +3215,7 @@ export namespace Prisma {
     city: string | null
     state: string | null
     logoUrl: string | null
+    isVerified: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3226,6 +3228,8 @@ export namespace Prisma {
     city: number
     state: number
     logoUrl: number
+    images: number
+    isVerified: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3240,6 +3244,7 @@ export namespace Prisma {
     city?: true
     state?: true
     logoUrl?: true
+    isVerified?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3252,6 +3257,7 @@ export namespace Prisma {
     city?: true
     state?: true
     logoUrl?: true
+    isVerified?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3264,6 +3270,8 @@ export namespace Prisma {
     city?: true
     state?: true
     logoUrl?: true
+    images?: true
+    isVerified?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3349,6 +3357,8 @@ export namespace Prisma {
     city: string | null
     state: string | null
     logoUrl: string | null
+    images: string[]
+    isVerified: boolean
     createdAt: Date
     updatedAt: Date
     _count: CollegeCountAggregateOutputType | null
@@ -3378,6 +3388,8 @@ export namespace Prisma {
     city?: boolean
     state?: boolean
     logoUrl?: boolean
+    images?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tpos?: boolean | College$tposArgs<ExtArgs>
@@ -3395,6 +3407,8 @@ export namespace Prisma {
     city?: boolean
     state?: boolean
     logoUrl?: boolean
+    images?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["college"]>
@@ -3407,6 +3421,8 @@ export namespace Prisma {
     city?: boolean
     state?: boolean
     logoUrl?: boolean
+    images?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["college"]>
@@ -3419,11 +3435,13 @@ export namespace Prisma {
     city?: boolean
     state?: boolean
     logoUrl?: boolean
+    images?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CollegeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "domain" | "city" | "state" | "logoUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["college"]>
+  export type CollegeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "domain" | "city" | "state" | "logoUrl" | "images" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["college"]>
   export type CollegeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tpos?: boolean | College$tposArgs<ExtArgs>
     students?: boolean | College$studentsArgs<ExtArgs>
@@ -3450,6 +3468,8 @@ export namespace Prisma {
       city: string | null
       state: string | null
       logoUrl: string | null
+      images: string[]
+      isVerified: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["college"]>
@@ -3886,6 +3906,8 @@ export namespace Prisma {
     readonly city: FieldRef<"College", 'String'>
     readonly state: FieldRef<"College", 'String'>
     readonly logoUrl: FieldRef<"College", 'String'>
+    readonly images: FieldRef<"College", 'String[]'>
+    readonly isVerified: FieldRef<"College", 'Boolean'>
     readonly createdAt: FieldRef<"College", 'DateTime'>
     readonly updatedAt: FieldRef<"College", 'DateTime'>
   }
@@ -8067,6 +8089,7 @@ export namespace Prisma {
     name: number
     website: number
     logoUrl: number
+    images: number
     industry: number
     location: number
     description: number
@@ -8108,6 +8131,7 @@ export namespace Prisma {
     name?: true
     website?: true
     logoUrl?: true
+    images?: true
     industry?: true
     location?: true
     description?: true
@@ -8194,6 +8218,7 @@ export namespace Prisma {
     name: string
     website: string | null
     logoUrl: string | null
+    images: string[]
     industry: string | null
     location: string | null
     description: string | null
@@ -8224,6 +8249,7 @@ export namespace Prisma {
     name?: boolean
     website?: boolean
     logoUrl?: boolean
+    images?: boolean
     industry?: boolean
     location?: boolean
     description?: boolean
@@ -8241,6 +8267,7 @@ export namespace Prisma {
     name?: boolean
     website?: boolean
     logoUrl?: boolean
+    images?: boolean
     industry?: boolean
     location?: boolean
     description?: boolean
@@ -8254,6 +8281,7 @@ export namespace Prisma {
     name?: boolean
     website?: boolean
     logoUrl?: boolean
+    images?: boolean
     industry?: boolean
     location?: boolean
     description?: boolean
@@ -8267,6 +8295,7 @@ export namespace Prisma {
     name?: boolean
     website?: boolean
     logoUrl?: boolean
+    images?: boolean
     industry?: boolean
     location?: boolean
     description?: boolean
@@ -8275,7 +8304,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "website" | "logoUrl" | "industry" | "location" | "description" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "website" | "logoUrl" | "images" | "industry" | "location" | "description" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
   export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     recruiters?: boolean | Company$recruitersArgs<ExtArgs>
     jobs?: boolean | Company$jobsArgs<ExtArgs>
@@ -8297,6 +8326,7 @@ export namespace Prisma {
       name: string
       website: string | null
       logoUrl: string | null
+      images: string[]
       industry: string | null
       location: string | null
       description: string | null
@@ -8733,6 +8763,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Company", 'String'>
     readonly website: FieldRef<"Company", 'String'>
     readonly logoUrl: FieldRef<"Company", 'String'>
+    readonly images: FieldRef<"Company", 'String[]'>
     readonly industry: FieldRef<"Company", 'String'>
     readonly location: FieldRef<"Company", 'String'>
     readonly description: FieldRef<"Company", 'String'>
@@ -14069,6 +14100,8 @@ export namespace Prisma {
     city: 'city',
     state: 'state',
     logoUrl: 'logoUrl',
+    images: 'images',
+    isVerified: 'isVerified',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -14132,6 +14165,7 @@ export namespace Prisma {
     name: 'name',
     website: 'website',
     logoUrl: 'logoUrl',
+    images: 'images',
     industry: 'industry',
     location: 'location',
     description: 'description',
@@ -14472,6 +14506,8 @@ export namespace Prisma {
     city?: StringNullableFilter<"College"> | string | null
     state?: StringNullableFilter<"College"> | string | null
     logoUrl?: StringNullableFilter<"College"> | string | null
+    images?: StringNullableListFilter<"College">
+    isVerified?: BoolFilter<"College"> | boolean
     createdAt?: DateTimeFilter<"College"> | Date | string
     updatedAt?: DateTimeFilter<"College"> | Date | string
     tpos?: TpoProfileListRelationFilter
@@ -14488,6 +14524,8 @@ export namespace Prisma {
     city?: SortOrderInput | SortOrder
     state?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
+    images?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tpos?: TpoProfileOrderByRelationAggregateInput
@@ -14507,6 +14545,8 @@ export namespace Prisma {
     city?: StringNullableFilter<"College"> | string | null
     state?: StringNullableFilter<"College"> | string | null
     logoUrl?: StringNullableFilter<"College"> | string | null
+    images?: StringNullableListFilter<"College">
+    isVerified?: BoolFilter<"College"> | boolean
     createdAt?: DateTimeFilter<"College"> | Date | string
     updatedAt?: DateTimeFilter<"College"> | Date | string
     tpos?: TpoProfileListRelationFilter
@@ -14523,6 +14563,8 @@ export namespace Prisma {
     city?: SortOrderInput | SortOrder
     state?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
+    images?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CollegeCountOrderByAggregateInput
@@ -14541,6 +14583,8 @@ export namespace Prisma {
     city?: StringNullableWithAggregatesFilter<"College"> | string | null
     state?: StringNullableWithAggregatesFilter<"College"> | string | null
     logoUrl?: StringNullableWithAggregatesFilter<"College"> | string | null
+    images?: StringNullableListFilter<"College">
+    isVerified?: BoolWithAggregatesFilter<"College"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"College"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"College"> | Date | string
   }
@@ -14830,6 +14874,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     website?: StringNullableFilter<"Company"> | string | null
     logoUrl?: StringNullableFilter<"Company"> | string | null
+    images?: StringNullableListFilter<"Company">
     industry?: StringNullableFilter<"Company"> | string | null
     location?: StringNullableFilter<"Company"> | string | null
     description?: StringNullableFilter<"Company"> | string | null
@@ -14846,6 +14891,7 @@ export namespace Prisma {
     name?: SortOrder
     website?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
+    images?: SortOrder
     industry?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
@@ -14865,6 +14911,7 @@ export namespace Prisma {
     NOT?: CompanyWhereInput | CompanyWhereInput[]
     website?: StringNullableFilter<"Company"> | string | null
     logoUrl?: StringNullableFilter<"Company"> | string | null
+    images?: StringNullableListFilter<"Company">
     industry?: StringNullableFilter<"Company"> | string | null
     location?: StringNullableFilter<"Company"> | string | null
     description?: StringNullableFilter<"Company"> | string | null
@@ -14881,6 +14928,7 @@ export namespace Prisma {
     name?: SortOrder
     website?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
+    images?: SortOrder
     industry?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
@@ -14900,6 +14948,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Company"> | string
     website?: StringNullableWithAggregatesFilter<"Company"> | string | null
     logoUrl?: StringNullableWithAggregatesFilter<"Company"> | string | null
+    images?: StringNullableListFilter<"Company">
     industry?: StringNullableWithAggregatesFilter<"Company"> | string | null
     location?: StringNullableWithAggregatesFilter<"Company"> | string | null
     description?: StringNullableWithAggregatesFilter<"Company"> | string | null
@@ -15408,6 +15457,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
@@ -15424,6 +15475,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
@@ -15440,6 +15493,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
@@ -15456,6 +15511,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
@@ -15472,6 +15529,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15484,6 +15543,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15496,6 +15557,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15810,6 +15873,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -15826,6 +15890,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -15842,6 +15907,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15858,6 +15924,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15874,6 +15941,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -15887,6 +15955,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15900,6 +15969,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16505,6 +16575,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type TpoProfileListRelationFilter = {
     every?: TpoProfileWhereInput
     some?: TpoProfileWhereInput
@@ -16553,6 +16631,8 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     logoUrl?: SortOrder
+    images?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16565,6 +16645,7 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     logoUrl?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16577,6 +16658,7 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     logoUrl?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16649,14 +16731,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
   }
 
   export type StudentResumeListRelationFilter = {
@@ -16893,6 +16967,7 @@ export namespace Prisma {
     name?: SortOrder
     website?: SortOrder
     logoUrl?: SortOrder
+    images?: SortOrder
     industry?: SortOrder
     location?: SortOrder
     description?: SortOrder
@@ -17360,6 +17435,10 @@ export namespace Prisma {
     update?: XOR<XOR<TpoProfileUpdateToOneWithWhereWithoutUserInput, TpoProfileUpdateWithoutUserInput>, TpoProfileUncheckedUpdateWithoutUserInput>
   }
 
+  export type CollegeCreateimagesInput = {
+    set: string[]
+  }
+
   export type TpoProfileCreateNestedManyWithoutCollegeInput = {
     create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
     connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
@@ -17414,6 +17493,11 @@ export namespace Prisma {
     connectOrCreate?: OfferCreateOrConnectWithoutCollegeInput | OfferCreateOrConnectWithoutCollegeInput[]
     createMany?: OfferCreateManyCollegeInputEnvelope
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
+  export type CollegeUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type TpoProfileUpdateManyWithoutCollegeNestedInput = {
@@ -17807,6 +17891,10 @@ export namespace Prisma {
     deleteMany?: ApplicationScalarWhereInput | ApplicationScalarWhereInput[]
   }
 
+  export type CompanyCreateimagesInput = {
+    set: string[]
+  }
+
   export type RecruiterProfileCreateNestedManyWithoutCompanyInput = {
     create?: XOR<RecruiterProfileCreateWithoutCompanyInput, RecruiterProfileUncheckedCreateWithoutCompanyInput> | RecruiterProfileCreateWithoutCompanyInput[] | RecruiterProfileUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: RecruiterProfileCreateOrConnectWithoutCompanyInput | RecruiterProfileCreateOrConnectWithoutCompanyInput[]
@@ -17847,6 +17935,11 @@ export namespace Prisma {
     connectOrCreate?: OfferCreateOrConnectWithoutCompanyInput | OfferCreateOrConnectWithoutCompanyInput[]
     createMany?: OfferCreateManyCompanyInputEnvelope
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
+  export type CompanyUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type RecruiterProfileUpdateManyWithoutCompanyNestedInput = {
@@ -19138,6 +19231,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
@@ -19153,6 +19248,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
@@ -19223,6 +19320,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
@@ -19238,6 +19337,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
@@ -19286,6 +19387,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
@@ -19301,6 +19404,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
@@ -19491,6 +19596,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
@@ -19506,6 +19613,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
@@ -19968,6 +20077,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -19983,6 +20093,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -20053,6 +20164,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20068,6 +20180,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20083,6 +20196,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -20098,6 +20212,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -20121,6 +20236,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
@@ -20136,6 +20253,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
@@ -20248,6 +20367,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20263,6 +20383,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20292,6 +20413,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
@@ -20307,6 +20430,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
@@ -20832,6 +20957,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -20847,6 +20973,7 @@ export namespace Prisma {
     name: string
     website?: string | null
     logoUrl?: string | null
+    images?: CompanyCreateimagesInput | string[]
     industry?: string | null
     location?: string | null
     description?: string | null
@@ -20870,6 +20997,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
@@ -20885,6 +21014,8 @@ export namespace Prisma {
     city?: string | null
     state?: string | null
     logoUrl?: string | null
+    images?: CollegeCreateimagesInput | string[]
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
@@ -21052,6 +21183,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21067,6 +21199,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CompanyUpdateimagesInput | string[]
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21096,6 +21229,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
@@ -21111,6 +21246,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     state?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: CollegeUpdateimagesInput | string[]
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput

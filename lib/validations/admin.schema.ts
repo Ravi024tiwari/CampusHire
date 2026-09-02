@@ -9,8 +9,13 @@ export const adminCollegeQuerySchema = z.object({
   state: z.string().trim().optional(),
   city: z.string().trim().optional(),
   code: z.string().trim().toUpperCase().optional(),
-  sortBy: z.enum(['name', 'createdAt', 'city', 'state', 'code']).default('createdAt'),
+  isVerified: z.enum(['true', 'false', 'all']).default('all'),
+  sortBy: z.enum(['name', 'createdAt', 'city', 'state', 'code', 'isVerified']).default('createdAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
+export const verifyCollegeSchema = z.object({
+  isVerified: z.boolean().optional(),
 });
 
 export const adminStudentQuerySchema = z.object({
@@ -56,6 +61,7 @@ export const adminJobQuerySchema = z.object({
 });
 
 export type AdminCollegeQueryInput = z.infer<typeof adminCollegeQuerySchema>;
+export type VerifyCollegeInput = z.infer<typeof verifyCollegeSchema>;
 export type AdminStudentQueryInput = z.infer<typeof adminStudentQuerySchema>;
 export type AdminCompanyQueryInput = z.infer<typeof adminCompanyQuerySchema>;
 export type VerifyCompanyInput = z.infer<typeof verifyCompanySchema>;

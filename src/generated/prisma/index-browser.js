@@ -140,6 +140,8 @@ exports.Prisma.CollegeScalarFieldEnum = {
   city: 'city',
   state: 'state',
   logoUrl: 'logoUrl',
+  images: 'images',
+  isVerified: 'isVerified',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -191,6 +193,7 @@ exports.Prisma.CompanyScalarFieldEnum = {
   name: 'name',
   website: 'website',
   logoUrl: 'logoUrl',
+  images: 'images',
   industry: 'industry',
   location: 'location',
   description: 'description',

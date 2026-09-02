@@ -25,12 +25,19 @@ export async function GET(req: NextRequest) {
       state: searchParams.get('state') ?? undefined,
       city: searchParams.get('city') ?? undefined,
       code: searchParams.get('code') ?? undefined,
+      isVerified: searchParams.get('isVerified') ?? undefined,
       sortBy: searchParams.get('sortBy') ?? undefined,
       sortOrder: searchParams.get('sortOrder') ?? undefined,
     });
 
     // 3. Build optimized WHERE condition
     const where: any = {};
+
+    if (query.isVerified === 'true') {
+      where.isVerified = true;
+    } else if (query.isVerified === 'false') {
+      where.isVerified = false;
+    }
 
     if (query.name) {
       where.name = { contains: query.name, mode: 'insensitive' };
@@ -61,7 +68,7 @@ export async function GET(req: NextRequest) {
     const skip = (query.page - 1) * query.limit;
 
     // 4. Execute count and findMany in parallel via Promise.all for low-latency DB roundtrip
-    const [total, colleges] = await Promise.all([
+    const [total, colleges, verifiedCount, unverifiedCount] = await Promise.all([
       prisma.college.count({ where }),
       prisma.college.findMany({
         where,
@@ -76,6 +83,7 @@ export async function GET(req: NextRequest) {
           city: true,
           state: true,
           logoUrl: true,
+          isVerified: true,
           createdAt: true,
           updatedAt: true,
           _count: {
@@ -88,6 +96,8 @@ export async function GET(req: NextRequest) {
           },
         },
       }),
+      prisma.college.count({ where: { isVerified: true } }),
+      prisma.college.count({ where: { isVerified: false } }),
     ]);
 
     const totalPages = Math.ceil(total / query.limit) || 1;
@@ -96,6 +106,11 @@ export async function GET(req: NextRequest) {
     return successResponse(
       {
         colleges,
+        summary: {
+          totalColleges: verifiedCount + unverifiedCount,
+          verifiedColleges: verifiedCount,
+          pendingColleges: unverifiedCount,
+        },
         pagination: {
           page: query.page,
           limit: query.limit,

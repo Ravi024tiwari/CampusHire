@@ -38,6 +38,13 @@ export async function GET(req: NextRequest) {
       where.state = { contains: state, mode: 'insensitive' };
     }
 
+    const isVerifiedParam = searchParams.get('isVerified');
+    if (isVerifiedParam === 'true') {
+      where.isVerified = true;
+    } else if (isVerifiedParam === 'false') {
+      where.isVerified = false;
+    }
+
     const skip = (page - 1) * limit;
 
     const [total, colleges] = await Promise.all([
@@ -54,6 +61,8 @@ export async function GET(req: NextRequest) {
           city: true,
           state: true,
           logoUrl: true,
+          images: true,
+          isVerified: true,
           _count: {
             select: {
               students: true,

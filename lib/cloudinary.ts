@@ -36,6 +36,42 @@ export function isCloudinaryConfigured(): boolean {
 }
 
 /**
+ * Extract Cloudinary publicId from a full asset URL.
+ * Supports standard Cloudinary image and raw upload URLs.
+ */
+export function extractPublicIdFromUrl(url: string): string | null {
+  if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) {
+    return null;
+  }
+
+  try {
+    const urlObj = new URL(url);
+    const pathname = urlObj.pathname; // e.g. /demo/image/upload/v12345678/campushire/avatars/sample.jpg
+    const parts = pathname.split('/');
+
+    // Find the index of 'upload'
+    const uploadIndex = parts.indexOf('upload');
+    if (uploadIndex === -1 || uploadIndex === parts.length - 1) {
+      return null;
+    }
+
+    // Skip version tag (e.g. 'v12345678') if present
+    let publicIdParts = parts.slice(uploadIndex + 1);
+    if (publicIdParts[0] && publicIdParts[0].startsWith('v') && /^\d+$/.test(publicIdParts[0].substring(1))) {
+      publicIdParts = publicIdParts.slice(1);
+    }
+
+    const fullPathWithExt = publicIdParts.join('/');
+    // Strip file extension if present
+    const lastDotIndex = fullPathWithExt.lastIndexOf('.');
+    return lastDotIndex !== -1 ? fullPathWithExt.substring(0, lastDotIndex) : fullPathWithExt;
+  } catch (err) {
+    console.error('[EXTRACT_PUBLIC_ID_ERROR]', err);
+    return null;
+  }
+}
+
+/**
  * Production-grade upload buffer to Cloudinary using a Promise-wrapped stream.
  */
 export async function uploadToCloudinary(
@@ -92,7 +128,7 @@ export async function uploadToCloudinary(
  */
 export async function deleteFromCloudinary(
   publicId: string,
-  resourceType: 'image' | 'raw' | 'video' = 'raw'
+  resourceType: 'image' | 'raw' | 'video' = 'image'
 ): Promise<boolean> {
   if (!isCloudinaryConfigured() || !publicId) {
     return false;
@@ -107,6 +143,32 @@ export async function deleteFromCloudinary(
     console.error('[CLOUDINARY_DELETE_ERROR]', error);
     return false;
   }
+}
+
+/**
+ * Helper to delete an asset directly by its Cloudinary URL in the background.
+ */
+export async function deleteFromCloudinaryUrl(
+  url: string | null | undefined,
+  resourceType: 'image' | 'raw' | 'video' = 'image'
+): Promise<boolean> {
+  if (!url) return false;
+  const publicId = extractPublicIdFromUrl(url);
+  if (!publicId) return false;
+  return deleteFromCloudinary(publicId, resourceType);
+}
+
+/**
+ * Delete multiple Cloudinary assets by URLs in parallel.
+ */
+export async function deleteMultipleCloudinaryUrls(
+  urls: (string | null | undefined)[],
+  resourceType: 'image' | 'raw' | 'video' = 'image'
+): Promise<void> {
+  const validUrls = urls.filter(Boolean) as string[];
+  await Promise.allSettled(
+    validUrls.map((url) => deleteFromCloudinaryUrl(url, resourceType))
+  );
 }
 
 export default cloudinary;

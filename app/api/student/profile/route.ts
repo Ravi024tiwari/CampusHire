@@ -5,14 +5,16 @@ import { requireRole } from '@/lib/rbac';
 import { Role } from '@/src/generated/prisma';
 import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
 
+import { deleteFromCloudinaryUrl } from '@/lib/cloudinary';
+
 const updateStudentProfileSchema = z.object({
   name: z.string().trim().min(2).optional(),
-  avatarUrl: z.string().url('Invalid avatar URL').optional().or(z.literal('')),
+  avatarUrl: z.string().url('Invalid avatar URL').optional().nullable().or(z.literal('')),
   skills: z.array(z.string().trim()).optional(),
-  resumeUrl: z.string().url('Invalid resume URL').optional().or(z.literal('')),
-  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
-  githubUrl: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
-  portfolioUrl: z.string().url('Invalid portfolio URL').optional().or(z.literal('')),
+  resumeUrl: z.string().url('Invalid resume URL').optional().nullable().or(z.literal('')),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().nullable().or(z.literal('')),
+  githubUrl: z.string().url('Invalid GitHub URL').optional().nullable().or(z.literal('')),
+  portfolioUrl: z.string().url('Invalid portfolio URL').optional().nullable().or(z.literal('')),
 });
 
 export async function GET(req: NextRequest) {
@@ -41,6 +43,7 @@ export async function GET(req: NextRequest) {
             city: true,
             state: true,
             logoUrl: true,
+            images: true,
           },
         },
         resumes: {
@@ -75,6 +78,7 @@ export async function PATCH(req: NextRequest) {
 
     const student = await prisma.studentProfile.findUnique({
       where: { userId: authUser.userId },
+      include: { user: true },
     });
 
     if (!student) {
@@ -84,13 +88,21 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const parsedData = updateStudentProfileSchema.parse(body);
 
+    const oldAvatarUrl = student.user.avatarUrl;
+    const oldResumeUrl = student.resumeUrl;
+
+    const newAvatarUrl =
+      parsedData.avatarUrl !== undefined ? (parsedData.avatarUrl || null) : undefined;
+    const newResumeUrl =
+      parsedData.resumeUrl !== undefined ? (parsedData.resumeUrl || null) : undefined;
+
     const updatedStudent = await prisma.$transaction(async (tx) => {
-      if (parsedData.name !== undefined || parsedData.avatarUrl !== undefined) {
+      if (parsedData.name !== undefined || newAvatarUrl !== undefined) {
         await tx.user.update({
           where: { id: authUser.userId },
           data: {
             ...(parsedData.name !== undefined ? { name: parsedData.name } : {}),
-            ...(parsedData.avatarUrl !== undefined ? { avatarUrl: parsedData.avatarUrl || null } : {}),
+            ...(newAvatarUrl !== undefined ? { avatarUrl: newAvatarUrl } : {}),
           },
         });
       }
@@ -99,7 +111,7 @@ export async function PATCH(req: NextRequest) {
         where: { id: student.id },
         data: {
           ...(parsedData.skills !== undefined ? { skills: parsedData.skills } : {}),
-          ...(parsedData.resumeUrl !== undefined ? { resumeUrl: parsedData.resumeUrl || null } : {}),
+          ...(newResumeUrl !== undefined ? { resumeUrl: newResumeUrl } : {}),
           ...(parsedData.linkedinUrl !== undefined ? { linkedinUrl: parsedData.linkedinUrl || null } : {}),
           ...(parsedData.githubUrl !== undefined ? { githubUrl: parsedData.githubUrl || null } : {}),
           ...(parsedData.portfolioUrl !== undefined ? { portfolioUrl: parsedData.portfolioUrl || null } : {}),
@@ -121,6 +133,20 @@ export async function PATCH(req: NextRequest) {
         },
       });
     });
+
+    // Cloudinary Cleanup: Delete old avatar from Cloudinary if replaced or removed
+    if (newAvatarUrl !== undefined && oldAvatarUrl && oldAvatarUrl !== newAvatarUrl) {
+      deleteFromCloudinaryUrl(oldAvatarUrl, 'image').catch((err) => {
+        console.error('[BACKGROUND_CLOUDINARY_CLEANUP_AVATAR_ERROR]', err);
+      });
+    }
+
+    // Cloudinary Cleanup: Delete old resume if replaced or removed
+    if (newResumeUrl !== undefined && oldResumeUrl && oldResumeUrl !== newResumeUrl) {
+      deleteFromCloudinaryUrl(oldResumeUrl, 'raw').catch((err) => {
+        console.error('[BACKGROUND_CLOUDINARY_CLEANUP_RESUME_ERROR]', err);
+      });
+    }
 
     return successResponse(updatedStudent, 'Profile updated successfully');
   } catch (error: any) {
