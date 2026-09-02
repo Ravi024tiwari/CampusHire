@@ -132,45 +132,6 @@ export async function POST(req: NextRequest) {
 
       case Role.TPO_ADMIN: {
         newUser = await prisma.$transaction(async (tx) => {
-          let collegeId = parsedData.collegeId;
-
-          // If collegeId is provided, verify it exists
-          if (collegeId) {
-            const existingCollege = await tx.college.findUnique({
-              where: { id: collegeId },
-            });
-            if (!existingCollege) {
-              throw new Error('The selected college was not found');
-            }
-          } else if (parsedData.collegeName) {
-            // Onboard/Find college by name
-            let college = await tx.college.findFirst({
-              where: {
-                name: {
-                  equals: parsedData.collegeName.trim(),
-                  mode: 'insensitive',
-                },
-              },
-            });
-
-            if (!college) {
-              college = await tx.college.create({
-                data: {
-                  name: parsedData.collegeName.trim(),
-                  code: parsedData.collegeCode || null,
-                  domain: parsedData.collegeDomain || null,
-                  city: parsedData.collegeCity || null,
-                  state: parsedData.collegeState || null,
-                },
-              });
-            }
-            collegeId = college.id;
-          }
-
-          if (!collegeId) {
-            throw new Error('College information is required for TPO registration');
-          }
-
           const user = await tx.user.create({
             data: {
               name: parsedData.name.trim(),
@@ -179,8 +140,7 @@ export async function POST(req: NextRequest) {
               role: Role.TPO_ADMIN,
               tpo: {
                 create: {
-                  collegeId,
-                  designation: parsedData.designation?.trim() || 'TPO Officer',
+                  designation: parsedData.designation.trim() || 'Head, Training & Placement Cell',
                 },
               },
             },

@@ -36,44 +36,22 @@ export const recruiterRegisterSchema = z.object({
   designation: z.string().trim().min(2, 'Designation is required (e.g. Talent Acquisition Lead)'),
 });
 
-export const baseTpoRegisterSchema = z.object({
+export const tpoRegisterSchema = z.object({
   role: z.literal(Role.TPO_ADMIN),
   name: z.string().trim().min(2, 'TPO Officer name is required'),
   email: z.string().trim().email('Please enter a valid institutional email'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
-  designation: z.string().trim().min(2, 'Designation is required (e.g. Head, T&P Cell)').optional(),
-  
-  // Either select an existing college ID or enter new college details to onboard
-  collegeId: z.string().optional(),
-  collegeName: z.string().trim().optional(),
-  collegeCode: z.string().trim().toUpperCase().optional(),
-  collegeDomain: z.string().trim().toLowerCase().optional(),
-  collegeCity: z.string().trim().optional(),
-  collegeState: z.string().trim().optional(),
-});
-
-export const tpoRegisterSchema = baseTpoRegisterSchema.refine((data) => Boolean(data.collegeId || data.collegeName), {
-  message: 'Please select an existing college or enter a college name to onboard your institution',
-  path: ['collegeId'],
+  designation: z.string().trim().min(2, 'Designation is required (e.g. Head, T&P Cell)').default('Head, Training & Placement Cell'),
 });
 
 export const registerSchema = z.discriminatedUnion('role', [
   studentRegisterSchema,
   recruiterRegisterSchema,
-  baseTpoRegisterSchema,
-]).superRefine((data, ctx) => {
-  if (data.role === Role.TPO_ADMIN && !data.collegeId && !data.collegeName) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Please select an existing college or enter a college name to onboard your institution',
-      path: ['collegeId'],
-    });
-  }
-});
+  tpoRegisterSchema,
+]);
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type StudentRegisterInput = z.infer<typeof studentRegisterSchema>;
 export type RecruiterRegisterInput = z.infer<typeof recruiterRegisterSchema>;
 export type TpoRegisterInput = z.infer<typeof tpoRegisterSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
-

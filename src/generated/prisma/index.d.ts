@@ -1792,14 +1792,12 @@ export namespace Prisma {
    */
 
   export type CollegeCountOutputType = {
-    tpos: number
     students: number
     jobs: number
     offers: number
   }
 
   export type CollegeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tpos?: boolean | CollegeCountOutputTypeCountTposArgs
     students?: boolean | CollegeCountOutputTypeCountStudentsArgs
     jobs?: boolean | CollegeCountOutputTypeCountJobsArgs
     offers?: boolean | CollegeCountOutputTypeCountOffersArgs
@@ -1814,13 +1812,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the CollegeCountOutputType
      */
     select?: CollegeCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * CollegeCountOutputType without action
-   */
-  export type CollegeCountOutputTypeCountTposArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TpoProfileWhereInput
   }
 
   /**
@@ -3392,7 +3383,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    tpos?: boolean | College$tposArgs<ExtArgs>
+    tpo?: boolean | College$tpoArgs<ExtArgs>
     students?: boolean | College$studentsArgs<ExtArgs>
     jobs?: boolean | College$jobsArgs<ExtArgs>
     offers?: boolean | College$offersArgs<ExtArgs>
@@ -3443,7 +3434,7 @@ export namespace Prisma {
 
   export type CollegeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "domain" | "city" | "state" | "logoUrl" | "images" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["college"]>
   export type CollegeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tpos?: boolean | College$tposArgs<ExtArgs>
+    tpo?: boolean | College$tpoArgs<ExtArgs>
     students?: boolean | College$studentsArgs<ExtArgs>
     jobs?: boolean | College$jobsArgs<ExtArgs>
     offers?: boolean | College$offersArgs<ExtArgs>
@@ -3455,7 +3446,7 @@ export namespace Prisma {
   export type $CollegePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "College"
     objects: {
-      tpos: Prisma.$TpoProfilePayload<ExtArgs>[]
+      tpo: Prisma.$TpoProfilePayload<ExtArgs> | null
       students: Prisma.$StudentProfilePayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
       offers: Prisma.$OfferPayload<ExtArgs>[]
@@ -3866,7 +3857,7 @@ export namespace Prisma {
    */
   export interface Prisma__CollegeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    tpos<T extends College$tposArgs<ExtArgs> = {}>(args?: Subset<T, College$tposArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tpo<T extends College$tpoArgs<ExtArgs> = {}>(args?: Subset<T, College$tpoArgs<ExtArgs>>): Prisma__TpoProfileClient<$Result.GetResult<Prisma.$TpoProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     students<T extends College$studentsArgs<ExtArgs> = {}>(args?: Subset<T, College$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends College$jobsArgs<ExtArgs> = {}>(args?: Subset<T, College$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     offers<T extends College$offersArgs<ExtArgs> = {}>(args?: Subset<T, College$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4303,9 +4294,9 @@ export namespace Prisma {
   }
 
   /**
-   * College.tpos
+   * College.tpo
    */
-  export type College$tposArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type College$tpoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the TpoProfile
      */
@@ -4319,11 +4310,6 @@ export namespace Prisma {
      */
     include?: TpoProfileInclude<ExtArgs> | null
     where?: TpoProfileWhereInput
-    orderBy?: TpoProfileOrderByWithRelationInput | TpoProfileOrderByWithRelationInput[]
-    cursor?: TpoProfileWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TpoProfileScalarFieldEnum | TpoProfileScalarFieldEnum[]
   }
 
   /**
@@ -4559,7 +4545,7 @@ export namespace Prisma {
   export type TpoProfileGroupByOutputType = {
     id: string
     userId: string
-    collegeId: string
+    collegeId: string | null
     designation: string | null
     createdAt: Date
     updatedAt: Date
@@ -4590,7 +4576,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    college?: boolean | CollegeDefaultArgs<ExtArgs>
+    college?: boolean | TpoProfile$collegeArgs<ExtArgs>
   }, ExtArgs["result"]["tpoProfile"]>
 
   export type TpoProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4601,7 +4587,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    college?: boolean | CollegeDefaultArgs<ExtArgs>
+    college?: boolean | TpoProfile$collegeArgs<ExtArgs>
   }, ExtArgs["result"]["tpoProfile"]>
 
   export type TpoProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4612,7 +4598,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    college?: boolean | CollegeDefaultArgs<ExtArgs>
+    college?: boolean | TpoProfile$collegeArgs<ExtArgs>
   }, ExtArgs["result"]["tpoProfile"]>
 
   export type TpoProfileSelectScalar = {
@@ -4627,27 +4613,27 @@ export namespace Prisma {
   export type TpoProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "collegeId" | "designation" | "createdAt" | "updatedAt", ExtArgs["result"]["tpoProfile"]>
   export type TpoProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    college?: boolean | CollegeDefaultArgs<ExtArgs>
+    college?: boolean | TpoProfile$collegeArgs<ExtArgs>
   }
   export type TpoProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    college?: boolean | CollegeDefaultArgs<ExtArgs>
+    college?: boolean | TpoProfile$collegeArgs<ExtArgs>
   }
   export type TpoProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    college?: boolean | CollegeDefaultArgs<ExtArgs>
+    college?: boolean | TpoProfile$collegeArgs<ExtArgs>
   }
 
   export type $TpoProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TpoProfile"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      college: Prisma.$CollegePayload<ExtArgs>
+      college: Prisma.$CollegePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      collegeId: string
+      collegeId: string | null
       designation: string | null
       createdAt: Date
       updatedAt: Date
@@ -5046,7 +5032,7 @@ export namespace Prisma {
   export interface Prisma__TpoProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    college<T extends TpoProfile$collegeArgs<ExtArgs> = {}>(args?: Subset<T, TpoProfile$collegeArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5480,6 +5466,25 @@ export namespace Prisma {
      * Limit how many TpoProfiles to delete.
      */
     limit?: number
+  }
+
+  /**
+   * TpoProfile.college
+   */
+  export type TpoProfile$collegeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the College
+     */
+    select?: CollegeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the College
+     */
+    omit?: CollegeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CollegeInclude<ExtArgs> | null
+    where?: CollegeWhereInput
   }
 
   /**
@@ -14510,7 +14515,7 @@ export namespace Prisma {
     isVerified?: BoolFilter<"College"> | boolean
     createdAt?: DateTimeFilter<"College"> | Date | string
     updatedAt?: DateTimeFilter<"College"> | Date | string
-    tpos?: TpoProfileListRelationFilter
+    tpo?: XOR<TpoProfileNullableScalarRelationFilter, TpoProfileWhereInput> | null
     students?: StudentProfileListRelationFilter
     jobs?: JobListRelationFilter
     offers?: OfferListRelationFilter
@@ -14528,7 +14533,7 @@ export namespace Prisma {
     isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    tpos?: TpoProfileOrderByRelationAggregateInput
+    tpo?: TpoProfileOrderByWithRelationInput
     students?: StudentProfileOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
     offers?: OfferOrderByRelationAggregateInput
@@ -14549,7 +14554,7 @@ export namespace Prisma {
     isVerified?: BoolFilter<"College"> | boolean
     createdAt?: DateTimeFilter<"College"> | Date | string
     updatedAt?: DateTimeFilter<"College"> | Date | string
-    tpos?: TpoProfileListRelationFilter
+    tpo?: XOR<TpoProfileNullableScalarRelationFilter, TpoProfileWhereInput> | null
     students?: StudentProfileListRelationFilter
     jobs?: JobListRelationFilter
     offers?: OfferListRelationFilter
@@ -14595,18 +14600,18 @@ export namespace Prisma {
     NOT?: TpoProfileWhereInput | TpoProfileWhereInput[]
     id?: StringFilter<"TpoProfile"> | string
     userId?: StringFilter<"TpoProfile"> | string
-    collegeId?: StringFilter<"TpoProfile"> | string
+    collegeId?: StringNullableFilter<"TpoProfile"> | string | null
     designation?: StringNullableFilter<"TpoProfile"> | string | null
     createdAt?: DateTimeFilter<"TpoProfile"> | Date | string
     updatedAt?: DateTimeFilter<"TpoProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
+    college?: XOR<CollegeNullableScalarRelationFilter, CollegeWhereInput> | null
   }
 
   export type TpoProfileOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    collegeId?: SortOrder
+    collegeId?: SortOrderInput | SortOrder
     designation?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14617,21 +14622,21 @@ export namespace Prisma {
   export type TpoProfileWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     userId?: string
+    collegeId?: string
     AND?: TpoProfileWhereInput | TpoProfileWhereInput[]
     OR?: TpoProfileWhereInput[]
     NOT?: TpoProfileWhereInput | TpoProfileWhereInput[]
-    collegeId?: StringFilter<"TpoProfile"> | string
     designation?: StringNullableFilter<"TpoProfile"> | string | null
     createdAt?: DateTimeFilter<"TpoProfile"> | Date | string
     updatedAt?: DateTimeFilter<"TpoProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
-  }, "id" | "userId">
+    college?: XOR<CollegeNullableScalarRelationFilter, CollegeWhereInput> | null
+  }, "id" | "userId" | "collegeId">
 
   export type TpoProfileOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    collegeId?: SortOrder
+    collegeId?: SortOrderInput | SortOrder
     designation?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14646,7 +14651,7 @@ export namespace Prisma {
     NOT?: TpoProfileScalarWhereWithAggregatesInput | TpoProfileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TpoProfile"> | string
     userId?: StringWithAggregatesFilter<"TpoProfile"> | string
-    collegeId?: StringWithAggregatesFilter<"TpoProfile"> | string
+    collegeId?: StringNullableWithAggregatesFilter<"TpoProfile"> | string | null
     designation?: StringNullableWithAggregatesFilter<"TpoProfile"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"TpoProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"TpoProfile"> | Date | string
@@ -15461,7 +15466,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileCreateNestedOneWithoutCollegeInput
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
     jobs?: JobCreateNestedManyWithoutCollegeInput
     offers?: OfferCreateNestedManyWithoutCollegeInput
@@ -15479,7 +15484,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutCollegeInput
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
     jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
     offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
@@ -15497,7 +15502,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUpdateOneWithoutCollegeNestedInput
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
     jobs?: JobUpdateManyWithoutCollegeNestedInput
     offers?: OfferUpdateManyWithoutCollegeNestedInput
@@ -15515,7 +15520,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutCollegeNestedInput
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
     offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
@@ -15569,13 +15574,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTpoInput
-    college: CollegeCreateNestedOneWithoutTposInput
+    college?: CollegeCreateNestedOneWithoutTpoInput
   }
 
   export type TpoProfileUncheckedCreateInput = {
     id?: string
     userId: string
-    collegeId: string
+    collegeId?: string | null
     designation?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15587,13 +15592,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTpoNestedInput
-    college?: CollegeUpdateOneRequiredWithoutTposNestedInput
+    college?: CollegeUpdateOneWithoutTpoNestedInput
   }
 
   export type TpoProfileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    collegeId?: StringFieldUpdateOperationsInput | string
+    collegeId?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15602,7 +15607,7 @@ export namespace Prisma {
   export type TpoProfileCreateManyInput = {
     id?: string
     userId: string
-    collegeId: string
+    collegeId?: string | null
     designation?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15618,7 +15623,7 @@ export namespace Prisma {
   export type TpoProfileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    collegeId?: StringFieldUpdateOperationsInput | string
+    collegeId?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16583,12 +16588,6 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type TpoProfileListRelationFilter = {
-    every?: TpoProfileWhereInput
-    some?: TpoProfileWhereInput
-    none?: TpoProfileWhereInput
-  }
-
   export type StudentProfileListRelationFilter = {
     every?: StudentProfileWhereInput
     some?: StudentProfileWhereInput
@@ -16605,10 +16604,6 @@ export namespace Prisma {
     every?: OfferWhereInput
     some?: OfferWhereInput
     none?: OfferWhereInput
-  }
-
-  export type TpoProfileOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type StudentProfileOrderByRelationAggregateInput = {
@@ -16668,9 +16663,9 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
-  export type CollegeScalarRelationFilter = {
-    is?: CollegeWhereInput
-    isNot?: CollegeWhereInput
+  export type CollegeNullableScalarRelationFilter = {
+    is?: CollegeWhereInput | null
+    isNot?: CollegeWhereInput | null
   }
 
   export type TpoProfileCountOrderByAggregateInput = {
@@ -16731,6 +16726,11 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type CollegeScalarRelationFilter = {
+    is?: CollegeWhereInput
+    isNot?: CollegeWhereInput
   }
 
   export type StudentResumeListRelationFilter = {
@@ -17439,11 +17439,10 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type TpoProfileCreateNestedManyWithoutCollegeInput = {
-    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
-    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
-    createMany?: TpoProfileCreateManyCollegeInputEnvelope
-    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+  export type TpoProfileCreateNestedOneWithoutCollegeInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput
+    connect?: TpoProfileWhereUniqueInput
   }
 
   export type StudentProfileCreateNestedManyWithoutCollegeInput = {
@@ -17467,11 +17466,10 @@ export namespace Prisma {
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
-  export type TpoProfileUncheckedCreateNestedManyWithoutCollegeInput = {
-    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
-    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
-    createMany?: TpoProfileCreateManyCollegeInputEnvelope
-    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
+  export type TpoProfileUncheckedCreateNestedOneWithoutCollegeInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput
+    connect?: TpoProfileWhereUniqueInput
   }
 
   export type StudentProfileUncheckedCreateNestedManyWithoutCollegeInput = {
@@ -17500,18 +17498,14 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type TpoProfileUpdateManyWithoutCollegeNestedInput = {
-    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
-    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
-    upsert?: TpoProfileUpsertWithWhereUniqueWithoutCollegeInput | TpoProfileUpsertWithWhereUniqueWithoutCollegeInput[]
-    createMany?: TpoProfileCreateManyCollegeInputEnvelope
-    set?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    disconnect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    delete?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    update?: TpoProfileUpdateWithWhereUniqueWithoutCollegeInput | TpoProfileUpdateWithWhereUniqueWithoutCollegeInput[]
-    updateMany?: TpoProfileUpdateManyWithWhereWithoutCollegeInput | TpoProfileUpdateManyWithWhereWithoutCollegeInput[]
-    deleteMany?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
+  export type TpoProfileUpdateOneWithoutCollegeNestedInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput
+    upsert?: TpoProfileUpsertWithoutCollegeInput
+    disconnect?: TpoProfileWhereInput | boolean
+    delete?: TpoProfileWhereInput | boolean
+    connect?: TpoProfileWhereUniqueInput
+    update?: XOR<XOR<TpoProfileUpdateToOneWithWhereWithoutCollegeInput, TpoProfileUpdateWithoutCollegeInput>, TpoProfileUncheckedUpdateWithoutCollegeInput>
   }
 
   export type StudentProfileUpdateManyWithoutCollegeNestedInput = {
@@ -17556,18 +17550,14 @@ export namespace Prisma {
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
-  export type TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput = {
-    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput> | TpoProfileCreateWithoutCollegeInput[] | TpoProfileUncheckedCreateWithoutCollegeInput[]
-    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput | TpoProfileCreateOrConnectWithoutCollegeInput[]
-    upsert?: TpoProfileUpsertWithWhereUniqueWithoutCollegeInput | TpoProfileUpsertWithWhereUniqueWithoutCollegeInput[]
-    createMany?: TpoProfileCreateManyCollegeInputEnvelope
-    set?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    disconnect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    delete?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    connect?: TpoProfileWhereUniqueInput | TpoProfileWhereUniqueInput[]
-    update?: TpoProfileUpdateWithWhereUniqueWithoutCollegeInput | TpoProfileUpdateWithWhereUniqueWithoutCollegeInput[]
-    updateMany?: TpoProfileUpdateManyWithWhereWithoutCollegeInput | TpoProfileUpdateManyWithWhereWithoutCollegeInput[]
-    deleteMany?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
+  export type TpoProfileUncheckedUpdateOneWithoutCollegeNestedInput = {
+    create?: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+    connectOrCreate?: TpoProfileCreateOrConnectWithoutCollegeInput
+    upsert?: TpoProfileUpsertWithoutCollegeInput
+    disconnect?: TpoProfileWhereInput | boolean
+    delete?: TpoProfileWhereInput | boolean
+    connect?: TpoProfileWhereUniqueInput
+    update?: XOR<XOR<TpoProfileUpdateToOneWithWhereWithoutCollegeInput, TpoProfileUpdateWithoutCollegeInput>, TpoProfileUncheckedUpdateWithoutCollegeInput>
   }
 
   export type StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput = {
@@ -17618,9 +17608,9 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type CollegeCreateNestedOneWithoutTposInput = {
-    create?: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
-    connectOrCreate?: CollegeCreateOrConnectWithoutTposInput
+  export type CollegeCreateNestedOneWithoutTpoInput = {
+    create?: XOR<CollegeCreateWithoutTpoInput, CollegeUncheckedCreateWithoutTpoInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutTpoInput
     connect?: CollegeWhereUniqueInput
   }
 
@@ -17632,12 +17622,14 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTpoInput, UserUpdateWithoutTpoInput>, UserUncheckedUpdateWithoutTpoInput>
   }
 
-  export type CollegeUpdateOneRequiredWithoutTposNestedInput = {
-    create?: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
-    connectOrCreate?: CollegeCreateOrConnectWithoutTposInput
-    upsert?: CollegeUpsertWithoutTposInput
+  export type CollegeUpdateOneWithoutTpoNestedInput = {
+    create?: XOR<CollegeCreateWithoutTpoInput, CollegeUncheckedCreateWithoutTpoInput>
+    connectOrCreate?: CollegeCreateOrConnectWithoutTpoInput
+    upsert?: CollegeUpsertWithoutTpoInput
+    disconnect?: CollegeWhereInput | boolean
+    delete?: CollegeWhereInput | boolean
     connect?: CollegeWhereUniqueInput
-    update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutTposInput, CollegeUpdateWithoutTposInput>, CollegeUncheckedUpdateWithoutTposInput>
+    update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutTpoInput, CollegeUpdateWithoutTpoInput>, CollegeUncheckedUpdateWithoutTpoInput>
   }
 
   export type StudentProfileCreateskillsInput = {
@@ -18743,12 +18735,12 @@ export namespace Prisma {
     designation?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    college: CollegeCreateNestedOneWithoutTposInput
+    college?: CollegeCreateNestedOneWithoutTpoInput
   }
 
   export type TpoProfileUncheckedCreateWithoutUserInput = {
     id?: string
-    collegeId: string
+    collegeId?: string | null
     designation?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18857,12 +18849,12 @@ export namespace Prisma {
     designation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    college?: CollegeUpdateOneRequiredWithoutTposNestedInput
+    college?: CollegeUpdateOneWithoutTpoNestedInput
   }
 
   export type TpoProfileUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    collegeId?: StringFieldUpdateOperationsInput | string
+    collegeId?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18887,11 +18879,6 @@ export namespace Prisma {
   export type TpoProfileCreateOrConnectWithoutCollegeInput = {
     where: TpoProfileWhereUniqueInput
     create: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
-  }
-
-  export type TpoProfileCreateManyCollegeInputEnvelope = {
-    data: TpoProfileCreateManyCollegeInput | TpoProfileCreateManyCollegeInput[]
-    skipDuplicates?: boolean
   }
 
   export type StudentProfileCreateWithoutCollegeInput = {
@@ -19046,32 +19033,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TpoProfileUpsertWithWhereUniqueWithoutCollegeInput = {
-    where: TpoProfileWhereUniqueInput
+  export type TpoProfileUpsertWithoutCollegeInput = {
     update: XOR<TpoProfileUpdateWithoutCollegeInput, TpoProfileUncheckedUpdateWithoutCollegeInput>
     create: XOR<TpoProfileCreateWithoutCollegeInput, TpoProfileUncheckedCreateWithoutCollegeInput>
+    where?: TpoProfileWhereInput
   }
 
-  export type TpoProfileUpdateWithWhereUniqueWithoutCollegeInput = {
-    where: TpoProfileWhereUniqueInput
+  export type TpoProfileUpdateToOneWithWhereWithoutCollegeInput = {
+    where?: TpoProfileWhereInput
     data: XOR<TpoProfileUpdateWithoutCollegeInput, TpoProfileUncheckedUpdateWithoutCollegeInput>
   }
 
-  export type TpoProfileUpdateManyWithWhereWithoutCollegeInput = {
-    where: TpoProfileScalarWhereInput
-    data: XOR<TpoProfileUpdateManyMutationInput, TpoProfileUncheckedUpdateManyWithoutCollegeInput>
+  export type TpoProfileUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTpoNestedInput
   }
 
-  export type TpoProfileScalarWhereInput = {
-    AND?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
-    OR?: TpoProfileScalarWhereInput[]
-    NOT?: TpoProfileScalarWhereInput | TpoProfileScalarWhereInput[]
-    id?: StringFilter<"TpoProfile"> | string
-    userId?: StringFilter<"TpoProfile"> | string
-    collegeId?: StringFilter<"TpoProfile"> | string
-    designation?: StringNullableFilter<"TpoProfile"> | string | null
-    createdAt?: DateTimeFilter<"TpoProfile"> | Date | string
-    updatedAt?: DateTimeFilter<"TpoProfile"> | Date | string
+  export type TpoProfileUncheckedUpdateWithoutCollegeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentProfileUpsertWithWhereUniqueWithoutCollegeInput = {
@@ -19223,7 +19209,7 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutTpoInput, UserUncheckedCreateWithoutTpoInput>
   }
 
-  export type CollegeCreateWithoutTposInput = {
+  export type CollegeCreateWithoutTpoInput = {
     id?: string
     name: string
     code?: string | null
@@ -19240,7 +19226,7 @@ export namespace Prisma {
     offers?: OfferCreateNestedManyWithoutCollegeInput
   }
 
-  export type CollegeUncheckedCreateWithoutTposInput = {
+  export type CollegeUncheckedCreateWithoutTpoInput = {
     id?: string
     name: string
     code?: string | null
@@ -19257,9 +19243,9 @@ export namespace Prisma {
     offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
 
-  export type CollegeCreateOrConnectWithoutTposInput = {
+  export type CollegeCreateOrConnectWithoutTpoInput = {
     where: CollegeWhereUniqueInput
-    create: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
+    create: XOR<CollegeCreateWithoutTpoInput, CollegeUncheckedCreateWithoutTpoInput>
   }
 
   export type UserUpsertWithoutTpoInput = {
@@ -19301,18 +19287,18 @@ export namespace Prisma {
     recruiter?: RecruiterProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
-  export type CollegeUpsertWithoutTposInput = {
-    update: XOR<CollegeUpdateWithoutTposInput, CollegeUncheckedUpdateWithoutTposInput>
-    create: XOR<CollegeCreateWithoutTposInput, CollegeUncheckedCreateWithoutTposInput>
+  export type CollegeUpsertWithoutTpoInput = {
+    update: XOR<CollegeUpdateWithoutTpoInput, CollegeUncheckedUpdateWithoutTpoInput>
+    create: XOR<CollegeCreateWithoutTpoInput, CollegeUncheckedCreateWithoutTpoInput>
     where?: CollegeWhereInput
   }
 
-  export type CollegeUpdateToOneWithWhereWithoutTposInput = {
+  export type CollegeUpdateToOneWithWhereWithoutTpoInput = {
     where?: CollegeWhereInput
-    data: XOR<CollegeUpdateWithoutTposInput, CollegeUncheckedUpdateWithoutTposInput>
+    data: XOR<CollegeUpdateWithoutTpoInput, CollegeUncheckedUpdateWithoutTpoInput>
   }
 
-  export type CollegeUpdateWithoutTposInput = {
+  export type CollegeUpdateWithoutTpoInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19329,7 +19315,7 @@ export namespace Prisma {
     offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
 
-  export type CollegeUncheckedUpdateWithoutTposInput = {
+  export type CollegeUncheckedUpdateWithoutTpoInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19391,7 +19377,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileCreateNestedOneWithoutCollegeInput
     jobs?: JobCreateNestedManyWithoutCollegeInput
     offers?: OfferCreateNestedManyWithoutCollegeInput
   }
@@ -19408,7 +19394,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutCollegeInput
     jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
     offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
@@ -19600,7 +19586,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUpdateOneWithoutCollegeNestedInput
     jobs?: JobUpdateManyWithoutCollegeNestedInput
     offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
@@ -19617,7 +19603,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
     offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
@@ -20240,7 +20226,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileCreateNestedOneWithoutCollegeInput
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
     offers?: OfferCreateNestedManyWithoutCollegeInput
   }
@@ -20257,7 +20243,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutCollegeInput
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
     offers?: OfferUncheckedCreateNestedManyWithoutCollegeInput
   }
@@ -20417,7 +20403,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUpdateOneWithoutCollegeNestedInput
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
     offers?: OfferUpdateManyWithoutCollegeNestedInput
   }
@@ -20434,7 +20420,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutCollegeNestedInput
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
     offers?: OfferUncheckedUpdateManyWithoutCollegeNestedInput
   }
@@ -21001,7 +20987,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileCreateNestedOneWithoutCollegeInput
     students?: StudentProfileCreateNestedManyWithoutCollegeInput
     jobs?: JobCreateNestedManyWithoutCollegeInput
   }
@@ -21018,7 +21004,7 @@ export namespace Prisma {
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    tpos?: TpoProfileUncheckedCreateNestedManyWithoutCollegeInput
+    tpo?: TpoProfileUncheckedCreateNestedOneWithoutCollegeInput
     students?: StudentProfileUncheckedCreateNestedManyWithoutCollegeInput
     jobs?: JobUncheckedCreateNestedManyWithoutCollegeInput
   }
@@ -21233,7 +21219,7 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUpdateOneWithoutCollegeNestedInput
     students?: StudentProfileUpdateManyWithoutCollegeNestedInput
     jobs?: JobUpdateManyWithoutCollegeNestedInput
   }
@@ -21250,17 +21236,9 @@ export namespace Prisma {
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
+    tpo?: TpoProfileUncheckedUpdateOneWithoutCollegeNestedInput
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
-  }
-
-  export type TpoProfileCreateManyCollegeInput = {
-    id?: string
-    userId: string
-    designation?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type StudentProfileCreateManyCollegeInput = {
@@ -21317,30 +21295,6 @@ export namespace Prisma {
     declinedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-  }
-
-  export type TpoProfileUpdateWithoutCollegeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    designation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTpoNestedInput
-  }
-
-  export type TpoProfileUncheckedUpdateWithoutCollegeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    designation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TpoProfileUncheckedUpdateManyWithoutCollegeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    designation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentProfileUpdateWithoutCollegeInput = {

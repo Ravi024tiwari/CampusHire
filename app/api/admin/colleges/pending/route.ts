@@ -64,8 +64,7 @@ export async function GET(req: NextRequest) {
           logoUrl: true,
           isVerified: true,
           createdAt: true,
-          tpos: {
-            take: 1, // Primary registering TPO contact
+          tpo: {
             select: {
               id: true,
               designation: true,
@@ -84,7 +83,6 @@ export async function GET(req: NextRequest) {
           _count: {
             select: {
               students: true,
-              tpos: true,
             },
           },
         },
@@ -92,7 +90,7 @@ export async function GET(req: NextRequest) {
     ]);
 
     const formattedPendingColleges = pendingColleges.map((c) => {
-      const primaryTpo = c.tpos[0] || null;
+      const primaryTpo = c.tpo || null;
       return {
         id: c.id,
         name: c.name,

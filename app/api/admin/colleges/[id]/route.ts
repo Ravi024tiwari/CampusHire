@@ -31,8 +31,7 @@ export async function GET(
       prisma.college.findUnique({
         where: { id },
         include: {
-          tpos: {
-            orderBy: { createdAt: 'desc' },
+          tpo: {
             select: {
               id: true,
               designation: true,
@@ -84,7 +83,6 @@ export async function GET(
             select: {
               students: true,
               jobs: true,
-              tpos: true,
               offers: true,
             },
           },
@@ -142,9 +140,11 @@ export async function GET(
           city: college.city,
           state: college.state,
           logoUrl: college.logoUrl,
+          images: college.images,
+          isVerified: college.isVerified,
           createdAt: college.createdAt,
           updatedAt: college.updatedAt,
-          tpos: college.tpos,
+          tpo: college.tpo,
           jobs: college.jobs,
         },
         analytics: {
@@ -152,7 +152,6 @@ export async function GET(
           totalPlacedStudents,
           totalUnplacedStudents: totalUnplaced,
           placementRate,
-          totalTposAssigned: college._count.tpos,
           totalPlacementDrives: college._count.jobs,
           totalOffersGenerated: college._count.offers,
           branchDistribution,

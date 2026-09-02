@@ -46,7 +46,6 @@ export async function GET(req: NextRequest) {
               select: {
                 students: true,
                 jobs: true,
-                tpos: true,
                 offers: true,
               },
             },
@@ -82,16 +81,16 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
-    if (!tpo || !tpo.college) {
-      return errorResponse('TPO profile or associated college not found', 404);
+    if (!tpo) {
+      return errorResponse('TPO profile not found', 404);
     }
 
     const body = await req.json();
     const parsedData = updateTpoProfileSchema.parse(body);
 
     const oldAvatarUrl = tpo.user.avatarUrl;
-    const oldCollegeLogoUrl = tpo.college.logoUrl;
-    const oldCollegeImages = tpo.college.images || [];
+    const oldCollegeLogoUrl = tpo.college?.logoUrl || null;
+    const oldCollegeImages = tpo.college?.images || [];
 
     const newAvatarUrl =
       parsedData.avatarUrl !== undefined ? (parsedData.avatarUrl || null) : undefined;
@@ -111,7 +110,7 @@ export async function PATCH(req: NextRequest) {
         });
       }
 
-      // 2. Update TPO designation
+      // 2. Update TPO Profile designation
       if (parsedData.designation !== undefined) {
         await tx.tpoProfile.update({
           where: { id: tpo.id },
@@ -119,20 +118,19 @@ export async function PATCH(req: NextRequest) {
         });
       }
 
-      // 3. Update College details & campus photos gallery
-      const collegeUpdates: any = {};
-      if (parsedData.collegeName) collegeUpdates.name = parsedData.collegeName;
-      if (parsedData.collegeCode !== undefined) collegeUpdates.code = parsedData.collegeCode || null;
-      if (parsedData.collegeDomain !== undefined) collegeUpdates.domain = parsedData.collegeDomain || null;
-      if (parsedData.collegeCity !== undefined) collegeUpdates.city = parsedData.collegeCity || null;
-      if (parsedData.collegeState !== undefined) collegeUpdates.state = parsedData.collegeState || null;
-      if (newCollegeLogoUrl !== undefined) collegeUpdates.logoUrl = newCollegeLogoUrl;
-      if (newCollegeImages !== undefined) collegeUpdates.images = newCollegeImages;
-
-      if (Object.keys(collegeUpdates).length > 0) {
+      // 3. Update College details if college exists
+      if (tpo.college) {
         await tx.college.update({
-          where: { id: tpo.collegeId },
-          data: collegeUpdates,
+          where: { id: tpo.college.id },
+          data: {
+            ...(parsedData.collegeName !== undefined ? { name: parsedData.collegeName } : {}),
+            ...(parsedData.collegeCode !== undefined ? { code: parsedData.collegeCode || null } : {}),
+            ...(parsedData.collegeDomain !== undefined ? { domain: parsedData.collegeDomain || null } : {}),
+            ...(parsedData.collegeCity !== undefined ? { city: parsedData.collegeCity || null } : {}),
+            ...(parsedData.collegeState !== undefined ? { state: parsedData.collegeState || null } : {}),
+            ...(newCollegeLogoUrl !== undefined ? { logoUrl: newCollegeLogoUrl } : {}),
+            ...(newCollegeImages !== undefined ? { images: newCollegeImages } : {}),
+          },
         });
       }
 
@@ -146,7 +144,6 @@ export async function PATCH(req: NextRequest) {
               email: true,
               role: true,
               avatarUrl: true,
-              isActive: true,
             },
           },
           college: true,

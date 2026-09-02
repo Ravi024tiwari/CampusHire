@@ -2,7 +2,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-// Public endpoints accessible without authentication
+// Public frontend pages accessible without logging in
+const PUBLIC_PAGE_ROUTES = [
+  '/',
+  '/login',
+  '/register',
+  '/colleges',
+  '/unauthorized',
+];
+
+// Public API endpoints accessible without authentication
 const PUBLIC_API_ROUTES = [
   '/api/auth/login',
   '/api/auth/register',
@@ -15,10 +24,12 @@ const ROLE_ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/api/student': ['STUDENT'],
   '/api/recruiter': ['RECRUITER'],
   '/api/tpo': ['TPO_ADMIN'],
+  '/api/admin': ['SUPER_ADMIN'],
 
-  '/dashboard/student': ['STUDENT'],
-  '/dashboard/recruiter': ['RECRUITER'],
-  '/dashboard/tpo': ['TPO_ADMIN'],
+  '/student': ['STUDENT'],
+  '/recruiter': ['RECRUITER'],
+  '/tpo': ['TPO_ADMIN'],
+  '/admin': ['SUPER_ADMIN'],
 };
 
 function getJwtSecret(): Uint8Array {
@@ -29,12 +40,26 @@ function getJwtSecret(): Uint8Array {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Allow public auth and college discovery routes to proceed without checks
+  // 1. Allow public static assets and system routes
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/favicon.ico') ||
+    pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico|css|js)$/)
+  ) {
+    return NextResponse.next();
+  }
+
+  // 2. Allow public frontend pages (Home, Login, Register, Colleges, etc.)
+  if (PUBLIC_PAGE_ROUTES.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  // 3. Allow public API endpoints
   if (PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
   }
 
-  // 2. Extract token from HTTP-only session cookie or Bearer Authorization header
+  // 4. Extract token from HTTP-only session cookie or Bearer Authorization header
   let token = request.cookies.get('campushire_session')?.value;
 
   if (!token) {
@@ -44,7 +69,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // 3. If no token is found, block unauthenticated access immediately
+  // 5. If no token is found, block unauthenticated access
   if (!token) {
     if (pathname.startsWith('/api/')) {
       return NextResponse.json(
@@ -56,13 +81,13 @@ export async function proxy(request: NextRequest) {
       );
     }
 
-    // For frontend pages, redirect to login
+    // For protected frontend dashboards, redirect to login with return path
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // 4. Verify JWT token signature and expiration
+  // 6. Verify JWT token signature and expiration
   try {
     const { payload } = await jwtVerify(token, getJwtSecret());
 
@@ -71,7 +96,7 @@ export async function proxy(request: NextRequest) {
     const userEmail = payload.email as string;
     const userName = (payload.name as string) || '';
 
-    // 5. Role-Based Access Control (RBAC) check
+    // 7. Role-Based Access Control (RBAC) check
     for (const [routePrefix, allowedRoles] of Object.entries(ROLE_ROUTE_PERMISSIONS)) {
       if (pathname.startsWith(routePrefix)) {
         if (!allowedRoles.includes(userRole)) {
@@ -91,7 +116,7 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // 6. Forward verified user claims via request headers to downstream handlers
+    // 8. Forward verified user claims via request headers to downstream handlers
     const forwardHeaders = new Headers(request.headers);
     forwardHeaders.set('x-user-id', userId);
     forwardHeaders.set('x-user-role', userRole);

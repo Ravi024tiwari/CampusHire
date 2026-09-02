@@ -15,8 +15,26 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    if (!tpo || !tpo.collegeId) {
-      return errorResponse('TPO profile or associated college not found', 404);
+    if (!tpo || !tpo.collegeId || !tpo.college) {
+      return successResponse(
+        {
+          hasCollege: false,
+          college: null,
+          metrics: {
+            totalJobs: 0,
+            activeJobs: 0,
+            pendingApprovalJobs: 0,
+            closedJobs: 0,
+            totalStudents: 0,
+            totalApplications: 0,
+            placedStudentsCount: 0,
+            placementRate: '0%',
+          },
+          recentDrives: [],
+          branchDistribution: [],
+        },
+        'No college registered yet for this TPO'
+      );
     }
 
     const collegeId = tpo.collegeId;

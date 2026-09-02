@@ -89,7 +89,6 @@ export async function GET(req: NextRequest) {
           _count: {
             select: {
               students: true,
-              tpos: true,
               jobs: true,
               offers: true,
             },

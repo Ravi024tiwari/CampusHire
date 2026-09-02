@@ -78,7 +78,7 @@ model College {
   images     String[] @default([]) // Multiple Campus Photos / Infrastructure Gallery
   isVerified Boolean  @default(false)
 
-  tpos      TpoProfile[]
+  tpo       TpoProfile?
   students  StudentProfile[]
   jobs      Job[]
   offers    Offer[]
@@ -90,11 +90,11 @@ model College {
 }
 
 model TpoProfile {
-  id          String  @id @default(cuid())
-  userId      String  @unique
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  collegeId   String
-  college     College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeId   String?  @unique
+  college     College? @relation(fields: [collegeId], references: [id], onDelete: Cascade)
   designation String? // e.g. "Head, Training & Placement Cell"
 
   createdAt DateTime @default(now())
