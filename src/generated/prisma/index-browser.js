@@ -142,6 +142,10 @@ exports.Prisma.CollegeScalarFieldEnum = {
   logoUrl: 'logoUrl',
   images: 'images',
   isVerified: 'isVerified',
+  createdById: 'createdById',
+  createdRole: 'createdRole',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -151,6 +155,10 @@ exports.Prisma.TpoProfileScalarFieldEnum = {
   userId: 'userId',
   collegeId: 'collegeId',
   designation: 'designation',
+  department: 'department',
+  isActive: 'isActive',
+  tenureStart: 'tenureStart',
+  tenureEnd: 'tenureEnd',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -4,14 +4,68 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BrandLogo } from '@/components/BrandLogo';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { logout } from '@/store/slices/authSlice';
+import { useAuth } from '@/context/AuthContext';
+import { Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+
+interface NavItem {
+  label: string;
+  href: string;
+  id: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Placements', href: '#placement-insights', id: 'placement-insights' },
+  { label: 'Colleges', href: '#colleges-kpis', id: 'colleges-kpis' },
+  { label: 'How It Works', href: '#how-it-works', id: 'how-it-works' },
+  { label: 'Capabilities', href: '#features', id: 'features' },
+  { label: 'Wall of Love', href: '#reviews', id: 'reviews' },
+  { label: 'Portals', href: '#stakeholders', id: 'stakeholders' }
+];
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated, logout } = useAuth();
+
+  // Active section scroll spy
+  useEffect(() => {
+    if (pathname !== '/') {
+      setActiveSection('');
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 120;
+      setIsScrolled(window.scrollY > 20);
+
+      const sectionElements = NAV_ITEMS.map(item => ({
+        id: item.id,
+        element: document.getElementById(item.id)
+      })).filter(item => item.element !== null);
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const item = sectionElements[i];
+        if (item.element) {
+          const top = item.element.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(item.id);
+            return;
+          }
+        }
+      }
+
+      if (window.scrollY < 300) {
+        setActiveSection('');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname]);
 
   // Close mobile drawer when route changes
   useEffect(() => {
@@ -31,14 +85,7 @@ export function Navbar() {
   }, [mobileMenuOpen]);
 
   const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-    } catch (e) {
-      console.error('Logout error:', e);
-    } finally {
-      dispatch(logout());
-      window.location.href = '/login';
-    }
+    await logout();
   };
 
   const getDashboardLink = () => {
@@ -57,8 +104,36 @@ export function Navbar() {
     }
   };
 
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === '/' && href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        const offset = 80;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        setActiveSection(targetId);
+        setMobileMenuOpen(false);
+      }
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] transition-all">
+    <header 
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/95 backdrop-blur-md shadow-[0_4px_20px_rgba(10,37,64,0.06)] border-b border-slate-200/90' 
+          : 'bg-white/90 backdrop-blur-sm border-b border-slate-200/60'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
         
         {/* Brand Logo */}
@@ -66,32 +141,29 @@ export function Navbar() {
           <BrandLogo size="md" />
         </div>
 
-        {/* Desktop / Large Screen Navigation Links (Visible on 1024px+ / iPad Landscape+) */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[14px] xl:text-[15px] font-medium text-[#334155]">
-          <Link
-            href="/#features"
-            className="hover:text-[#2563EB] transition-colors py-2 px-1 hover:border-b-2 hover:border-[#2563EB]"
-          >
-            Features
-          </Link>
-          <Link
-            href="/#how-it-works"
-            className="hover:text-[#2563EB] transition-colors py-2 px-1 hover:border-b-2 hover:border-[#2563EB]"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="/#stakeholders"
-            className="hover:text-[#2563EB] transition-colors py-2 px-1 hover:border-b-2 hover:border-[#2563EB]"
-          >
-            Institutions & Recruiters
-          </Link>
-          <Link
-            href="/colleges"
-            className="hover:text-[#2563EB] transition-colors py-2 px-1 hover:border-b-2 hover:border-[#2563EB]"
-          >
-            Affiliated Colleges
-          </Link>
+        {/* Desktop Navigation Links with Live Dynamic Blue Scroll Spy Highlight */}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeSection === item.id;
+
+            return (
+              <a
+                key={item.id}
+                href={`/${item.href}`}
+                onClick={(e) => scrollToSection(e, item.href)}
+                className={`relative px-3.5 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? 'text-blue-600 bg-blue-50/90 shadow-2xs font-bold'
+                    : 'text-[#475569] hover:text-blue-600 hover:bg-slate-50'
+                }`}
+              >
+                <span>{item.label}</span>
+                {isActive && (
+                  <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-blue-600" />
+                )}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Right CTA Actions */}
@@ -129,7 +201,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors px-2 py-1"
+                className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors px-2 py-1 cursor-pointer"
                 title="Sign Out"
               >
                 Sign Out
@@ -145,16 +217,16 @@ export function Navbar() {
               </Link>
               <Link
                 href="/register"
-                className="btn-primary text-xs sm:text-sm px-4 sm:px-5 py-2.5"
+                className="btn-primary text-xs sm:text-sm px-4 sm:px-5 py-2.5 shadow-md shadow-blue-500/20"
               >
-                <span>Get Started</span>
-                <span className="hidden md:inline"> Free</span> →
+                <span>Get Started Free</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </>
           )}
         </div>
 
-        {/* Mobile & Tablet Hamburger Toggle (< 1024px / iPad Portrait) */}
+        {/* Mobile & Tablet Hamburger Toggle */}
         <div className="flex items-center gap-2 lg:hidden">
           {isAuthenticated && user ? (
             <Link
@@ -174,7 +246,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-xl text-[#334155] hover:bg-[#F1F5F9] focus:outline-none transition-colors border border-transparent hover:border-[#E2E8F0]"
+            className="p-2.5 rounded-xl text-[#334155] hover:bg-[#F1F5F9] focus:outline-none transition-colors border border-transparent hover:border-[#E2E8F0] cursor-pointer"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -189,44 +261,31 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile & iPad Drawer (Animated Modal Overlay) */}
+      {/* Mobile & iPad Drawer (With Synchronized ScrollSpy Active Blue Links) */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 top-16 sm:top-20 z-40 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white border-b border-[#E2E8F0] px-4 sm:px-8 pt-4 pb-8 space-y-4 shadow-2xl max-h-[calc(100vh-5rem)] overflow-y-auto">
             
             <div className="space-y-1">
-              <Link
-                href="/#features"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl text-base font-semibold text-[#1E293B] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] transition-colors"
-              >
-                <span>Features</span>
-                <span className="text-slate-400">→</span>
-              </Link>
-              <Link
-                href="/#how-it-works"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl text-base font-semibold text-[#1E293B] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] transition-colors"
-              >
-                <span>How It Works</span>
-                <span className="text-slate-400">→</span>
-              </Link>
-              <Link
-                href="/#stakeholders"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl text-base font-semibold text-[#1E293B] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] transition-colors"
-              >
-                <span>Universities & Recruiters</span>
-                <span className="text-slate-400">→</span>
-              </Link>
-              <Link
-                href="/colleges"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl text-base font-semibold text-[#1E293B] hover:bg-[#F8FAFC] active:bg-[#F1F5F9] transition-colors"
-              >
-                <span>Affiliated Colleges</span>
-                <span className="text-slate-400">→</span>
-              </Link>
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+
+                return (
+                  <a
+                    key={item.id}
+                    href={`/${item.href}`}
+                    onClick={(e) => scrollToSection(e, item.href)}
+                    className={`flex items-center justify-between p-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
+                      isActive
+                        ? 'text-blue-600 bg-blue-50/90 font-bold border border-blue-200/80 shadow-2xs'
+                        : 'text-[#1E293B] hover:bg-[#F8FAFC]'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <span className={isActive ? 'text-blue-600 font-bold' : 'text-slate-400'}>→</span>
+                  </a>
+                );
+              })}
             </div>
 
             {/* Role Quick Links on iPad/Mobile */}

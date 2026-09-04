@@ -1,15 +1,20 @@
 import { NextRequest } from 'next/server';
-import { ZodError } from 'zod';
+import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { verifyPassword, signToken, setSessionCookie } from '@/lib/auth';
 import { loginSchema } from '@/lib/validations/auth.schema';
-import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
-
+import { successResponse, errorResponse, handleApiError, handleValidationError } from '@/lib/api-response';
+ 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, password } = loginSchema.parse(body);
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return errorResponse('Invalid or empty JSON request body', 400);
+    }
 
+    const { email, password } = loginSchema.parse(body);
     const normalizedEmail = email.toLowerCase().trim();
 
     // Query user by email with role-specific profile relations
@@ -64,11 +69,14 @@ export async function POST(req: NextRequest) {
       'Logged in successfully'
     );
   } catch (error: any) {
-    if (error instanceof ZodError) {
+    if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-
-    console.error('[AUTH_LOGIN_ERROR]', error);
-    return errorResponse(error.message || 'Internal server error during login', 500);
+    return handleApiError(
+      error,
+      'Unable to sign in. Please verify your credentials and try again.',
+      '[AUTH_LOGIN_ERROR]'
+    );
   }
 }
+

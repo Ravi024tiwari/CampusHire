@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
+import { successResponse, errorResponse, handleApiError, handleValidationError } from '@/lib/api-response';
 
 const createCollegeSchema = z.object({
   name: z.string().trim().min(3, 'College name must be at least 3 characters'),
@@ -9,6 +9,8 @@ const createCollegeSchema = z.object({
   domain: z.string().trim().toLowerCase().optional(),
   city: z.string().trim().optional(),
   state: z.string().trim().optional(),
+  contactEmail: z.string().email('Invalid contact email').optional().or(z.literal('')),
+  contactPhone: z.string().optional(),
   logoUrl: z.string().url('Invalid logo URL').optional().or(z.literal('')),
 });
 
@@ -87,8 +89,19 @@ export async function GET(req: NextRequest) {
       },
     }, 'Colleges fetched successfully');
   } catch (error: any) {
-    console.error('[GET_COLLEGES_ERROR]', error);
-    return errorResponse(error.message || 'Failed to fetch colleges', 500);
+    if (error.code === 'P2021' || error.message?.includes('does not exist')) {
+      return successResponse({
+        colleges: [],
+        pagination: {
+          page: 1,
+          limit: 50,
+          total: 0,
+          totalPages: 0,
+          hasMore: false,
+        },
+      }, 'No colleges found');
+    }
+    return handleApiError(error, 'Failed to fetch colleges', '[GET_COLLEGES_ERROR]');
   }
 }
 
@@ -117,17 +130,19 @@ export async function POST(req: NextRequest) {
         domain: parsedData.domain || null,
         city: parsedData.city || null,
         state: parsedData.state || null,
+        contactEmail: parsedData.contactEmail || null,
+        contactPhone: parsedData.contactPhone || null,
         logoUrl: parsedData.logoUrl || null,
+        isVerified: false,
       },
     });
 
-    return successResponse(college, 'College registered successfully', 201);
+    return successResponse(college, 'College registered successfully and submitted for verification', 201);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-
-    console.error('[CREATE_COLLEGE_ERROR]', error);
-    return errorResponse(error.message || 'Failed to register college', 500);
+    return handleApiError(error, 'Failed to register college', '[CREATE_COLLEGE_ERROR]');
   }
 }
+

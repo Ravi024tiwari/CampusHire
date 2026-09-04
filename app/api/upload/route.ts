@@ -3,9 +3,9 @@ import { requireAuth } from '@/lib/rbac';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 
-// Max file sizes (in bytes)
-const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB for PDFs / Resumes
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB for photos / logos
+// Max file sizes (in bytes) - Up to 10MB
+const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB for PDFs / Resumes / Offer Letters / Documents
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB for photos / logos / avatars / campus images
 
 const ALLOWED_MIME_TYPES: Record<string, { mimes: string[]; folder: string; maxBytes: number; resourceType: 'auto' | 'image' | 'raw' }> = {
   resume: {
@@ -26,6 +26,18 @@ const ALLOWED_MIME_TYPES: Record<string, { mimes: string[]; folder: string; maxB
     maxBytes: MAX_IMAGE_SIZE,
     resourceType: 'image',
   },
+  college_campus: {
+    mimes: ['image/jpeg', 'image/png', 'image/webp'],
+    folder: 'campushire/college_campuses',
+    maxBytes: MAX_IMAGE_SIZE,
+    resourceType: 'image',
+  },
+  college_logo: {
+    mimes: ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'],
+    folder: 'campushire/college_logos',
+    maxBytes: MAX_IMAGE_SIZE,
+    resourceType: 'image',
+  },
   offer_letter: {
     mimes: ['application/pdf'],
     folder: 'campushire/offer_letters',
@@ -42,8 +54,13 @@ const ALLOWED_MIME_TYPES: Record<string, { mimes: string[]; folder: string; maxB
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Authenticate caller
-    const authUser = await requireAuth(req);
+    // 1. Check optional authentication (allows public logo/campus image upload during onboarding)
+    let authUser = null;
+    try {
+      authUser = await requireAuth(req);
+    } catch {
+      // Allow unauthenticated uploads strictly for registration image categories
+    }
 
     // 2. Parse multipart form data
     const formData = await req.formData();
@@ -52,6 +69,11 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return errorResponse('No file uploaded. Please provide a "file" in form-data.', 400);
+    }
+
+    const publicCategories = ['logo', 'college_campus', 'college_logo', 'avatar'];
+    if (!authUser && !publicCategories.includes(category)) {
+      return errorResponse('Authentication required for document uploads.', 401);
     }
 
     const config = ALLOWED_MIME_TYPES[category] || ALLOWED_MIME_TYPES.general;
@@ -85,7 +107,11 @@ export async function POST(req: NextRequest) {
     const uploadResult = await uploadToCloudinary(buffer, {
       folder: config.folder,
       resourceType: config.resourceType,
-      tags: [category, authUser.role.toLowerCase(), authUser.userId],
+      tags: [
+        category, 
+        authUser?.role?.toLowerCase() || 'public_registration', 
+        authUser?.userId || 'guest'
+      ],
     });
 
     return successResponse(

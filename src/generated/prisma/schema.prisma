@@ -78,7 +78,13 @@ model College {
   images     String[] @default([]) // Multiple Campus Photos / Infrastructure Gallery
   isVerified Boolean  @default(false)
 
-  tpo       TpoProfile?
+  // Creator / Source Tracking (Recruiter, TPO, or Super Admin)
+  createdById  String?
+  createdRole  Role?
+  contactEmail String?
+  contactPhone String?
+
+  tpos      TpoProfile[] // 1-to-Many: College has persistent lifecycle with rotational/multiple TPOs
   students  StudentProfile[]
   jobs      Job[]
   offers    Offer[]
@@ -87,20 +93,26 @@ model College {
 
   @@index([name])
   @@index([isVerified])
+  @@index([createdById])
 }
 
 model TpoProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  collegeId   String?  @unique
-  college     College? @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeId   String? // Nullable & non-unique: TPO is assigned to persistent College
+  college     College?  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
   designation String? // e.g. "Head, Training & Placement Cell"
+  department  String? // e.g. "Computer Science & Engineering" or "Central Placecom"
+  isActive    Boolean   @default(true)
+  tenureStart DateTime? @default(now())
+  tenureEnd   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([collegeId])
+  @@index([isActive])
 }
 
 // 3. Student Profile

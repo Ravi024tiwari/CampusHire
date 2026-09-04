@@ -3,7 +3,7 @@ import { JobStatus } from '@/src/generated/prisma';
 
 export const adminCollegeQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
   search: z.string().trim().optional(),
   name: z.string().trim().optional(),
   state: z.string().trim().optional(),
@@ -20,7 +20,7 @@ export const verifyCollegeSchema = z.object({
 
 export const adminStudentQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
   search: z.string().trim().optional(),
   collegeId: z.string().optional(),
   branch: z.string().trim().optional(),
@@ -33,7 +33,7 @@ export const adminStudentQuerySchema = z.object({
 
 export const adminCompanyQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
   search: z.string().trim().optional(),
   isVerified: z.enum(['true', 'false', 'all']).default('all'),
   industry: z.string().trim().optional(),
@@ -48,7 +48,7 @@ export const verifyCompanySchema = z.object({
 
 export const adminJobQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
   search: z.string().trim().optional(),
   companyName: z.string().trim().optional(),
   companyId: z.string().optional(),

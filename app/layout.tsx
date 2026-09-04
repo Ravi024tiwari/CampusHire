@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-import { StoreProvider } from "@/store/StoreProvider";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "CampusHire | Next-Gen AI Campus Placement Platform",
@@ -36,10 +36,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${plusJakarta.variable} ${jetbrainsMono.variable} scroll-smooth`}
     >
       <body className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans antialiased selection:bg-blue-600 selection:text-white flex flex-col">
-        <StoreProvider>{children}</StoreProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

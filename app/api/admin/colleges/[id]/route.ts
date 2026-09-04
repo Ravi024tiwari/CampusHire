@@ -12,6 +12,7 @@ const updateCollegeSchema = z.object({
   city: z.string().trim().optional().nullable(),
   state: z.string().trim().optional().nullable(),
   logoUrl: z.string().url('Invalid logo URL').optional().nullable().or(z.literal('')),
+  isVerified: z.boolean().optional(),
 });
 
 /**
@@ -31,10 +32,14 @@ export async function GET(
       prisma.college.findUnique({
         where: { id },
         include: {
-          tpo: {
+          tpos: {
             select: {
               id: true,
               designation: true,
+              department: true,
+              isActive: true,
+              tenureStart: true,
+              tenureEnd: true,
               createdAt: true,
               user: {
                 select: {
@@ -144,7 +149,8 @@ export async function GET(
           isVerified: college.isVerified,
           createdAt: college.createdAt,
           updatedAt: college.updatedAt,
-          tpo: college.tpo,
+          tpos: college.tpos,
+          primaryTpo: college.tpos.find((t) => t.isActive) || college.tpos[0] || null,
           jobs: college.jobs,
         },
         analytics: {
@@ -202,6 +208,7 @@ export async function PATCH(
         ...(validatedData.city !== undefined ? { city: validatedData.city || null } : {}),
         ...(validatedData.state !== undefined ? { state: validatedData.state || null } : {}),
         ...(validatedData.logoUrl !== undefined ? { logoUrl: validatedData.logoUrl || null } : {}),
+        ...(validatedData.isVerified !== undefined ? { isVerified: validatedData.isVerified } : {}),
       },
     });
 

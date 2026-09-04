@@ -17,7 +17,10 @@ const PUBLIC_API_ROUTES = [
   '/api/auth/register',
   '/api/auth/logout',
   '/api/colleges',
+  '/api/companies',
+  '/api/upload',
 ];
+
 
 // Role-specific protected path prefixes
 const ROLE_ROUTE_PERMISSIONS: Record<string, string[]> = {

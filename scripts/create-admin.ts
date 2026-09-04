@@ -3,9 +3,8 @@ config(); // Load .env
 
 import readline from 'readline';
 import bcrypt from 'bcryptjs';
-import { PrismaClient, Role } from '../src/generated/prisma';
-
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma';
+import { Role } from '../src/generated/prisma';
 
 function prompt(question: string): Promise<string> {
   const rl = readline.createInterface({

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Role } from '@/src/generated/prisma';
 import { hashPassword, signToken, setSessionCookie } from '@/lib/auth';
 import { registerSchema } from '@/lib/validations/auth.schema';
-import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
+import { successResponse, errorResponse, handleApiError } from '@/lib/api-response';
 
 export async function POST(req: NextRequest) {
   try {
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 
       case Role.RECRUITER: {
         newUser = await prisma.$transaction(async (tx) => {
-          // Find or create company
+          // 1. Find or create persistent Company entity (Pending Super Admin Verification)
           let company = await tx.company.findFirst({
             where: {
               name: {
@@ -97,22 +97,28 @@ export async function POST(req: NextRequest) {
             company = await tx.company.create({
               data: {
                 name: parsedData.companyName.trim(),
-                website: parsedData.companyWebsite || null,
-                industry: parsedData.companyIndustry || null,
+                website: parsedData.website || null,
+                logoUrl: parsedData.logoUrl || null,
+                industry: parsedData.industry || null,
+                location: parsedData.location || null,
+                description: parsedData.description || null,
+                isVerified: false, // Starts as pending Super Admin verification
               },
             });
           }
 
+          // 2. Create Company User Account (login directly with company email & password)
           const user = await tx.user.create({
             data: {
-              name: parsedData.name.trim(),
+              name: parsedData.companyName.trim(),
               email,
               passwordHash,
+              avatarUrl: parsedData.logoUrl || null,
               role: Role.RECRUITER,
               recruiter: {
                 create: {
                   companyId: company.id,
-                  designation: parsedData.designation.trim(),
+                  designation: 'Company Account',
                 },
               },
             },
@@ -132,6 +138,35 @@ export async function POST(req: NextRequest) {
 
       case Role.TPO_ADMIN: {
         newUser = await prisma.$transaction(async (tx) => {
+          // 1. Find or create persistent College entity
+          let college = await tx.college.findFirst({
+            where: {
+              name: {
+                equals: parsedData.collegeName.trim(),
+                mode: 'insensitive',
+              },
+            },
+          });
+
+          if (!college) {
+            college = await tx.college.create({
+              data: {
+                name: parsedData.collegeName.trim(),
+                code: parsedData.collegeCode || null,
+                domain: parsedData.collegeDomain || null,
+                city: parsedData.collegeCity || null,
+                state: parsedData.collegeState || null,
+                contactEmail: parsedData.collegeContactEmail || null,
+                contactPhone: parsedData.collegeContactPhone || null,
+                logoUrl: parsedData.collegeLogoUrl || null,
+                images: parsedData.collegeLogoUrl ? [parsedData.collegeLogoUrl] : [],
+                createdRole: Role.TPO_ADMIN,
+                isVerified: false,
+              },
+            });
+          }
+
+          // 2. Create TPO User and link to the College
           const user = await tx.user.create({
             data: {
               name: parsedData.name.trim(),
@@ -140,7 +175,10 @@ export async function POST(req: NextRequest) {
               role: Role.TPO_ADMIN,
               tpo: {
                 create: {
+                  collegeId: college.id,
                   designation: parsedData.designation.trim() || 'Head, Training & Placement Cell',
+                  department: parsedData.department?.trim() || 'Central Placement Cell',
+                  isActive: true,
                 },
               },
             },
@@ -184,11 +222,10 @@ export async function POST(req: NextRequest) {
       201
     );
   } catch (error: any) {
-    if (error instanceof ZodError) {
-      return handleValidationError(error);
-    }
-
-    console.error('[AUTH_REGISTER_ERROR]', error);
-    return errorResponse(error.message || 'Internal server error during registration', 500);
+    return handleApiError(
+      error,
+      'Unable to complete registration at this time. Please check your information and try again.',
+      '[AUTH_REGISTER_ERROR]'
+    );
   }
 }

@@ -64,10 +64,16 @@ export async function GET(req: NextRequest) {
           logoUrl: true,
           isVerified: true,
           createdAt: true,
-          tpo: {
+          createdById: true,
+          createdRole: true,
+          contactEmail: true,
+          contactPhone: true,
+          tpos: {
             select: {
               id: true,
               designation: true,
+              department: true,
+              isActive: true,
               createdAt: true,
               user: {
                 select: {
@@ -75,7 +81,6 @@ export async function GET(req: NextRequest) {
                   name: true,
                   email: true,
                   avatarUrl: true,
-                  createdAt: true,
                 },
               },
             },
@@ -90,7 +95,7 @@ export async function GET(req: NextRequest) {
     ]);
 
     const formattedPendingColleges = pendingColleges.map((c) => {
-      const primaryTpo = c.tpo || null;
+      const primaryTpo = c.tpos.find((t) => t.isActive) || c.tpos[0] || null;
       return {
         id: c.id,
         name: c.name,
@@ -101,6 +106,10 @@ export async function GET(req: NextRequest) {
         logoUrl: c.logoUrl,
         isVerified: c.isVerified,
         submittedAt: c.createdAt,
+        createdById: c.createdById,
+        createdRole: c.createdRole,
+        contactEmail: c.contactEmail,
+        contactPhone: c.contactPhone,
         registeredStudentsCount: c._count.students,
         applicantTpo: primaryTpo
           ? {
@@ -110,7 +119,7 @@ export async function GET(req: NextRequest) {
               email: primaryTpo.user.email,
               avatarUrl: primaryTpo.user.avatarUrl,
               designation: primaryTpo.designation,
-              registeredAt: primaryTpo.user.createdAt,
+              registeredAt: primaryTpo.createdAt,
             }
           : null,
       };

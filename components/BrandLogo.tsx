@@ -44,6 +44,7 @@ export function BrandLogo({
           alt="CampusHire Emblem"
           fill
           priority
+          sizes="(max-width: 768px) 48px, 64px"
           className="object-contain p-0.5 rounded-xl"
         />
       </div>

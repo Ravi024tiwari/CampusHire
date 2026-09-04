@@ -47,8 +47,11 @@ export async function GET(req: NextRequest) {
       closedJobs,
       totalStudents,
       totalApplications,
-      placedApplications,
+      placedStudentsCount,
+      totalOffers,
+      companiesCount,
       recentDrives,
+      recentOffers,
       branchDistribution,
     ] = await Promise.all([
       // 1. Total jobs posted for this college
@@ -73,18 +76,36 @@ export async function GET(req: NextRequest) {
         },
       }),
 
-      // 7. Placed/Offered applications
-      prisma.application.count({
+      // 7. Placed students count (unique students who received or accepted offers)
+      prisma.studentProfile.count({
         where: {
-          student: { collegeId },
-          status: { in: ['OFFERED', 'ACCEPTED'] },
+          collegeId,
+          offers: {
+            some: {
+              status: { in: ['ACCEPTED', 'PENDING'] },
+            },
+          },
         },
       }),
 
-      // 8. Recent 5 drives with company details
+      // 8. Total offers generated for this college
+      prisma.offer.count({ where: { collegeId } }),
+
+      // 9. Distinct companies that have posted drives for this college
+      prisma.company.count({
+        where: {
+          jobs: {
+            some: {
+              collegeId,
+            },
+          },
+        },
+      }),
+
+      // 10. Recent 6 drives with company details and applications count
       prisma.job.findMany({
         where: { collegeId },
-        take: 5,
+        take: 6,
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
@@ -92,6 +113,7 @@ export async function GET(req: NextRequest) {
           type: true,
           status: true,
           salaryPackage: true,
+          location: true,
           deadline: true,
           createdAt: true,
           company: {
@@ -99,17 +121,56 @@ export async function GET(req: NextRequest) {
               id: true,
               name: true,
               logoUrl: true,
+              industry: true,
+              location: true,
             },
           },
           _count: {
             select: {
               applications: true,
+              offers: true,
             },
           },
         },
       }),
 
-      // 9. Branch distribution of students
+      // 11. Recent 5 Offers generated
+      prisma.offer.findMany({
+        where: { collegeId },
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          designation: true,
+          salaryPackage: true,
+          status: true,
+          createdAt: true,
+          student: {
+            select: {
+              id: true,
+              branch: true,
+              batchYear: true,
+              cgpa: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  avatarUrl: true,
+                },
+              },
+            },
+          },
+          company: {
+            select: {
+              id: true,
+              name: true,
+              logoUrl: true,
+            },
+          },
+        },
+      }),
+
+      // 12. Branch distribution of students
       prisma.studentProfile.groupBy({
         by: ['branch'],
         where: { collegeId },
@@ -118,12 +179,27 @@ export async function GET(req: NextRequest) {
     ]);
 
     const stats = {
+      hasCollege: true,
       college: {
         id: tpo.college.id,
         name: tpo.college.name,
         code: tpo.college.code,
+        domain: tpo.college.domain,
         city: tpo.college.city,
         state: tpo.college.state,
+        logoUrl: tpo.college.logoUrl,
+        images: tpo.college.images || [],
+        contactEmail: tpo.college.contactEmail,
+        contactPhone: tpo.college.contactPhone,
+        isVerified: tpo.college.isVerified,
+        createdAt: tpo.college.createdAt,
+      },
+      tpoOfficer: {
+        id: tpo.id,
+        designation: tpo.designation || 'Head, Training & Placement Cell',
+        department: tpo.department || 'Central Placement Cell',
+        name: authUser.name,
+        email: authUser.email,
       },
       metrics: {
         totalJobs,
@@ -132,10 +208,13 @@ export async function GET(req: NextRequest) {
         closedJobs,
         totalStudents,
         totalApplications,
-        placedStudentsCount: placedApplications,
-        placementRate: totalStudents > 0 ? `${((placedApplications / totalStudents) * 100).toFixed(1)}%` : '0%',
+        placedStudentsCount,
+        totalOffers,
+        totalAffiliatedCompanies: companiesCount,
+        placementRate: totalStudents > 0 ? `${((placedStudentsCount / totalStudents) * 100).toFixed(1)}%` : '0%',
       },
       recentDrives,
+      recentOffers,
       branchDistribution: branchDistribution.map((b) => ({
         branch: b.branch,
         studentCount: b._count.branch,

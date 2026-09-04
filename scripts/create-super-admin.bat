@@ -1,0 +1,3 @@
+@echo off
+echo Running Super Admin Creation Script...
+npx tsx scripts/create-super-admin.ts %*
