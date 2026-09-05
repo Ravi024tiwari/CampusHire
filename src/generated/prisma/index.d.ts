@@ -5658,6 +5658,8 @@ export namespace Prisma {
     branch: string | null
     batchYear: number | null
     cgpa: number | null
+    phone: string | null
+    bio: string | null
     tenthMarks: number | null
     twelfthMarks: number | null
     resumeUrl: string | null
@@ -5677,6 +5679,8 @@ export namespace Prisma {
     branch: string | null
     batchYear: number | null
     cgpa: number | null
+    phone: string | null
+    bio: string | null
     tenthMarks: number | null
     twelfthMarks: number | null
     resumeUrl: string | null
@@ -5696,6 +5700,8 @@ export namespace Prisma {
     branch: number
     batchYear: number
     cgpa: number
+    phone: number
+    bio: number
     tenthMarks: number
     twelfthMarks: number
     resumeUrl: number
@@ -5732,6 +5738,8 @@ export namespace Prisma {
     branch?: true
     batchYear?: true
     cgpa?: true
+    phone?: true
+    bio?: true
     tenthMarks?: true
     twelfthMarks?: true
     resumeUrl?: true
@@ -5751,6 +5759,8 @@ export namespace Prisma {
     branch?: true
     batchYear?: true
     cgpa?: true
+    phone?: true
+    bio?: true
     tenthMarks?: true
     twelfthMarks?: true
     resumeUrl?: true
@@ -5770,6 +5780,8 @@ export namespace Prisma {
     branch?: true
     batchYear?: true
     cgpa?: true
+    phone?: true
+    bio?: true
     tenthMarks?: true
     twelfthMarks?: true
     resumeUrl?: true
@@ -5877,6 +5889,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone: string | null
+    bio: string | null
     tenthMarks: number | null
     twelfthMarks: number | null
     resumeUrl: string | null
@@ -5916,6 +5930,8 @@ export namespace Prisma {
     branch?: boolean
     batchYear?: boolean
     cgpa?: boolean
+    phone?: boolean
+    bio?: boolean
     tenthMarks?: boolean
     twelfthMarks?: boolean
     resumeUrl?: boolean
@@ -5942,6 +5958,8 @@ export namespace Prisma {
     branch?: boolean
     batchYear?: boolean
     cgpa?: boolean
+    phone?: boolean
+    bio?: boolean
     tenthMarks?: boolean
     twelfthMarks?: boolean
     resumeUrl?: boolean
@@ -5964,6 +5982,8 @@ export namespace Prisma {
     branch?: boolean
     batchYear?: boolean
     cgpa?: boolean
+    phone?: boolean
+    bio?: boolean
     tenthMarks?: boolean
     twelfthMarks?: boolean
     resumeUrl?: boolean
@@ -5986,6 +6006,8 @@ export namespace Prisma {
     branch?: boolean
     batchYear?: boolean
     cgpa?: boolean
+    phone?: boolean
+    bio?: boolean
     tenthMarks?: boolean
     twelfthMarks?: boolean
     resumeUrl?: boolean
@@ -5998,7 +6020,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StudentProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "collegeId" | "enrollmentNumber" | "branch" | "batchYear" | "cgpa" | "tenthMarks" | "twelfthMarks" | "resumeUrl" | "skills" | "linkedinUrl" | "githubUrl" | "portfolioUrl" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["studentProfile"]>
+  export type StudentProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "collegeId" | "enrollmentNumber" | "branch" | "batchYear" | "cgpa" | "phone" | "bio" | "tenthMarks" | "twelfthMarks" | "resumeUrl" | "skills" | "linkedinUrl" | "githubUrl" | "portfolioUrl" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["studentProfile"]>
   export type StudentProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
@@ -6033,6 +6055,8 @@ export namespace Prisma {
       branch: string
       batchYear: number
       cgpa: number
+      phone: string | null
+      bio: string | null
       tenthMarks: number | null
       twelfthMarks: number | null
       resumeUrl: string | null
@@ -6478,6 +6502,8 @@ export namespace Prisma {
     readonly branch: FieldRef<"StudentProfile", 'String'>
     readonly batchYear: FieldRef<"StudentProfile", 'Int'>
     readonly cgpa: FieldRef<"StudentProfile", 'Float'>
+    readonly phone: FieldRef<"StudentProfile", 'String'>
+    readonly bio: FieldRef<"StudentProfile", 'String'>
     readonly tenthMarks: FieldRef<"StudentProfile", 'Float'>
     readonly twelfthMarks: FieldRef<"StudentProfile", 'Float'>
     readonly resumeUrl: FieldRef<"StudentProfile", 'String'>
@@ -14269,6 +14295,8 @@ export namespace Prisma {
     branch: 'branch',
     batchYear: 'batchYear',
     cgpa: 'cgpa',
+    phone: 'phone',
+    bio: 'bio',
     tenthMarks: 'tenthMarks',
     twelfthMarks: 'twelfthMarks',
     resumeUrl: 'resumeUrl',
@@ -14844,6 +14872,8 @@ export namespace Prisma {
     branch?: StringFilter<"StudentProfile"> | string
     batchYear?: IntFilter<"StudentProfile"> | number
     cgpa?: FloatFilter<"StudentProfile"> | number
+    phone?: StringNullableFilter<"StudentProfile"> | string | null
+    bio?: StringNullableFilter<"StudentProfile"> | string | null
     tenthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
     twelfthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
     resumeUrl?: StringNullableFilter<"StudentProfile"> | string | null
@@ -14869,6 +14899,8 @@ export namespace Prisma {
     branch?: SortOrder
     batchYear?: SortOrder
     cgpa?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    bio?: SortOrderInput | SortOrder
     tenthMarks?: SortOrderInput | SortOrder
     twelfthMarks?: SortOrderInput | SortOrder
     resumeUrl?: SortOrderInput | SortOrder
@@ -14897,6 +14929,8 @@ export namespace Prisma {
     branch?: StringFilter<"StudentProfile"> | string
     batchYear?: IntFilter<"StudentProfile"> | number
     cgpa?: FloatFilter<"StudentProfile"> | number
+    phone?: StringNullableFilter<"StudentProfile"> | string | null
+    bio?: StringNullableFilter<"StudentProfile"> | string | null
     tenthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
     twelfthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
     resumeUrl?: StringNullableFilter<"StudentProfile"> | string | null
@@ -14922,6 +14956,8 @@ export namespace Prisma {
     branch?: SortOrder
     batchYear?: SortOrder
     cgpa?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    bio?: SortOrderInput | SortOrder
     tenthMarks?: SortOrderInput | SortOrder
     twelfthMarks?: SortOrderInput | SortOrder
     resumeUrl?: SortOrderInput | SortOrder
@@ -14950,6 +14986,8 @@ export namespace Prisma {
     branch?: StringWithAggregatesFilter<"StudentProfile"> | string
     batchYear?: IntWithAggregatesFilter<"StudentProfile"> | number
     cgpa?: FloatWithAggregatesFilter<"StudentProfile"> | number
+    phone?: StringNullableWithAggregatesFilter<"StudentProfile"> | string | null
+    bio?: StringNullableWithAggregatesFilter<"StudentProfile"> | string | null
     tenthMarks?: FloatNullableWithAggregatesFilter<"StudentProfile"> | number | null
     twelfthMarks?: FloatNullableWithAggregatesFilter<"StudentProfile"> | number | null
     resumeUrl?: StringNullableWithAggregatesFilter<"StudentProfile"> | string | null
@@ -15872,6 +15910,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -15897,6 +15937,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -15918,6 +15960,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15943,6 +15987,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15966,6 +16012,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -15984,6 +16032,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16004,6 +16054,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17081,6 +17133,8 @@ export namespace Prisma {
     branch?: SortOrder
     batchYear?: SortOrder
     cgpa?: SortOrder
+    phone?: SortOrder
+    bio?: SortOrder
     tenthMarks?: SortOrder
     twelfthMarks?: SortOrder
     resumeUrl?: SortOrder
@@ -17108,6 +17162,8 @@ export namespace Prisma {
     branch?: SortOrder
     batchYear?: SortOrder
     cgpa?: SortOrder
+    phone?: SortOrder
+    bio?: SortOrder
     tenthMarks?: SortOrder
     twelfthMarks?: SortOrder
     resumeUrl?: SortOrder
@@ -17127,6 +17183,8 @@ export namespace Prisma {
     branch?: SortOrder
     batchYear?: SortOrder
     cgpa?: SortOrder
+    phone?: SortOrder
+    bio?: SortOrder
     tenthMarks?: SortOrder
     twelfthMarks?: SortOrder
     resumeUrl?: SortOrder
@@ -19002,6 +19060,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -19025,6 +19085,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -19112,6 +19174,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19135,6 +19199,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19252,6 +19318,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -19275,6 +19343,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -19459,6 +19529,8 @@ export namespace Prisma {
     branch?: StringFilter<"StudentProfile"> | string
     batchYear?: IntFilter<"StudentProfile"> | number
     cgpa?: FloatFilter<"StudentProfile"> | number
+    phone?: StringNullableFilter<"StudentProfile"> | string | null
+    bio?: StringNullableFilter<"StudentProfile"> | string | null
     tenthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
     twelfthMarks?: FloatNullableFilter<"StudentProfile"> | number | null
     resumeUrl?: StringNullableFilter<"StudentProfile"> | string | null
@@ -20098,6 +20170,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -20122,6 +20196,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -20192,6 +20268,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20216,6 +20294,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20931,6 +21011,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -20955,6 +21037,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -21118,6 +21202,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21142,6 +21228,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21279,6 +21367,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -21303,6 +21393,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -21503,6 +21595,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21527,6 +21621,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21707,6 +21803,8 @@ export namespace Prisma {
     branch: string
     batchYear: number
     cgpa: number
+    phone?: string | null
+    bio?: string | null
     tenthMarks?: number | null
     twelfthMarks?: number | null
     resumeUrl?: string | null
@@ -21799,6 +21897,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21822,6 +21922,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21844,6 +21946,8 @@ export namespace Prisma {
     branch?: StringFieldUpdateOperationsInput | string
     batchYear?: IntFieldUpdateOperationsInput | number
     cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
     tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null

@@ -127,6 +127,8 @@ model StudentProfile {
   branch           String // e.g. "Computer Science & Engineering"
   batchYear        Int // e.g. 2026
   cgpa             Float // e.g. 8.75
+  phone            String? // Contact phone number (e.g. "+91 98765 43210")
+  bio              String?  @db.Text // Personal career bio or motto
   tenthMarks       Float? // Percentage or CGPA
   twelfthMarks     Float? // Percentage or CGPA
   resumeUrl        String?

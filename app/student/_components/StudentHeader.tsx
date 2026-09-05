@@ -3,16 +3,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  Search, 
   Bell, 
   Menu, 
-  GraduationCap 
+  GraduationCap, 
+  Sparkles 
 } from 'lucide-react';
 import { useStudentDashboardStore } from '@/store/useStudentDashboardStore';
 import { StudentUserDropdown } from './StudentUserDropdown';
 
 export function StudentHeader() {
-  const { searchQuery, setSearchQuery, setMobileSidebarOpen } = useStudentDashboardStore();
+  const { setMobileSidebarOpen } = useStudentDashboardStore();
 
   return (
     <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all">
@@ -42,19 +42,13 @@ export function StudentHeader() {
               CampusHire
             </span>
           </Link>
-        </div>
 
-        {/* Center: Global Search Input */}
-        <div className="flex-1 max-w-xl mx-2 sm:mx-4">
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search for jobs, drives, or company..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200/90 bg-slate-50/80 py-2 sm:py-2.5 pl-10 pr-4 text-xs sm:text-sm text-[#0A2540] placeholder-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/15 font-medium transition-all"
-            />
+          {/* Desktop Status Pill */}
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold text-slate-700">
+              Campus Drive Portal Active
+            </span>
           </div>
         </div>
 
@@ -80,4 +74,3 @@ export function StudentHeader() {
     </header>
   );
 }
-

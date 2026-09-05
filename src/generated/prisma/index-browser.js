@@ -171,6 +171,8 @@ exports.Prisma.StudentProfileScalarFieldEnum = {
   branch: 'branch',
   batchYear: 'batchYear',
   cgpa: 'cgpa',
+  phone: 'phone',
+  bio: 'bio',
   tenthMarks: 'tenthMarks',
   twelfthMarks: 'twelfthMarks',
   resumeUrl: 'resumeUrl',
