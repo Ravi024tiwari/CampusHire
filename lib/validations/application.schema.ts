@@ -34,8 +34,12 @@ export const studentOfferDecisionSchema = z.object({
 
 export const applicationQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
-  status: z.nativeEnum(ApplicationStatus).optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(6),
+  status: z.string().optional(),
+  search: z.string().trim().optional(),
+  jobType: z.string().trim().optional(),
+  location: z.string().trim().optional(),
+  sortBy: z.enum(['latest', 'oldest', 'package_high_to_low', 'package_low_to_high']).default('latest').optional(),
 });
 
 export const createOfferSchema = z.object({

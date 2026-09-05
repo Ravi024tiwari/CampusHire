@@ -205,14 +205,96 @@ export async function GET(req: NextRequest) {
       page: searchParams.get('page') ?? undefined,
       limit: searchParams.get('limit') ?? undefined,
       status: searchParams.get('status') ?? undefined,
+      search: searchParams.get('search') ?? undefined,
+      jobType: searchParams.get('jobType') ?? undefined,
+      location: searchParams.get('location') ?? undefined,
+      sortBy: searchParams.get('sortBy') ?? undefined,
     });
 
+    // 1. Calculate Aggregated Status Metrics across ALL applications of this student
+    const allApplications = await prisma.application.findMany({
+      where: { studentId: student.id },
+      select: { status: true },
+    });
+
+    const summaryStats = {
+      total: allApplications.length,
+      underReview: allApplications.filter((a) => a.status === 'APPLIED' || a.status === 'UNDER_REVIEW').length,
+      shortlisted: allApplications.filter((a) => a.status === 'SHORTLISTED').length,
+      interviewing: allApplications.filter((a) => a.status === 'INTERVIEW_SCHEDULED').length,
+      offers: allApplications.filter((a) => a.status === 'OFFERED' || a.status === 'ACCEPTED').length,
+      rejected: allApplications.filter((a) => a.status === 'REJECTED' || a.status === 'DECLINED').length,
+    };
+
+    // 2. Build Filtered Query Where Clause
     const where: any = {
       studentId: student.id,
     };
 
-    if (query.status) {
-      where.status = query.status;
+    // Filter by Status Tab
+    if (query.status && query.status !== 'ALL') {
+      const statusUpper = query.status.toUpperCase();
+      if (statusUpper === 'UNDER_REVIEW') {
+        where.status = { in: ['APPLIED', 'UNDER_REVIEW'] };
+      } else if (statusUpper === 'OFFERS' || statusUpper === 'OFFERED') {
+        where.status = { in: ['OFFERED', 'ACCEPTED'] };
+      } else if (statusUpper === 'INTERVIEWING' || statusUpper === 'INTERVIEW_SCHEDULED') {
+        where.status = 'INTERVIEW_SCHEDULED';
+      } else if (statusUpper === 'REJECTED') {
+        where.status = { in: ['REJECTED', 'DECLINED'] };
+      } else {
+        where.status = statusUpper;
+      }
+    }
+
+    // Filter by Search Query (Job title, Company Name, Location)
+    if (query.search) {
+      where.OR = [
+        {
+          job: {
+            title: {
+              contains: query.search,
+              mode: 'insensitive',
+            },
+          },
+        },
+        {
+          job: {
+            company: {
+              name: {
+                contains: query.search,
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      ];
+    }
+
+    // Filter by Job Type (FULL_TIME, INTERNSHIP, INTERN_PLUS_FTE)
+    if (query.jobType && query.jobType !== 'ALL') {
+      const typeUpper = query.jobType.toUpperCase();
+      where.job = {
+        ...(where.job || {}),
+        type: typeUpper as any,
+      };
+    }
+
+    // Filter by Location
+    if (query.location && query.location !== 'ALL') {
+      where.job = {
+        ...(where.job || {}),
+        location: {
+          contains: query.location,
+          mode: 'insensitive',
+        },
+      };
+    }
+
+    // Sorting Order
+    let orderBy: any = { createdAt: 'desc' };
+    if (query.sortBy === 'oldest') {
+      orderBy = { createdAt: 'asc' };
     }
 
     const skip = (query.page - 1) * query.limit;
@@ -223,7 +305,7 @@ export async function GET(req: NextRequest) {
         where,
         skip,
         take: query.limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         include: {
           job: {
             select: {
@@ -234,6 +316,7 @@ export async function GET(req: NextRequest) {
               location: true,
               salaryPackage: true,
               deadline: true,
+              skills: true,
               company: {
                 select: {
                   id: true,
@@ -244,6 +327,18 @@ export async function GET(req: NextRequest) {
               },
             },
           },
+          offer: {
+            select: {
+              id: true,
+              status: true,
+              designation: true,
+              salaryPackage: true,
+              location: true,
+              joiningDate: true,
+              letterUrl: true,
+              expiresAt: true,
+            },
+          },
         },
       }),
     ]);
@@ -251,11 +346,12 @@ export async function GET(req: NextRequest) {
     return successResponse(
       {
         applications,
+        summaryStats,
         pagination: {
           page: query.page,
           limit: query.limit,
           total,
-          totalPages: Math.ceil(total / query.limit),
+          totalPages: Math.ceil(total / query.limit) || 1,
           hasMore: query.page * query.limit < total,
         },
       },
