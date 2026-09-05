@@ -55,27 +55,41 @@ export function RecruiterUserDropdown({ companyName = 'Corporate Partner', desig
 
   return (
     <DropdownMenu>
-      {/* 1. Tactile Executive Avatar Trigger (Exact Super Admin Match) */}
+      {/* 1. Tactile Executive Avatar + Name Trigger */}
       <DropdownMenuTrigger
-        className="group relative flex items-center justify-center rounded-full ring-2 ring-slate-200/80 hover:ring-[#2563EB]/70 focus:ring-2 focus:ring-[#2563EB] hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer p-0.5 outline-none"
+        className="group relative flex items-center gap-2.5 rounded-full md:rounded-2xl p-1 md:py-1.5 md:px-2.5 border border-transparent md:border-slate-200/90 bg-transparent md:bg-white hover:border-slate-300 hover:shadow-xs focus:ring-2 focus:ring-[#2563EB]/40 active:scale-98 transition-all duration-200 cursor-pointer outline-none select-none"
         title={`Corporate Profile (${user?.name || 'Recruiter'})`}
         aria-label="User profile menu"
       >
-        <Avatar size="default" className="border border-slate-200 shadow-2xs h-8.5 w-8.5 sm:h-9 sm:w-9 transition-transform group-hover:scale-102">
-          {user?.avatarUrl && (
-            <AvatarImage
-              src={user.avatarUrl}
-              alt={user.name || 'Recruiter'}
-              className="object-cover"
-            />
-          )}
-          <AvatarFallback className="bg-gradient-to-tr from-[#2563EB] to-indigo-700 text-white font-black text-xs">
-            {initialChar}
-          </AvatarFallback>
-        </Avatar>
+        <div className="relative">
+          <Avatar size="default" className="border border-slate-200 shadow-2xs h-8.5 w-8.5 sm:h-9 sm:w-9 transition-transform group-hover:scale-102">
+            {user?.avatarUrl && (
+              <AvatarImage
+                src={user.avatarUrl}
+                alt={user.name || 'Recruiter'}
+                className="object-cover"
+              />
+            )}
+            <AvatarFallback className="bg-gradient-to-tr from-[#2563EB] to-indigo-700 text-white font-black text-xs">
+              {initialChar}
+            </AvatarFallback>
+          </Avatar>
 
-        {/* Live Active Status Indicator with Micro-Ring */}
-        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-xs" />
+          {/* Live Active Status Indicator with Micro-Ring */}
+          <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-xs" />
+        </div>
+
+        {/* User Name & Designation (Visible on Desktop / MD screens) */}
+        <div className="hidden md:flex flex-col text-left">
+          <span className="text-xs font-black text-[#0A2540] group-hover:text-blue-600 transition-colors leading-tight">
+            {user?.name || 'Rahul Sharma'}
+          </span>
+          <span className="text-[10px] font-bold text-slate-400 leading-tight truncate max-w-[120px]">
+            {designation} - {companyName}
+          </span>
+        </div>
+
+        <ChevronRight className="hidden md:block w-3.5 h-3.5 text-slate-400 rotate-90 group-hover:text-slate-700 transition-transform" />
       </DropdownMenuTrigger>
 
       {/* 2. Responsive Glassmorphic Dropdown Menu */}

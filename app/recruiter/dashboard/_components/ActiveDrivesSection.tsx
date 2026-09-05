@@ -83,7 +83,9 @@ export function ActiveDrivesSection({ drives }: ActiveDrivesSectionProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 lg:gap-5">
           {filteredDrives.map((drive) => {
-            const packageLpa = (drive.salaryPackage / 100000).toFixed(1);
+            const packageLpa = typeof drive.salaryPackage === 'number' 
+              ? `${(drive.salaryPackage / 100000).toFixed(1)} LPA` 
+              : String(drive.salaryPackage || '12 LPA');
             return (
               <div
                 key={drive.id}

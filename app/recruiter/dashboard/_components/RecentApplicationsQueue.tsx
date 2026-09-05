@@ -146,7 +146,7 @@ export function RecentApplicationsQueue({ applications }: RecentApplicationsQueu
           {filteredApplications.map((app) => {
             const studentUser = app.student?.user;
             const initials = studentUser?.name
-              ? studentUser.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()
+              ? studentUser.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
               : 'ST';
             const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
               month: 'short',

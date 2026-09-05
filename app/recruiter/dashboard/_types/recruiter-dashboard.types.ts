@@ -28,10 +28,63 @@ export interface TeamMember {
 }
 
 export interface RecruiterKpis {
-  activeDrives: number;
-  totalApplicants: number;
-  shortlistedCandidates: number;
-  confirmedHires: number;
+  totalJobs: number;
+  jobsGrowth?: string;
+  totalApplications: number;
+  applicationsGrowth?: string;
+  shortlisted: number;
+  shortlistedPercent?: string;
+  interviews: number;
+  interviewsPercent?: string;
+  offers: number;
+  offersPercent?: string;
+
+  // Backward compatibility aliases
+  activeDrives?: number;
+  totalApplicants?: number;
+  shortlistedCandidates?: number;
+  confirmedHires?: number;
+}
+
+export interface MonthlyTrend {
+  month: string;
+  applications: number;
+  shortlisted: number;
+}
+
+export interface StatusBreakdownItem {
+  key: string;
+  label: string;
+  count: number;
+  percentage: number;
+  color: string;
+}
+
+export interface CandidateApplicationItem {
+  id: string;
+  candidateName: string;
+  candidateAvatar?: string | null;
+  email: string;
+  branch: string;
+  batchYear: number;
+  cgpa?: number | null;
+  collegeName: string;
+  jobId: string;
+  jobTitle: string;
+  jobType: string;
+  appliedOn: string;
+  status: string;
+}
+
+export interface UpcomingInterviewItem {
+  id: string;
+  candidateName: string;
+  candidateAvatar?: string | null;
+  branch: string;
+  batchYear: number;
+  jobTitle: string;
+  scheduledAt: string;
+  status: string;
 }
 
 export interface CollegeSummary {
@@ -46,7 +99,7 @@ export interface CollegeSummary {
 export interface JobDrive {
   id: string;
   title: string;
-  salaryPackage: number;
+  salaryPackage: string | number;
   type: string;
   deadline?: string | null;
   createdAt: string;
@@ -79,7 +132,7 @@ export interface StudentApplicant {
   job: {
     id: string;
     title: string;
-    salaryPackage: number;
+    salaryPackage: string | number;
     type: string;
     college?: {
       id: string;
@@ -94,6 +147,9 @@ export interface RecruiterDashboardData {
   currentRecruiter: CurrentRecruiter;
   teamMembers: TeamMember[];
   kpis: RecruiterKpis;
+  applicationTrends: MonthlyTrend[];
+  statusBreakdown: StatusBreakdownItem[];
+  recentApplications: CandidateApplicationItem[];
+  upcomingInterviews: UpcomingInterviewItem[];
   recentJobs: JobDrive[];
-  recentApplications: StudentApplicant[];
 }

@@ -6,17 +6,18 @@ import type { ApiResponse } from '@/lib/api-response';
 import { RecruiterDashboardData } from './_types/recruiter-dashboard.types';
 import { RecruiterHeroBanner } from './_components/RecruiterHeroBanner';
 import { RecruiterKpiRow } from './_components/RecruiterKpiRow';
-import { ActiveDrivesSection } from './_components/ActiveDrivesSection';
-import { RecentApplicationsQueue } from './_components/RecentApplicationsQueue';
-import { RecruiterTeamRoster } from './_components/RecruiterTeamRoster';
+import { ApplicationTrendsChart } from './_components/ApplicationTrendsChart';
+import { ApplicationStatusDonut } from './_components/ApplicationStatusDonut';
+import { RecentApplicationsTable } from './_components/RecentApplicationsTable';
+import { UpcomingInterviewsTable } from './_components/UpcomingInterviewsTable';
+import { PostJobCalloutBanner } from './_components/PostJobCalloutBanner';
+import { RecruiterMotivationCard } from './_components/RecruiterMotivationCard';
+import { RecruiterFooterPillars } from './_components/RecruiterFooterPillars';
 import { 
   Building2, 
   RefreshCw, 
   AlertCircle, 
-  Sparkles,
-  Briefcase,
-  Users,
-  FileText
+  Loader2 
 } from 'lucide-react';
 
 export default function RecruiterDashboardPage() {
@@ -49,19 +50,17 @@ export default function RecruiterDashboardPage() {
 
   if (isLoading && !data) {
     return (
-      <div className="p-4 sm:p-6 md:p-8 space-y-6 animate-pulse max-w-7xl mx-auto">
-        {/* Banner Skeleton */}
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6 animate-pulse max-w-[1700px] mx-auto">
         <div className="h-44 rounded-3xl bg-slate-200" />
-        {/* KPI Skeleton */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="h-28 rounded-2xl bg-slate-200" />
-          <div className="h-28 rounded-2xl bg-slate-200" />
-          <div className="h-28 rounded-2xl bg-slate-200" />
-          <div className="h-28 rounded-2xl bg-slate-200" />
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-28 rounded-2xl bg-slate-200" />
+          ))}
         </div>
-        {/* Sections Skeleton */}
-        <div className="h-64 rounded-2xl bg-slate-200" />
-        <div className="h-64 rounded-2xl bg-slate-200" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-7 h-72 rounded-3xl bg-slate-200" />
+          <div className="lg:col-span-5 h-72 rounded-3xl bg-slate-200" />
+        </div>
       </div>
     );
   }
@@ -76,7 +75,7 @@ export default function RecruiterDashboardPage() {
         <p className="text-sm text-slate-600">{error || 'Unknown error occurred while retrieving company data.'}</p>
         <button
           onClick={fetchDashboard}
-          className="btn-primary py-2.5 px-6 text-sm inline-flex items-center gap-2 cursor-pointer shadow-md"
+          className="py-2.5 px-6 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-md shadow-blue-500/20 inline-flex items-center gap-2 cursor-pointer hover:bg-blue-700 transition-all"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Retry Connection</span>
@@ -86,7 +85,7 @@ export default function RecruiterDashboardPage() {
   }
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="p-4 sm:p-6 lg:p-8 w-full max-w-[1700px] mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-300 pb-16">
       
       {/* 1. Hero Showcase Banner */}
       <RecruiterHeroBanner
@@ -95,20 +94,52 @@ export default function RecruiterDashboardPage() {
         kpis={data.kpis}
       />
 
-      {/* 2. Live Hiring KPIs */}
+      {/* 2. Live Hiring 5 KPIs Row */}
       <RecruiterKpiRow kpis={data.kpis} />
 
-      {/* 3. Active Drives Section */}
-      <ActiveDrivesSection drives={data.recentJobs} />
+      {/* 3. Middle Visualizations Row (Application Trends + Application Status Donut) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Application Trends (7 cols on Desktop) */}
+        <div className="lg:col-span-7 h-full">
+          <ApplicationTrendsChart trends={data.applicationTrends} />
+        </div>
 
-      {/* 4. Live Candidate Stream */}
-      <RecentApplicationsQueue applications={data.recentApplications} />
+        {/* Application Status Donut (5 cols on Desktop) */}
+        <div className="lg:col-span-5 h-full">
+          <ApplicationStatusDonut
+            statusBreakdown={data.statusBreakdown}
+            totalApplications={data.kpis.totalApplications}
+          />
+        </div>
 
-      {/* 5. Fellow Recruiters Team Roster */}
-      <RecruiterTeamRoster
-        teamMembers={data.teamMembers}
-        companyName={data.company.name}
-      />
+      </div>
+
+      {/* 4. Candidate Applications & Upcoming Interviews Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Recent Applications (7 cols on Desktop) */}
+        <div className="lg:col-span-7 h-full">
+          <RecentApplicationsTable applications={data.recentApplications} />
+        </div>
+
+        {/* Upcoming Interviews (5 cols on Desktop) */}
+        <div className="lg:col-span-5 h-full">
+          <UpcomingInterviewsTable interviews={data.upcomingInterviews} />
+        </div>
+
+      </div>
+
+      {/* 5. Post Job Callout Banner */}
+      <PostJobCalloutBanner />
+
+      {/* 6. Mobile / Tablet Motivation Card */}
+      <div className="lg:hidden">
+        <RecruiterMotivationCard />
+      </div>
+
+      {/* 7. Industrial Value Pillars & Footer Emblem */}
+      <RecruiterFooterPillars />
 
     </div>
   );
