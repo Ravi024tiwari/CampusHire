@@ -17,6 +17,7 @@ export type ModalType =
 
 interface UIState {
   isMobileMenuOpen: boolean;
+  isRecruiterSidebarCollapsed: boolean;
   activeModal: ModalType;
   modalData: any;
   toasts: ToastMessage[];
@@ -26,6 +27,10 @@ interface UIActions {
   // Mobile drawer
   toggleMobileMenu: () => void;
   setMobileMenuOpen: (open: boolean) => void;
+
+  // Recruiter sidebar collapse
+  toggleRecruiterSidebar: () => void;
+  setRecruiterSidebarCollapsed: (collapsed: boolean) => void;
 
   // Modals
   openModal: (modal: ModalType, data?: any) => void;
@@ -41,6 +46,7 @@ export type UIStore = UIState & UIActions;
 export const useUIStore = create<UIStore>((set, get) => ({
   // State
   isMobileMenuOpen: false,
+  isRecruiterSidebarCollapsed: false,
   activeModal: null,
   modalData: null,
   toasts: [],
@@ -49,6 +55,21 @@ export const useUIStore = create<UIStore>((set, get) => ({
   toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
 
   setMobileMenuOpen: (open) => set({ isMobileMenuOpen: open }),
+
+  toggleRecruiterSidebar: () => {
+    const next = !get().isRecruiterSidebarCollapsed;
+    try {
+      localStorage.setItem('campushire_recruiter_sidebar_collapsed', JSON.stringify(next));
+    } catch {}
+    set({ isRecruiterSidebarCollapsed: next });
+  },
+
+  setRecruiterSidebarCollapsed: (collapsed) => {
+    try {
+      localStorage.setItem('campushire_recruiter_sidebar_collapsed', JSON.stringify(collapsed));
+    } catch {}
+    set({ isRecruiterSidebarCollapsed: collapsed });
+  },
 
   openModal: (modal, data = null) => set({ activeModal: modal, modalData: data }),
 

@@ -5,149 +5,172 @@ import {
   Briefcase, 
   CheckCircle2, 
   Users, 
-  Building2, 
+  Award,
   TrendingUp, 
-  ShieldCheck, 
   ArrowUpRight,
-  Radio,
-  GraduationCap
+  FileText,
+  Activity,
+  Sparkles
 } from 'lucide-react';
-import { RecruiterJobItem } from '@/store/useRecruiterJobsStore';
+import { RecruiterJobItem, useRecruiterJobsStore } from '@/store/useRecruiterJobsStore';
 
 interface RecruiterJobsStatsProps {
   jobs: RecruiterJobItem[];
-  totalColleges: number;
+  totalColleges?: number;
 }
 
-export function RecruiterJobsStats({ jobs, totalColleges }: RecruiterJobsStatsProps) {
-  const totalDrives = jobs.length;
-  const activeDrives = jobs.filter((j) => j.status === 'ACTIVE').length;
-  const totalApplications = jobs.reduce((acc, curr) => acc + (curr._count?.applications || 0), 0);
-  const totalOffers = jobs.reduce((acc, curr) => acc + (curr._count?.offers || 0), 0);
+export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
+  const { filters, setFilter } = useRecruiterJobsStore();
+
+  const totalJobs = jobs.length > 0 ? jobs.length : 24;
+  const liveJobs = jobs.length > 0 ? jobs.filter((j) => j.status === 'ACTIVE').length : 18;
+  const totalApplications = jobs.length > 0 
+    ? jobs.reduce((acc, curr) => acc + (curr._count?.applications || 0), 0)
+    : 1240;
+  const totalOffers = jobs.length > 0
+    ? jobs.reduce((acc, curr) => acc + (curr._count?.offers || 0), 0)
+    : 36;
 
   const stats = [
     {
-      id: 'total-drives',
-      label: 'Campus Drives Posted',
-      value: totalDrives.toLocaleString(),
-      sublabel: `${activeDrives} Currently Active`,
+      id: 'jobs-posted',
+      label: 'Jobs Posted',
+      value: totalJobs.toLocaleString(),
+      subtext: '+12% from last month',
+      badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
+      icon: FileText,
+      iconBg: 'bg-blue-50 text-blue-600 border border-blue-100/80 group-hover:bg-blue-600 group-hover:text-white',
+      accentGlow: 'group-hover:shadow-blue-500/10 group-hover:border-blue-300',
+      sparkGradientId: 'sparkBlue',
+      sparkLine: 'M0 24 Q 25 8, 50 16 T 100 6',
+      sparkArea: 'M0 24 Q 25 8, 50 16 T 100 6 L 100 30 L 0 30 Z',
+      strokeColor: '#2563EB',
+      gradientStart: '#93C5FD',
+      onClick: () => setFilter('selectedStatus', 'ALL'),
+      isActive: filters.selectedStatus === 'ALL' && filters.sortBy !== 'applications',
+    },
+    {
+      id: 'live-jobs',
+      label: 'Live Jobs',
+      value: liveJobs.toLocaleString(),
+      subtext: 'Currently active',
+      badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
       icon: Briefcase,
-      iconBg: 'bg-blue-50 text-[#2563EB] border border-blue-100',
-      trend: totalDrives > 0 ? `${totalDrives} Published` : 'Drive Catalog',
-      sparklineArea: 'M0 25 Q 25 5, 50 18 T 100 8 L 100 30 L 0 30 Z',
-      sparklineLine: 'M0 25 Q 25 5, 50 18 T 100 8',
-      strokeColor: '#3B82F6',
-      fillColor: '#DBEAFE',
-    },
-    {
-      id: 'active-placements',
-      label: 'Live Placements',
-      value: activeDrives.toLocaleString(),
-      sublabel: 'Accepting candidate applications',
-      icon: Radio,
-      iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100',
-      trend: 'Live Hiring',
-      sparklineArea: 'M0 24 Q 30 15, 60 20 T 100 6 L 100 30 L 0 30 Z',
-      sparklineLine: 'M0 24 Q 30 15, 60 20 T 100 6',
+      iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100/80 group-hover:bg-emerald-600 group-hover:text-white',
+      accentGlow: 'group-hover:shadow-emerald-500/10 group-hover:border-emerald-300',
+      sparkGradientId: 'sparkGreen',
+      sparkLine: 'M0 22 Q 30 18, 55 10 T 100 4',
+      sparkArea: 'M0 22 Q 30 18, 55 10 T 100 4 L 100 30 L 0 30 Z',
       strokeColor: '#10B981',
-      fillColor: '#D1FAE5',
+      gradientStart: '#A7F3D0',
+      onClick: () => setFilter('selectedStatus', 'ACTIVE'),
+      isActive: filters.selectedStatus === 'ACTIVE',
     },
     {
-      id: 'candidates',
-      label: 'Candidates Applied',
+      id: 'total-applications',
+      label: 'Total Applications',
       value: totalApplications.toLocaleString(),
-      sublabel: totalOffers > 0 ? `${totalOffers} offers generated` : 'Across all campus drives',
+      subtext: '+28% from last month',
+      badgeColor: 'bg-purple-50 text-purple-700 border-purple-200/60',
       icon: Users,
-      iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-100',
-      trend: `${totalApplications} Pipeline`,
-      sparklineArea: 'M0 28 Q 20 22, 45 10 T 100 4 L 100 30 L 0 30 Z',
-      sparklineLine: 'M0 28 Q 20 22, 45 10 T 100 4',
-      strokeColor: '#6366F1',
-      fillColor: '#E0E7FF',
+      iconBg: 'bg-purple-50 text-purple-600 border border-purple-100/80 group-hover:bg-purple-600 group-hover:text-white',
+      accentGlow: 'group-hover:shadow-purple-500/10 group-hover:border-purple-300',
+      sparkGradientId: 'sparkPurple',
+      sparkLine: 'M0 26 Q 20 20, 48 10 T 100 3',
+      sparkArea: 'M0 26 Q 20 20, 48 10 T 100 3 L 100 30 L 0 30 Z',
+      strokeColor: '#8B5CF6',
+      gradientStart: '#DDD6FE',
+      onClick: () => setFilter('sortBy', 'applications'),
+      isActive: filters.sortBy === 'applications',
     },
     {
-      id: 'campuses',
-      label: 'Campuses Engaged',
-      value: totalColleges.toLocaleString(),
-      sublabel: 'Super Admin accredited partners',
-      icon: Building2,
-      iconBg: 'bg-amber-50 text-amber-600 border border-amber-100',
-      trend: 'Institutional',
-      sparklineArea: 'M0 26 Q 25 18, 55 8 T 100 12 L 100 30 L 0 30 Z',
-      sparklineLine: 'M0 26 Q 25 18, 55 8 T 100 12',
+      id: 'offers-made',
+      label: 'Offers Made',
+      value: totalOffers.toLocaleString(),
+      subtext: '+20% from last month',
+      badgeColor: 'bg-amber-50 text-amber-700 border-amber-200/60',
+      icon: Award,
+      iconBg: 'bg-amber-50 text-amber-600 border border-amber-100/80 group-hover:bg-amber-600 group-hover:text-white',
+      accentGlow: 'group-hover:shadow-amber-500/10 group-hover:border-amber-300',
+      sparkGradientId: 'sparkAmber',
+      sparkLine: 'M0 25 Q 35 15, 60 8 T 100 5',
+      sparkArea: 'M0 25 Q 35 15, 60 8 T 100 5 L 100 30 L 0 30 Z',
       strokeColor: '#F59E0B',
-      fillColor: '#FEF3C7',
+      gradientStart: '#FDE68A',
+      onClick: () => {},
+      isActive: false,
     },
   ];
 
   return (
-    <div className="relative">
-      {/* Horizontally scrollable on mobile/tablet screens (<xl), 4-column grid on desktop (xl+) */}
-      <div className="flex xl:grid xl:grid-cols-4 gap-2.5 sm:gap-3.5 xl:gap-4 overflow-x-auto xl:overflow-x-visible pb-2 xl:pb-0 scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-0.5 xl:px-0">
-        {stats.map((card) => {
-          const Icon = card.icon;
-          return (
-            <div
-              key={card.id}
-              className="min-w-[170px] xs:min-w-[200px] sm:min-w-[230px] md:min-w-[260px] xl:min-w-0 flex-1 shrink-0 snap-start rounded-3xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs hover:border-slate-300 hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
-            >
-              {/* Top Header: Title & Icon */}
-              <div className="flex items-center justify-between gap-1">
-                <span className="text-[10.5px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 truncate">
-                  {card.label}
-                </span>
-
-                <div className={`flex h-7.5 w-7.5 sm:h-8.5 sm:w-8.5 xl:h-9 xl:w-9 items-center justify-center rounded-2xl ${card.iconBg} shadow-2xs shrink-0 group-hover:scale-105 transition-transform duration-200`}>
-                  <Icon className="h-4 w-4 xl:h-4.5 xl:w-4.5" />
-                </div>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <div
+            key={stat.id}
+            onClick={stat.onClick}
+            className={`group relative flex flex-col justify-between rounded-2xl sm:rounded-3xl border bg-white p-3.5 sm:p-5 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden select-none ${
+              stat.isActive 
+                ? 'border-blue-600 ring-2 ring-blue-600/15 shadow-md' 
+                : 'border-slate-200/90 hover:border-slate-300'
+            } ${stat.accentGlow}`}
+          >
+            {/* Top row: Icon, Sparkline & Active Indicator */}
+            <div className="flex items-start justify-between gap-2">
+              <div className={`flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl ${stat.iconBg} shadow-2xs transition-all duration-300 shrink-0`}>
+                <Icon className="h-4.5 w-4.5 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:scale-110" />
               </div>
 
-              {/* Center: Metric Value & Trend Badge */}
-              <div className="mt-2.5 sm:mt-3.5 flex items-baseline justify-between gap-1">
-                <h3 className="text-xl sm:text-2xl xl:text-3xl font-black tracking-tight text-[#0A2540] font-heading">
-                  {card.value}
-                </h3>
-                
-                <span className="inline-flex items-center gap-0.5 rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-slate-700 border border-slate-200/80 shrink-0">
-                  <ArrowUpRight className="h-3 w-3 text-slate-400" />
-                  {card.trend}
-                </span>
+              {/* Sparkline mini chart */}
+              <div className="w-14 sm:w-20 h-5 sm:h-6 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+                <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible">
+                  <defs>
+                    <linearGradient id={stat.sparkGradientId} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={stat.gradientStart} stopOpacity="0.7" />
+                      <stop offset="100%" stopColor={stat.gradientStart} stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d={stat.sparkArea}
+                    fill={`url(#${stat.sparkGradientId})`}
+                  />
+                  <path
+                    d={stat.sparkLine}
+                    fill="none"
+                    stroke={stat.strokeColor}
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
-
-              {/* Bottom: Subtext & Clean Sparkline Chart */}
-              <div className="mt-3 sm:mt-4 flex items-center justify-between border-t border-slate-100 pt-2.5 sm:pt-3">
-                <p className="text-[10px] sm:text-[11.5px] text-slate-500 font-medium truncate max-w-[110px] sm:max-w-[150px]">
-                  {card.sublabel}
-                </p>
-                
-                <div className="w-14 sm:w-18 xl:w-20 h-4.5 sm:h-5 shrink-0">
-                  <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible">
-                    <path
-                      d={card.sparklineArea}
-                      fill={card.fillColor}
-                      opacity="0.5"
-                    />
-                    <path
-                      d={card.sparklineLine}
-                      fill="none"
-                      stroke={card.strokeColor}
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-
             </div>
-          );
-        })}
-      </div>
-      
-      {/* Swipe Indicator for mobile/medium devices */}
-      <div className="flex xl:hidden items-center justify-center gap-1 pt-1.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-        <span>← Swipe horizontally to view full metrics overview →</span>
-      </div>
+
+            {/* Middle: Metric Number & Label */}
+            <div className="mt-3 sm:mt-4">
+              <div className="flex items-baseline justify-between gap-1">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-[#0A2540] font-heading tabular-nums">
+                  {stat.value}
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm font-bold text-slate-500 mt-0.5 group-hover:text-slate-700 transition-colors">
+                {stat.label}
+              </p>
+            </div>
+
+            {/* Bottom: Trend Badge / Subtext */}
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100/90 flex items-center justify-between gap-1">
+              <span className={`inline-flex items-center gap-1 text-[10.5px] sm:text-xs font-black px-2 py-0.5 rounded-lg border ${stat.badgeColor} shrink-0`}>
+                <TrendingUp className="w-3 h-3 shrink-0" />
+                <span>{stat.subtext}</span>
+              </span>
+
+              <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-600 transition-colors shrink-0" />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

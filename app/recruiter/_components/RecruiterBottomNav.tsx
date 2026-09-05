@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   Home, 
+  GraduationCap,
   Briefcase, 
-  Users, 
   Calendar, 
   MoreHorizontal 
 } from 'lucide-react';
@@ -20,14 +20,23 @@ export function RecruiterBottomNav() {
     if (href === '/recruiter/dashboard') {
       return pathname === '/recruiter' || pathname === '/recruiter/dashboard';
     }
+    if (href === '/recruiter/colleges') {
+      return pathname.startsWith('/recruiter/colleges');
+    }
+    if (href === '/recruiter/drives') {
+      return pathname.startsWith('/recruiter/drives');
+    }
+    if (href === '/recruiter/jobs') {
+      return pathname === '/recruiter/jobs' || pathname.startsWith('/recruiter/jobs/');
+    }
     return pathname.startsWith(href);
   };
 
   const navTabs = [
     { label: 'Home', href: '/recruiter/dashboard', icon: Home },
+    { label: 'Colleges', href: '/recruiter/colleges', icon: GraduationCap },
+    { label: 'Drives', href: '/recruiter/drives', icon: Calendar },
     { label: 'Jobs', href: '/recruiter/jobs', icon: Briefcase },
-    { label: 'Candidates', href: '/recruiter/dashboard#applications', icon: Users },
-    { label: 'Interviews', href: '/recruiter/drives', icon: Calendar },
   ];
 
   return (
