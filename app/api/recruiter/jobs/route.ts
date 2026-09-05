@@ -30,14 +30,21 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parsedData = createJobSchema.parse(body);
 
-    // Verify that the target college exists
+    // Verify that the target college exists and is verified by Super Admin
     const college = await prisma.college.findUnique({
       where: { id: parsedData.collegeId },
-      select: { id: true, name: true, code: true },
+      select: { id: true, name: true, code: true, isVerified: true },
     });
 
     if (!college) {
       return errorResponse('The specified target college does not exist', 404);
+    }
+
+    if (!college.isVerified) {
+      return errorResponse(
+        `Institutional Access Restricted: "${college.name}" has not yet been accredited & verified by the Super Admin. You can only dispatch campus placement drives to verified universities.`,
+        400
+      );
     }
 
     // Create the job strictly linked to this recruiter's company and the selected college
@@ -51,6 +58,7 @@ export async function POST(req: NextRequest) {
         status: parsedData.status,
         location: parsedData.location,
         salaryPackage: parsedData.salaryPackage,
+        skills: parsedData.skills,
         minCgpa: parsedData.minCgpa,
         allowedBranches: parsedData.allowedBranches,
         eligibleBatches: parsedData.eligibleBatches,
@@ -63,6 +71,7 @@ export async function POST(req: NextRequest) {
             name: true,
             code: true,
             city: true,
+            state: true,
             logoUrl: true,
           },
         },
@@ -76,6 +85,7 @@ export async function POST(req: NextRequest) {
         _count: {
           select: {
             applications: true,
+            offers: true,
           },
         },
       },
@@ -113,7 +123,13 @@ export async function GET(req: NextRequest) {
       page: searchParams.get('page') ?? undefined,
       limit: searchParams.get('limit') ?? undefined,
       status: searchParams.get('status') ?? undefined,
+      type: searchParams.get('type') ?? undefined,
       collegeId: searchParams.get('collegeId') ?? undefined,
+      location: searchParams.get('location') ?? undefined,
+      timeline: (searchParams.get('timeline') as any) ?? undefined,
+      skill: searchParams.get('skill') ?? undefined,
+      skills: searchParams.get('skills') ?? undefined,
+      skillMatchMode: (searchParams.get('skillMatchMode') as 'all' | 'any') ?? undefined,
       search: searchParams.get('search') ?? undefined,
     });
 
@@ -125,21 +141,71 @@ export async function GET(req: NextRequest) {
       where.status = query.status;
     }
 
+    if (query.type) {
+      where.type = query.type;
+    }
+
     if (query.collegeId) {
       where.collegeId = query.collegeId;
+    }
+
+    if (query.location) {
+      where.location = { contains: query.location, mode: 'insensitive' };
+    }
+
+    // Timeline filtering (Past, Today, Upcoming)
+    if (query.timeline && query.timeline !== 'ALL') {
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+      if (query.timeline === 'UPCOMING') {
+        where.deadline = { gte: now };
+      } else if (query.timeline === 'TODAY') {
+        where.deadline = { gte: startOfToday, lte: endOfToday };
+      } else if (query.timeline === 'PAST') {
+        where.deadline = { lt: now };
+      }
+    }
+
+    // Strict AND multi-skill filtering (jobs must require ALL searched skills, case-insensitive)
+    const skillsList: string[] = [];
+    if (query.skills) {
+      skillsList.push(...query.skills.split(',').map((s) => s.trim()).filter(Boolean));
+    } else if (query.skill) {
+      skillsList.push(query.skill.trim());
+    }
+
+    if (skillsList.length > 0) {
+      where.AND = [
+        ...(where.AND || []),
+        ...skillsList.map((skill) => ({
+          skills: {
+            hasSome: [
+              skill,
+              skill.toLowerCase(),
+              skill.toUpperCase(),
+              skill.charAt(0).toUpperCase() + skill.slice(1).toLowerCase(),
+            ],
+          },
+        })),
+      ];
     }
 
     if (query.search) {
       where.OR = [
         { title: { contains: query.search, mode: 'insensitive' } },
         { location: { contains: query.search, mode: 'insensitive' } },
+        { salaryPackage: { contains: query.search, mode: 'insensitive' } },
         { college: { name: { contains: query.search, mode: 'insensitive' } } },
+        { college: { code: { contains: query.search, mode: 'insensitive' } } },
+        { skills: { has: query.search } },
       ];
     }
 
     const skip = (query.page - 1) * query.limit;
 
-    const [total, jobs] = await Promise.all([
+    const [total, jobs, allCollegesEngaged] = await Promise.all([
       prisma.job.count({ where }),
       prisma.job.findMany({
         where,
@@ -153,20 +219,39 @@ export async function GET(req: NextRequest) {
               name: true,
               code: true,
               city: true,
+              state: true,
               logoUrl: true,
             },
           },
           _count: {
             select: {
               applications: true,
+              offers: true,
             },
           },
         },
+      }),
+      // Get all distinct colleges that have jobs from this company for quick filtering
+      prisma.job.findMany({
+        where: { companyId: recruiter.companyId },
+        select: {
+          college: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              city: true,
+              logoUrl: true,
+            },
+          },
+        },
+        distinct: ['collegeId'],
       }),
     ]);
 
     return successResponse({
       jobs,
+      engagedColleges: allCollegesEngaged.map((item) => item.college),
       pagination: {
         page: query.page,
         limit: query.limit,

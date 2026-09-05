@@ -9,6 +9,7 @@ export const createJobSchema = z.object({
   status: z.nativeEnum(JobStatus).default(JobStatus.ACTIVE),
   location: z.string().trim().min(2, 'Location is required (e.g. Remote, Bangalore)'),
   salaryPackage: z.string().trim().min(2, 'Salary package or stipend is required (e.g. 14 LPA)'),
+  skills: z.array(z.string().trim().min(1)).default([]),
   
   // Eligibility criteria
   minCgpa: z.coerce.number().min(0.0, 'CGPA cannot be negative').max(10.0, 'CGPA cannot exceed 10.0').default(0.0),
@@ -31,9 +32,15 @@ export const updateJobStatusSchema = z.object({
 
 export const jobQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
   status: z.nativeEnum(JobStatus).optional(),
+  type: z.nativeEnum(JobType).optional(),
   collegeId: z.string().optional(),
+  location: z.string().trim().optional(),
+  timeline: z.enum(['ALL', 'UPCOMING', 'TODAY', 'PAST']).default('ALL').optional(),
+  skill: z.string().trim().optional(),
+  skills: z.string().trim().optional(), // comma-separated skills list e.g. "React,Node.js"
+  skillMatchMode: z.enum(['all', 'any']).default('any'),
   search: z.string().trim().optional(),
 });
 

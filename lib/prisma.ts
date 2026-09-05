@@ -15,7 +15,10 @@ function makePrismaClient() {
   });
 }
 
-export const prisma = globalForPrisma.prisma ?? makePrismaClient();
+// In development, recreate if model definitions changed or instantiate fresh
+export const prisma = makePrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 

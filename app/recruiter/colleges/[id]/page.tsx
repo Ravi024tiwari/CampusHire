@@ -190,27 +190,44 @@ export default function RecruiterCollegeDetailPage({
   return (
     <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-[1700px] mx-auto space-y-6 sm:space-y-8 transition-all duration-300">
       
-      {/* 1. Top Breadcrumb & Quick Actions Header */}
+      {/* 1. Industrial-Grade Action Header (Clean Interactive Back Button) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <Link
-          href="/recruiter/colleges"
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-600 hover:text-[#2563EB] transition-colors group"
+        <button
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.history.length > 1) {
+              router.back();
+            } else {
+              router.push('/recruiter/colleges');
+            }
+          }}
+          className="group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-xs sm:text-sm font-bold text-slate-700 hover:text-[#0A2540] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 self-start"
+          title="Return to previous page"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back to Verified Directory</span>
-        </Link>
+          <div className="flex h-5 w-5 items-center justify-center rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-500 group-hover:text-blue-600 transition-colors">
+            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          </div>
+          <span>Back</span>
+        </button>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200 shadow-2xs">
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200 shadow-2xs">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             Accredited Institution
           </span>
 
+          <Link
+            href={`/recruiter/jobs/create?collegeId=${college.id}`}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-md shadow-blue-600/25 transition-all cursor-pointer"
+          >
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>Post Placement Drive</span>
+          </Link>
+
           <a
             href={`mailto:${college.contactEmail || tpos[0]?.user.email || 'placement@university.edu'}?subject=Campus Hiring Partnership Inquiry - CampusHire`}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-2xs transition-all cursor-pointer"
           >
-            <Mail className="w-3.5 h-3.5" />
+            <Mail className="w-3.5 h-3.5 text-blue-600" />
             <span>Contact Placement Cell</span>
           </a>
         </div>

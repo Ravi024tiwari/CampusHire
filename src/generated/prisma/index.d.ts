@@ -10524,6 +10524,7 @@ export namespace Prisma {
     status: number
     location: number
     salaryPackage: number
+    skills: number
     minCgpa: number
     allowedBranches: number
     eligibleBatches: number
@@ -10586,6 +10587,7 @@ export namespace Prisma {
     status?: true
     location?: true
     salaryPackage?: true
+    skills?: true
     minCgpa?: true
     allowedBranches?: true
     eligibleBatches?: true
@@ -10691,6 +10693,7 @@ export namespace Prisma {
     status: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills: string[]
     minCgpa: number
     allowedBranches: string[]
     eligibleBatches: number[]
@@ -10728,6 +10731,7 @@ export namespace Prisma {
     status?: boolean
     location?: boolean
     salaryPackage?: boolean
+    skills?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10751,6 +10755,7 @@ export namespace Prisma {
     status?: boolean
     location?: boolean
     salaryPackage?: boolean
+    skills?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10771,6 +10776,7 @@ export namespace Prisma {
     status?: boolean
     location?: boolean
     salaryPackage?: boolean
+    skills?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10791,6 +10797,7 @@ export namespace Prisma {
     status?: boolean
     location?: boolean
     salaryPackage?: boolean
+    skills?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10799,7 +10806,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "collegeId" | "title" | "description" | "type" | "status" | "location" | "salaryPackage" | "minCgpa" | "allowedBranches" | "eligibleBatches" | "deadline" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "collegeId" | "title" | "description" | "type" | "status" | "location" | "salaryPackage" | "skills" | "minCgpa" | "allowedBranches" | "eligibleBatches" | "deadline" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
@@ -10834,6 +10841,7 @@ export namespace Prisma {
       status: $Enums.JobStatus
       location: string
       salaryPackage: string
+      skills: string[]
       minCgpa: number
       allowedBranches: string[]
       eligibleBatches: number[]
@@ -11276,6 +11284,7 @@ export namespace Prisma {
     readonly status: FieldRef<"Job", 'JobStatus'>
     readonly location: FieldRef<"Job", 'String'>
     readonly salaryPackage: FieldRef<"Job", 'String'>
+    readonly skills: FieldRef<"Job", 'String[]'>
     readonly minCgpa: FieldRef<"Job", 'Float'>
     readonly allowedBranches: FieldRef<"Job", 'String[]'>
     readonly eligibleBatches: FieldRef<"Job", 'Int[]'>
@@ -14330,6 +14339,7 @@ export namespace Prisma {
     status: 'status',
     location: 'location',
     salaryPackage: 'salaryPackage',
+    skills: 'skills',
     minCgpa: 'minCgpa',
     allowedBranches: 'allowedBranches',
     eligibleBatches: 'eligibleBatches',
@@ -15204,6 +15214,7 @@ export namespace Prisma {
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
     location?: StringFilter<"Job"> | string
     salaryPackage?: StringFilter<"Job"> | string
+    skills?: StringNullableListFilter<"Job">
     minCgpa?: FloatFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -15226,6 +15237,7 @@ export namespace Prisma {
     status?: SortOrder
     location?: SortOrder
     salaryPackage?: SortOrder
+    skills?: SortOrder
     minCgpa?: SortOrder
     allowedBranches?: SortOrder
     eligibleBatches?: SortOrder
@@ -15251,6 +15263,7 @@ export namespace Prisma {
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
     location?: StringFilter<"Job"> | string
     salaryPackage?: StringFilter<"Job"> | string
+    skills?: StringNullableListFilter<"Job">
     minCgpa?: FloatFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -15273,6 +15286,7 @@ export namespace Prisma {
     status?: SortOrder
     location?: SortOrder
     salaryPackage?: SortOrder
+    skills?: SortOrder
     minCgpa?: SortOrder
     allowedBranches?: SortOrder
     eligibleBatches?: SortOrder
@@ -15299,6 +15313,7 @@ export namespace Prisma {
     status?: EnumJobStatusWithAggregatesFilter<"Job"> | $Enums.JobStatus
     location?: StringWithAggregatesFilter<"Job"> | string
     salaryPackage?: StringWithAggregatesFilter<"Job"> | string
+    skills?: StringNullableListFilter<"Job">
     minCgpa?: FloatWithAggregatesFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -16274,6 +16289,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -16296,6 +16312,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -16314,6 +16331,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -16336,6 +16354,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -16356,6 +16375,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -16372,6 +16392,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -16390,6 +16411,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -17364,6 +17386,7 @@ export namespace Prisma {
     status?: SortOrder
     location?: SortOrder
     salaryPackage?: SortOrder
+    skills?: SortOrder
     minCgpa?: SortOrder
     allowedBranches?: SortOrder
     eligibleBatches?: SortOrder
@@ -18337,6 +18360,10 @@ export namespace Prisma {
     update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutRecruitersInput, CompanyUpdateWithoutRecruitersInput>, CompanyUncheckedUpdateWithoutRecruitersInput>
   }
 
+  export type JobCreateskillsInput = {
+    set: string[]
+  }
+
   export type JobCreateallowedBranchesInput = {
     set: string[]
   }
@@ -18391,6 +18418,11 @@ export namespace Prisma {
 
   export type EnumJobStatusFieldUpdateOperationsInput = {
     set?: $Enums.JobStatus
+  }
+
+  export type JobUpdateskillsInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type JobUpdateallowedBranchesInput = {
@@ -19276,6 +19308,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -19296,6 +19329,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -19466,6 +19500,7 @@ export namespace Prisma {
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
     location?: StringFilter<"Job"> | string
     salaryPackage?: StringFilter<"Job"> | string
+    skills?: StringNullableListFilter<"Job">
     minCgpa?: FloatFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -20245,6 +20280,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -20265,6 +20301,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -20851,6 +20888,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -20872,6 +20910,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -21030,6 +21069,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -21051,6 +21091,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -21289,6 +21330,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -21310,6 +21352,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -21517,6 +21560,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -21538,6 +21582,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -21683,6 +21728,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -21818,6 +21864,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -21838,6 +21885,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -21857,6 +21905,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -22164,6 +22213,7 @@ export namespace Prisma {
     status?: $Enums.JobStatus
     location: string
     salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -22224,6 +22274,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -22244,6 +22295,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -22263,6 +22315,7 @@ export namespace Prisma {
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]

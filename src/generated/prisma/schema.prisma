@@ -220,6 +220,7 @@ model Job {
   location      String // "Bangalore (Hybrid)", "Remote", etc.
   salaryPackage String // e.g. "12 - 16 LPA" or "₹40,000/month"
 
+  skills          String[] @default([]) // ["React", "Node.js", "TypeScript", "Python"]
   minCgpa         Float    @default(0.0)
   allowedBranches String[] @default([]) // ["CSE", "ECE", "IT"]
   eligibleBatches Int[]    @default([]) // [2026, 2027]

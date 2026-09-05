@@ -229,6 +229,7 @@ exports.Prisma.JobScalarFieldEnum = {
   status: 'status',
   location: 'location',
   salaryPackage: 'salaryPackage',
+  skills: 'skills',
   minCgpa: 'minCgpa',
   allowedBranches: 'allowedBranches',
   eligibleBatches: 'eligibleBatches',

@@ -7,3 +7,4 @@ export * from './useAuthStore';
 export * from './useAdminStore';
 export * from './useUIStore';
 export * from './useFilterStore';
+export * from './useRecruiterJobsStore';

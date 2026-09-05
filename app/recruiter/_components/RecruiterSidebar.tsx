@@ -16,7 +16,7 @@ import {
   X, 
   LogOut, 
   Loader2,
-  Sparkles
+  Compass
 } from 'lucide-react';
 
 interface RecruiterSidebarProps {
@@ -79,6 +79,15 @@ export function RecruiterSidebar({
       color: 'text-blue-600',
     },
     {
+      href: '/recruiter/jobs',
+      label: 'Post Job (Drives)',
+      shortLabel: 'Post Job',
+      icon: Briefcase,
+      badge: activeDrivesCount,
+      badgeColor: 'bg-blue-100 text-blue-900 border-blue-300 font-extrabold',
+      color: 'text-blue-600',
+    },
+    {
       href: '/recruiter/colleges',
       label: 'Verified Campuses',
       shortLabel: 'Campuses',
@@ -86,15 +95,6 @@ export function RecruiterSidebar({
       badge: null,
       badgeColor: '',
       color: 'text-emerald-600',
-    },
-    {
-      href: '/recruiter/dashboard#drives',
-      label: 'Campus Drives',
-      shortLabel: 'Drives',
-      icon: Briefcase,
-      badge: activeDrivesCount,
-      badgeColor: 'bg-blue-100 text-blue-900 border-blue-300 font-extrabold',
-      color: 'text-blue-600',
     },
     {
       href: '/recruiter/dashboard#applications',
@@ -155,7 +155,7 @@ export function RecruiterSidebar({
         <div className={`hidden md:flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-1'}`}>
           {!isCollapsed && (
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-blue-500" />
+              <Compass className="w-3 h-3 text-blue-500" />
               Recruiting Hub
             </p>
           )}

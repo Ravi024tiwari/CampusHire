@@ -106,21 +106,45 @@
   animation-play-state: paused;
 }
 
-@keyframes spinBorder {
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.04);
+  }
+}
+
+@keyframes softGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes subtleShimmer {
   0% {
-    transform: rotate(0deg);
+    background-position: -200% 0;
   }
   100% {
-    transform: rotate(360deg);
+    background-position: 200% 0;
   }
 }
 
-.animate-spin-border {
-  animation: spinBorder 6s linear infinite;
+.animate-float-slow {
+  animation: floatGentle 6s ease-in-out infinite;
 }
 
-.animate-spin-border-fast {
-  animation: spinBorder 4s linear infinite;
+.animate-float-delayed {
+  animation: floatGentle 7s ease-in-out 2s infinite;
+}
+
+.animate-soft-glow {
+  animation: softGlow 5s ease-in-out infinite;
 }
 
 /* =========================================================================
