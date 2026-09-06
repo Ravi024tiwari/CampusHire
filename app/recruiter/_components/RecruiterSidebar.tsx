@@ -121,13 +121,13 @@ export function RecruiterSidebar() {
     },
     { 
       label: 'Offers', 
-      href: '/recruiter/dashboard#offers', 
+      href: '/recruiter/offers', 
       icon: Award,
       badge: null
     },
     { 
       label: 'Analytics', 
-      href: '/recruiter/dashboard#trends', 
+      href: '/recruiter/analytics', 
       icon: BarChart2,
       badge: null
     },

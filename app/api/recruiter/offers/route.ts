@@ -9,15 +9,21 @@ import { sendOfferLetterEmail } from '@/lib/email';
 
 const recruiterOfferQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
-  status: z.nativeEnum(OfferStatus).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  status: z.enum(['ALL', 'ACCEPTED', 'PENDING', 'DECLINED', 'EXPIRED', 'REVOKED']).optional(),
   collegeId: z.string().optional(),
+  batchYear: z.coerce.number().int().optional(),
+  jobId: z.string().optional(),
+  role: z.string().optional(),
   search: z.string().trim().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  sortBy: z.enum(['latest', 'oldest', 'salary_high', 'salary_low']).default('latest'),
 });
 
 /**
  * GET /api/recruiter/offers
- * Paginated list of all offers issued by this recruiter's company.
+ * Paginated list of all offers issued by this recruiter's company with KPI metrics and filters.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -25,6 +31,7 @@ export async function GET(req: NextRequest) {
 
     const recruiter = await prisma.recruiterProfile.findUnique({
       where: { userId: authUser.userId },
+      include: { company: true },
     });
 
     if (!recruiter || !recruiter.companyId) {
@@ -37,39 +44,73 @@ export async function GET(req: NextRequest) {
       limit: searchParams.get('limit') ?? undefined,
       status: searchParams.get('status') ?? undefined,
       collegeId: searchParams.get('collegeId') ?? undefined,
+      batchYear: searchParams.get('batchYear') ?? undefined,
+      jobId: searchParams.get('jobId') ?? undefined,
+      role: searchParams.get('role') ?? undefined,
       search: searchParams.get('search') ?? undefined,
+      startDate: searchParams.get('startDate') ?? undefined,
+      endDate: searchParams.get('endDate') ?? undefined,
+      sortBy: searchParams.get('sortBy') ?? undefined,
     });
 
     const where: any = {
       companyId: recruiter.companyId, // Strict company boundary
     };
 
-    if (query.status) {
+    if (query.status && query.status !== 'ALL') {
       where.status = query.status;
     }
 
-    if (query.collegeId) {
+    if (query.collegeId && query.collegeId !== 'ALL') {
       where.collegeId = query.collegeId;
+    }
+
+    if (query.batchYear) {
+      where.student = { ...where.student, batchYear: query.batchYear };
+    }
+
+    if (query.jobId && query.jobId !== 'ALL') {
+      where.jobId = query.jobId;
+    }
+
+    if (query.role && query.role !== 'ALL') {
+      where.designation = { contains: query.role, mode: 'insensitive' };
+    }
+
+    if (query.startDate || query.endDate) {
+      where.createdAt = {};
+      if (query.startDate) where.createdAt.gte = new Date(query.startDate);
+      if (query.endDate) where.createdAt.lte = new Date(query.endDate);
     }
 
     if (query.search) {
       where.OR = [
         { student: { user: { name: { contains: query.search, mode: 'insensitive' } } } },
+        { student: { user: { email: { contains: query.search, mode: 'insensitive' } } } },
         { student: { enrollmentNumber: { contains: query.search, mode: 'insensitive' } } },
         { designation: { contains: query.search, mode: 'insensitive' } },
         { college: { name: { contains: query.search, mode: 'insensitive' } } },
       ];
     }
 
+    // Determine sorting order (newest first by default)
+    let orderBy: any = { createdAt: 'desc' };
+    if (query.sortBy === 'oldest') {
+      orderBy = { createdAt: 'asc' };
+    } else if (query.sortBy === 'salary_high' || query.sortBy === 'salary_low') {
+      orderBy = { createdAt: 'desc' };
+    }
+
     const skip = (query.page - 1) * query.limit;
 
-    const [total, offers] = await Promise.all([
+    // Concurrently fetch counts, stats, distinct options, and paginated records
+    const [totalMatching, offers, statsCounts, distinctColleges, distinctJobs, distinctBatches] = await Promise.all([
       prisma.offer.count({ where }),
       prisma.offer.findMany({
         where,
         skip,
         take: query.limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         include: {
           student: {
             include: {
@@ -88,6 +129,7 @@ export async function GET(req: NextRequest) {
               name: true,
               code: true,
               city: true,
+              logoUrl: true,
             },
           },
           job: {
@@ -99,7 +141,47 @@ export async function GET(req: NextRequest) {
           },
         },
       }),
+      // Aggregate stats for the company
+      prisma.offer.groupBy({
+        by: ['status'],
+        where: { companyId: recruiter.companyId },
+        _count: { id: true },
+      }),
+      // Distinct colleges that have offers from this company
+      prisma.college.findMany({
+        where: { offers: { some: { companyId: recruiter.companyId } } },
+        select: { id: true, name: true, code: true },
+        orderBy: { name: 'asc' },
+      }),
+      // Distinct job postings by this company
+      prisma.job.findMany({
+        where: { companyId: recruiter.companyId },
+        select: { id: true, title: true, type: true },
+        orderBy: { title: 'asc' },
+      }),
+      // Distinct batch years of students with offers
+      prisma.studentProfile.findMany({
+        where: { offers: { some: { companyId: recruiter.companyId } } },
+        select: { batchYear: true },
+        distinct: ['batchYear'],
+        orderBy: { batchYear: 'desc' },
+      }),
     ]);
+
+    // Compute stats map
+    const statsMap: Record<string, number> = {};
+    let totalAllOffers = 0;
+    statsCounts.forEach((sc) => {
+      statsMap[sc.status] = sc._count.id;
+      totalAllOffers += sc._count.id;
+    });
+
+    const acceptedCount = statsMap['ACCEPTED'] || 0;
+    const pendingCount = statsMap['PENDING'] || 0;
+    const declinedCount = (statsMap['DECLINED'] || 0) + (statsMap['EXPIRED'] || 0);
+    const acceptanceRate = totalAllOffers > 0 ? Math.round((acceptedCount / totalAllOffers) * 100) : 0;
+    const pendingRate = totalAllOffers > 0 ? Math.round((pendingCount / totalAllOffers) * 100) : 0;
+    const declinedRate = totalAllOffers > 0 ? Math.round((declinedCount / totalAllOffers) * 100) : 0;
 
     const formattedOffers = offers.map((offer) => ({
       id: offer.id,
@@ -124,6 +206,7 @@ export async function GET(req: NextRequest) {
         branch: offer.student.branch,
         batchYear: offer.student.batchYear,
         cgpa: offer.student.cgpa,
+        isVerified: offer.student.isVerified,
       },
       college: offer.college,
       job: offer.job,
@@ -132,12 +215,26 @@ export async function GET(req: NextRequest) {
     return successResponse(
       {
         offers: formattedOffers,
+        stats: {
+          total: totalAllOffers,
+          accepted: acceptedCount,
+          pending: pendingCount,
+          declined: declinedCount,
+          acceptanceRate,
+          pendingRate,
+          declinedRate,
+        },
+        filterOptions: {
+          colleges: distinctColleges,
+          jobs: distinctJobs,
+          batchYears: distinctBatches.map((b) => b.batchYear),
+        },
         pagination: {
           page: query.page,
           limit: query.limit,
-          total,
-          totalPages: Math.ceil(total / query.limit),
-          hasMore: query.page * query.limit < total,
+          total: totalMatching,
+          totalPages: Math.ceil(totalMatching / query.limit) || 1,
+          hasMore: query.page * query.limit < totalMatching,
         },
       },
       'Company placement offers retrieved successfully'
