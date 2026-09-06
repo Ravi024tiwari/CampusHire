@@ -35,11 +35,14 @@ interface RecruiterApplicationsTableProps {
   onSuccessToast: (msg: string) => void;
 }
 
+import { useRouter } from 'next/navigation';
+
 export function RecruiterApplicationsTable({
   applications,
   onOpenCandidateModal,
   onSuccessToast,
 }: RecruiterApplicationsTableProps) {
+  const router = useRouter();
   const { 
     selectedApplicationIds, 
     toggleSelectApplication, 
@@ -55,6 +58,10 @@ export function RecruiterApplicationsTable({
 
   const handleStatusChange = async (app: RecruiterApplicationItem, newStatus: string) => {
     setActiveMenuId(null);
+    if (newStatus === 'OFFERED') {
+      router.push(`/recruiter/applications/${app.id}/offer`);
+      return;
+    }
     const res = await updateApplicationStatus(app.id, newStatus);
     if (res.success) {
       onSuccessToast(res.message || `Updated ${app.student.user.name}'s status to ${newStatus}`);
@@ -102,6 +109,12 @@ export function RecruiterApplicationsTable({
       case 'REJECTED':
         return {
           label: 'Rejected',
+          color: 'bg-rose-50 text-rose-700 border-rose-200/80',
+          dot: 'bg-rose-500',
+        };
+      case 'DECLINED':
+        return {
+          label: 'Declined by Student',
           color: 'bg-rose-50 text-rose-700 border-rose-200/80',
           dot: 'bg-rose-500',
         };

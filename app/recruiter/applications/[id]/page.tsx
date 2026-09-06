@@ -206,8 +206,8 @@ export default function RecruiterApplicationDetailPage({ params }: ApplicationDe
   const handleUpdateStatus = async (overrideStatus?: string) => {
     const statusToApply = overrideStatus || targetStatus;
 
-    if (statusToApply === 'OFFERED' && !isOfferModalOpen && application?.status !== 'OFFERED') {
-      setIsOfferModalOpen(true);
+    if (statusToApply === 'OFFERED') {
+      router.push(`/recruiter/applications/${applicationId}/offer`);
       return;
     }
 
@@ -985,6 +985,14 @@ export default function RecruiterApplicationDetailPage({ params }: ApplicationDe
 
             {/* Quick Action Shortcuts */}
             <div className="pt-3 border-t border-slate-100 space-y-2">
+              <Link
+                href={`/recruiter/applications/${applicationId}/offer`}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+              >
+                <Award className="w-3.5 h-3.5" />
+                <span>{application.status === 'OFFERED' ? 'View / Update Offer Letter' : 'Generate & Dispatch Offer'}</span>
+              </Link>
+
               {application.status === 'SHORTLISTED' && (
                 <button
                   type="button"

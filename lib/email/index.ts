@@ -55,78 +55,100 @@ export async function sendOfferLetterEmail(params: OfferLetterEmailParams) {
     notes,
   } = params;
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
   const html = `
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
       <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Official Placement Offer Letter</title>
       <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 24px; color: #1e293b; }
-        .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
-        .header { background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 32px 24px; text-align: center; color: #ffffff; }
-        .header h1 { margin: 0; font-size: 24px; font-weight: 700; }
-        .header p { margin: 8px 0 0 0; opacity: 0.9; font-size: 15px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 24px 12px; color: #0f172a; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .header { background: linear-gradient(135deg, #0A2540 0%, #1e40af 50%, #2563eb 100%); padding: 36px 24px; text-align: center; color: #ffffff; }
+        .badge { display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); padding: 4px 14px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.3); }
+        .header h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+        .header p { margin: 8px 0 0 0; opacity: 0.9; font-size: 14px; }
         .content { padding: 32px 24px; }
-        .offer-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0; }
-        .offer-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #edf2f7; }
+        .salutation { font-size: 16px; font-weight: 700; color: #0A2540; margin-bottom: 12px; }
+        .offer-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin: 24px 0; }
+        .offer-row { padding: 10px 0; border-bottom: 1px solid #edf2f7; }
         .offer-row:last-child { border-bottom: none; }
-        .label { color: #64748b; font-size: 14px; font-weight: 500; }
-        .value { color: #0f172a; font-size: 14px; font-weight: 600; }
-        .highlight { color: #16a34a; font-size: 18px; font-weight: 700; }
-        .btn { display: inline-block; padding: 12px 24px; background-color: #2563eb; color: #ffffff !important; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px; text-align: center; margin-top: 16px; }
-        .btn-outline { background-color: transparent; color: #2563eb !important; border: 1px solid #2563eb; margin-left: 12px; }
-        .footer { padding: 20px 24px; text-align: center; font-size: 13px; color: #94a3b8; border-top: 1px solid #f1f5f9; }
+        .label { color: #64748b; font-size: 13px; font-weight: 600; width: 40%; }
+        .value { color: #0f172a; font-size: 13px; font-weight: 700; }
+        .highlight-ctc { color: #16a34a; font-size: 18px; font-weight: 800; }
+        .cta-container { text-align: center; margin: 32px 0 16px 0; }
+        .btn-primary { display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff !important; text-decoration: none; border-radius: 12px; font-weight: 800; font-size: 14px; text-align: center; box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin: 6px; }
+        .btn-secondary { display: inline-block; padding: 14px 24px; background: #f8fafc; color: #1e293b !important; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 13px; text-align: center; border: 1px solid #cbd5e1; margin: 6px; }
+        .footer { padding: 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; background: #fafafa; }
+        @media only screen and (max-width: 600px) {
+          body { padding: 8px; }
+          .content { padding: 24px 16px; }
+          .header { padding: 28px 16px; }
+          .header h1 { font-size: 22px; }
+        }
       </style>
     </head>
     <body>
-      <div class="card">
+      <div class="container">
         <div class="header">
+          <div class="badge">🎓 Institutional Campus Placement</div>
           <h1>🎉 Congratulations, ${studentName}!</h1>
-          <p>You have received an on-campus placement offer from <strong>${companyName}</strong></p>
+          <p>Official employment offer extended by <strong>${companyName}</strong></p>
         </div>
+        
         <div class="content">
-          <p>Dear <strong>${studentName}</strong>,</p>
-          <p>We are delighted to inform you that following the on-campus recruitment drive, <strong>${companyName}</strong> has extended an official offer of employment for the position of <strong>${jobTitle}</strong>.</p>
+          <p class="salutation">Dear ${studentName},</p>
+          <p style="font-size: 14px; line-height: 1.6; color: #334155;">
+            Following the on-campus recruitment drive, <strong>${companyName}</strong> is delighted to extend an official offer of employment for the role of <strong>${jobTitle}</strong>.
+          </p>
           
-          <div class="offer-box">
-            <table width="100%" cellpadding="6" cellspacing="0">
-              <tr>
-                <td class="label">Company</td>
+          <div class="offer-card">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr class="offer-row">
+                <td class="label">Hiring Company</td>
                 <td class="value">${companyName}</td>
               </tr>
-              <tr>
-                <td class="label">Role / Designation</td>
+              <tr class="offer-row">
+                <td class="label">Designation / Role</td>
                 <td class="value">${jobTitle}</td>
               </tr>
-              <tr>
-                <td class="label">Offered Package (CTC / Stipend)</td>
-                <td class="value highlight">${salaryPackage}</td>
+              <tr class="offer-row">
+                <td class="label">Annual Package (CTC)</td>
+                <td class="value highlight-ctc">${salaryPackage}</td>
               </tr>
-              <tr>
-                <td class="label">Location</td>
+              <tr class="offer-row">
+                <td class="label">Job Location</td>
                 <td class="value">${location}</td>
               </tr>
               ${joiningDate ? `
-              <tr>
-                <td class="label">Expected Joining Date</td>
-                <td class="value">${joiningDate}</td>
+              <tr class="offer-row">
+                <td class="label">Joining Date</td>
+                <td class="value">${new Date(joiningDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
               </tr>` : ''}
               ${notes ? `
-              <tr>
+              <tr class="offer-row">
                 <td class="label">Recruiter Notes</td>
-                <td class="value">${notes}</td>
+                <td class="value" style="font-weight: 500; color: #475569;">${notes}</td>
               </tr>` : ''}
             </table>
           </div>
 
-          <p>Please log in to your CampusHire student portal to review the offer terms and submit your formal acceptance decision.</p>
+          <p style="font-size: 13.5px; line-height: 1.6; color: #475569;">
+            📎 Your official signed Offer Letter PDF has been attached to this email. Please review the terms and submit your digital acceptance on the CampusHire student portal.
+          </p>
 
-          <div style="text-align: center; margin: 28px 0 12px 0;">
-            ${offerLetterUrl ? `<a href="${offerLetterUrl}" class="btn" target="_blank">📄 Download Offer Letter PDF</a>` : ''}
+          <div class="cta-container">
+            <a href="${appUrl}/student/offers" class="btn-primary">🚀 Review & Accept Offer</a>
+            ${offerLetterUrl ? `<a href="${offerLetterUrl}" class="btn-secondary" target="_blank">📄 View PDF Online</a>` : ''}
           </div>
         </div>
+
         <div class="footer">
-          <p>This is an automated notification from CampusHire On-Campus Placement System.</p>
+          <p style="margin: 0 0 6px 0; font-weight: 600; color: #64748b;">CampusHire Placement Automation System</p>
+          <p style="margin: 0;">This email was securely delivered to ${studentEmail}.</p>
         </div>
       </div>
     </body>
@@ -139,16 +161,36 @@ export async function sendOfferLetterEmail(params: OfferLetterEmailParams) {
       companyName,
       jobTitle,
       salaryPackage,
+      offerLetterUrl,
     });
     return { success: true, mode: 'simulated' };
   }
 
   try {
+    const attachments: any[] = [];
+    if (offerLetterUrl) {
+      try {
+        const response = await fetch(offerLetterUrl);
+        if (response.ok) {
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const sanitizedCompanyName = companyName.replace(/[^a-zA-Z0-9_-]/g, '_');
+          attachments.push({
+            filename: `${sanitizedCompanyName}_Offer_Letter.pdf`,
+            content: buffer,
+          });
+        }
+      } catch (attachErr) {
+        console.warn('[OFFER_LETTER_PDF_FETCH_FAILED]', attachErr);
+      }
+    }
+
     const result = await resend.emails.send({
       from: emailFrom,
       to: [studentEmail],
       subject: `🎉 Placement Offer: ${jobTitle} at ${companyName}`,
       html,
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
     return { success: true, data: result };
   } catch (error) {

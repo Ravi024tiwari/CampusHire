@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { 
   X, 
   ExternalLink, 
@@ -226,6 +227,17 @@ export function RecruiterCandidateModal({
                     className="w-full px-3 py-2 text-xs rounded-xl border border-emerald-300 bg-white font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/30"
                   />
                 </div>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href={`/recruiter/applications/${application.id}/offer`}
+                  className="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-sm transition"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Open Full Offer Page & Upload PDF Offer Letter</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </div>
           )}

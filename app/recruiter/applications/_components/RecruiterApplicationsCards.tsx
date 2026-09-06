@@ -33,11 +33,14 @@ interface RecruiterApplicationsCardsProps {
   onSuccessToast: (msg: string) => void;
 }
 
+import { useRouter } from 'next/navigation';
+
 export function RecruiterApplicationsCards({
   applications,
   onOpenCandidateModal,
   onSuccessToast,
 }: RecruiterApplicationsCardsProps) {
+  const router = useRouter();
   const { 
     selectedApplicationIds, 
     toggleSelectApplication, 
@@ -58,6 +61,8 @@ export function RecruiterApplicationsCards({
         return { label: 'Offered', color: 'bg-emerald-50 text-emerald-700 border-emerald-200/80', dot: 'bg-emerald-500' };
       case 'ACCEPTED':
         return { label: 'Hired / Accepted', color: 'bg-teal-50 text-teal-700 border-teal-200/80', dot: 'bg-teal-500' };
+      case 'DECLINED':
+        return { label: 'Declined by Student', color: 'bg-rose-50 text-rose-700 border-rose-200/80', dot: 'bg-rose-500' };
       case 'REJECTED':
         return { label: 'Rejected', color: 'bg-rose-50 text-rose-700 border-rose-200/80', dot: 'bg-rose-500' };
       default:
@@ -66,6 +71,10 @@ export function RecruiterApplicationsCards({
   };
 
   const handleQuickStatus = async (app: RecruiterApplicationItem, newStatus: string, label: string) => {
+    if (newStatus === 'OFFERED') {
+      router.push(`/recruiter/applications/${app.id}/offer`);
+      return;
+    }
     const res = await updateApplicationStatus(app.id, newStatus);
     if (res.success) {
       onSuccessToast(res.message || `Moved ${app.student.user.name} to ${label}`);
