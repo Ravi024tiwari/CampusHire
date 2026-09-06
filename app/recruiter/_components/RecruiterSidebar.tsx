@@ -23,7 +23,6 @@ import {
   PanelLeftOpen,
   X,
   Mail,
-  PlusCircle,
   ShieldCheck,
   Sparkles
 } from 'lucide-react';
@@ -76,6 +75,9 @@ export function RecruiterSidebar() {
     if (href === '/recruiter/jobs') {
       return pathname === '/recruiter/jobs' || pathname.startsWith('/recruiter/jobs/');
     }
+    if (href === '/recruiter/applications') {
+      return pathname === '/recruiter/applications' || pathname.startsWith('/recruiter/applications/');
+    }
     return pathname.startsWith(href);
   };
 
@@ -106,14 +108,8 @@ export function RecruiterSidebar() {
       badge: null
     },
     { 
-      label: 'Candidates', 
-      href: '/recruiter/dashboard#applications', 
-      icon: Users,
-      badge: null
-    },
-    { 
       label: 'Applications', 
-      href: '/recruiter/dashboard#applications', 
+      href: '/recruiter/applications', 
       icon: FileText,
       badge: null
     },
@@ -220,23 +216,8 @@ export function RecruiterSidebar() {
           )}
         </div>
 
-        {/* Quick Post Job CTA Button in Sidebar (When Expanded) */}
-        {!isCollapsedMode && !isMobile && (
-          <div className="p-2.5 pb-0">
-            <Link
-              href="/recruiter/jobs/create"
-              className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-98"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Post New Job</span>
-            </Link>
-          </div>
-        )}
-
         {/* Navigation Links List */}
-        <nav className={`p-2.5 space-y-1 overflow-y-auto flex-1 ${
-          isCollapsedMode ? 'max-h-[calc(100vh-160px)]' : 'max-h-[calc(100vh-270px)]'
-        } [scrollbar-width:thin]`}>
+        <nav className="p-2.5 space-y-1 overflow-y-auto flex-1 max-h-[calc(100vh-160px)] [scrollbar-width:thin]">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isCurrentActive(item.href);

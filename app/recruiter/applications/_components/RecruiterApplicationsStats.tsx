@@ -2,96 +2,101 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { 
-  Briefcase, 
   Users, 
-  Award,
-  FileText,
-  ChevronLeft,
-  ChevronRight
+  Clock, 
+  Bookmark, 
+  Calendar, 
+  Award, 
+  ChevronRight,
+  ChevronLeft
 } from 'lucide-react';
-import { RecruiterJobItem, useRecruiterJobsStore } from '@/store/useRecruiterJobsStore';
+import { 
+  RecruiterApplicationsStats as StatsType,
+  useRecruiterApplicationsStore 
+} from '@/store/useRecruiterApplicationsStore';
 
-interface RecruiterJobsStatsProps {
-  jobs: RecruiterJobItem[];
-  totalColleges?: number;
+interface RecruiterApplicationsStatsProps {
+  stats: StatsType;
 }
 
-export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
-  const { filters, setFilter } = useRecruiterJobsStore();
+export function RecruiterApplicationsStats({ stats }: RecruiterApplicationsStatsProps) {
+  const { filters, setFilter } = useRecruiterApplicationsStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const totalJobs = jobs.length > 0 ? jobs.length : 24;
-  const liveJobs = jobs.length > 0 ? jobs.filter((j) => j.status === 'ACTIVE').length : 18;
-  const totalApplications = jobs.length > 0 
-    ? jobs.reduce((acc, curr) => acc + (curr._count?.applications || 0), 0)
-    : 1240;
-  const totalOffers = jobs.length > 0
-    ? jobs.reduce((acc, curr) => acc + (curr._count?.offers || 0), 0)
-    : 36;
-
   const cards = [
     {
-      id: 'jobs-posted',
-      title: 'Jobs Posted',
-      value: totalJobs.toLocaleString(),
-      subtext: '+12% this month',
+      id: 'total',
+      title: 'Total Applicants',
+      value: (stats.total || 0).toLocaleString(),
+      subtext: '+24% this drive',
       subtextColor: 'text-blue-700 bg-blue-50/90 border-blue-200/80',
-      icon: FileText,
+      icon: Users,
       iconColor: 'text-blue-600',
       iconBg: 'bg-blue-50',
       border: 'border-slate-200/90',
       hoverBorder: 'hover:border-blue-300',
-      onClick: () => {
-        setFilter('selectedStatus', 'ALL');
-        setFilter('sortBy', 'latest');
-      },
-      isActive: filters.selectedStatus === 'ALL' && filters.sortBy !== 'applications',
+      onClick: () => setFilter('status', 'ALL'),
+      isActive: filters.status === 'ALL',
     },
     {
-      id: 'live-jobs',
-      title: 'Live Jobs',
-      value: liveJobs.toLocaleString(),
-      subtext: 'Currently active',
-      subtextColor: 'text-emerald-700 bg-emerald-50/90 border-emerald-200/80',
-      icon: Briefcase,
-      iconColor: 'text-emerald-600',
-      iconBg: 'bg-emerald-50',
-      border: 'border-slate-200/90',
-      hoverBorder: 'hover:border-emerald-300',
-      onClick: () => setFilter('selectedStatus', 'ACTIVE'),
-      isActive: filters.selectedStatus === 'ACTIVE',
-    },
-    {
-      id: 'total-applications',
-      title: 'Applications',
-      value: totalApplications.toLocaleString(),
-      subtext: '+28% vs last month',
-      subtextColor: 'text-purple-700 bg-purple-50/90 border-purple-200/80',
-      icon: Users,
-      iconColor: 'text-purple-600',
-      iconBg: 'bg-purple-50',
-      border: 'border-slate-200/90',
-      hoverBorder: 'hover:border-purple-300',
-      onClick: () => setFilter('sortBy', 'applications'),
-      isActive: filters.sortBy === 'applications',
-    },
-    {
-      id: 'offers-made',
-      title: 'Offers Made',
-      value: totalOffers.toLocaleString(),
-      subtext: '+20% this session',
+      id: 'applied',
+      title: 'Needs Review',
+      value: ((stats.applied || 0) + (stats.underReview || 0)).toLocaleString(),
+      subtext: 'Pending screening',
       subtextColor: 'text-amber-700 bg-amber-50/90 border-amber-200/80',
-      icon: Award,
+      icon: Clock,
       iconColor: 'text-amber-600',
       iconBg: 'bg-amber-50',
       border: 'border-slate-200/90',
       hoverBorder: 'hover:border-amber-300',
-      onClick: () => setFilter('selectedStatus', 'ALL'),
-      isActive: false,
+      onClick: () => setFilter('status', 'APPLIED'),
+      isActive: filters.status === 'APPLIED' || filters.status === 'UNDER_REVIEW',
+    },
+    {
+      id: 'shortlisted',
+      title: 'Shortlisted',
+      value: (stats.shortlisted || 0).toLocaleString(),
+      subtext: 'Screening passed',
+      subtextColor: 'text-purple-700 bg-purple-50/90 border-purple-200/80',
+      icon: Bookmark,
+      iconColor: 'text-purple-600',
+      iconBg: 'bg-purple-50',
+      border: 'border-slate-200/90',
+      hoverBorder: 'hover:border-purple-300',
+      onClick: () => setFilter('status', 'SHORTLISTED'),
+      isActive: filters.status === 'SHORTLISTED',
+    },
+    {
+      id: 'interviews',
+      title: 'Interviews',
+      value: (stats.interviewScheduled || 0).toLocaleString(),
+      subtext: 'Active pipeline',
+      subtextColor: 'text-indigo-700 bg-indigo-50/90 border-indigo-200/80',
+      icon: Calendar,
+      iconColor: 'text-indigo-600',
+      iconBg: 'bg-indigo-50',
+      border: 'border-slate-200/90',
+      hoverBorder: 'hover:border-indigo-300',
+      onClick: () => setFilter('status', 'INTERVIEW_SCHEDULED'),
+      isActive: filters.status === 'INTERVIEW_SCHEDULED',
+    },
+    {
+      id: 'offers',
+      title: 'Offers Extended',
+      value: ((stats.offered || 0) + (stats.accepted || 0)).toLocaleString(),
+      subtext: `${stats.accepted || 0} accepted`,
+      subtextColor: 'text-emerald-700 bg-emerald-50/90 border-emerald-200/80',
+      icon: Award,
+      iconColor: 'text-emerald-600',
+      iconBg: 'bg-emerald-50',
+      border: 'border-slate-200/90',
+      hoverBorder: 'hover:border-emerald-300',
+      onClick: () => setFilter('status', 'OFFERED'),
+      isActive: filters.status === 'OFFERED' || filters.status === 'ACCEPTED',
     },
   ];
 
@@ -152,17 +157,17 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
 
       {/* 
         Responsive Unified KPI Row:
-        - Exact Match to Dashboard KPI dimensions
+        - Matches exact dimensions and typography of the Dashboard KPI Row
         - Top: Title + Chevron
         - Middle: Icon + Big Bold Number
         - Bottom: Clean full-width Growth Badge
-        - Desktop: 4-column balanced grid
+        - Desktop: 5-column balanced grid
         - Mobile & Tablet: Smooth horizontal snap scroll carousel
       */}
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className="flex lg:grid lg:grid-cols-4 gap-3 sm:gap-3.5 lg:gap-4 overflow-x-auto lg:overflow-visible scroll-smooth py-1 lg:py-0 -mx-3 px-3 sm:mx-0 sm:px-0 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] snap-x snap-mandatory"
+        className="flex lg:grid lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4 overflow-x-auto lg:overflow-visible scroll-smooth py-1 lg:py-0 -mx-3 px-3 sm:mx-0 sm:px-0 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] snap-x snap-mandatory"
       >
         {cards.map((card, idx) => {
           const Icon = card.icon;

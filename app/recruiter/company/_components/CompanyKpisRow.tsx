@@ -5,93 +5,81 @@ import {
   Briefcase, 
   Users, 
   Award,
-  FileText,
+  GraduationCap,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { RecruiterJobItem, useRecruiterJobsStore } from '@/store/useRecruiterJobsStore';
+import { useRecruiterCompanyStore } from '@/store/useRecruiterCompanyStore';
 
-interface RecruiterJobsStatsProps {
-  jobs: RecruiterJobItem[];
-  totalColleges?: number;
+interface CompanyKpisRowProps {
+  stats: {
+    activeJobs: number;
+    totalApplications: number;
+    totalOffers: number;
+    totalDrives: number;
+  };
 }
 
-export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
-  const { filters, setFilter } = useRecruiterJobsStore();
+export function CompanyKpisRow({ stats }: CompanyKpisRowProps) {
+  const { setActiveTab } = useRecruiterCompanyStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const totalJobs = jobs.length > 0 ? jobs.length : 24;
-  const liveJobs = jobs.length > 0 ? jobs.filter((j) => j.status === 'ACTIVE').length : 18;
-  const totalApplications = jobs.length > 0 
-    ? jobs.reduce((acc, curr) => acc + (curr._count?.applications || 0), 0)
-    : 1240;
-  const totalOffers = jobs.length > 0
-    ? jobs.reduce((acc, curr) => acc + (curr._count?.offers || 0), 0)
-    : 36;
-
   const cards = [
     {
-      id: 'jobs-posted',
-      title: 'Jobs Posted',
-      value: totalJobs.toLocaleString(),
-      subtext: '+12% this month',
+      id: 'active-jobs',
+      title: 'Active Jobs',
+      value: stats.activeJobs.toLocaleString(),
+      subtext: 'Currently live',
       subtextColor: 'text-blue-700 bg-blue-50/90 border-blue-200/80',
-      icon: FileText,
+      icon: Briefcase,
       iconColor: 'text-blue-600',
       iconBg: 'bg-blue-50',
       border: 'border-slate-200/90',
       hoverBorder: 'hover:border-blue-300',
-      onClick: () => {
-        setFilter('selectedStatus', 'ALL');
-        setFilter('sortBy', 'latest');
-      },
-      isActive: filters.selectedStatus === 'ALL' && filters.sortBy !== 'applications',
+      onClick: () => setActiveTab('jobs'),
     },
     {
-      id: 'live-jobs',
-      title: 'Live Jobs',
-      value: liveJobs.toLocaleString(),
-      subtext: 'Currently active',
+      id: 'total-applications',
+      title: 'Total Applications',
+      value: stats.totalApplications.toLocaleString(),
+      subtext: '+28% vs last month',
       subtextColor: 'text-emerald-700 bg-emerald-50/90 border-emerald-200/80',
-      icon: Briefcase,
+      icon: Users,
       iconColor: 'text-emerald-600',
       iconBg: 'bg-emerald-50',
       border: 'border-slate-200/90',
       hoverBorder: 'hover:border-emerald-300',
-      onClick: () => setFilter('selectedStatus', 'ACTIVE'),
-      isActive: filters.selectedStatus === 'ACTIVE',
-    },
-    {
-      id: 'total-applications',
-      title: 'Applications',
-      value: totalApplications.toLocaleString(),
-      subtext: '+28% vs last month',
-      subtextColor: 'text-purple-700 bg-purple-50/90 border-purple-200/80',
-      icon: Users,
-      iconColor: 'text-purple-600',
-      iconBg: 'bg-purple-50',
-      border: 'border-slate-200/90',
-      hoverBorder: 'hover:border-purple-300',
-      onClick: () => setFilter('sortBy', 'applications'),
-      isActive: filters.sortBy === 'applications',
+      onClick: () => setActiveTab('analytics'),
     },
     {
       id: 'offers-made',
       title: 'Offers Made',
-      value: totalOffers.toLocaleString(),
-      subtext: '+20% this session',
-      subtextColor: 'text-amber-700 bg-amber-50/90 border-amber-200/80',
+      value: stats.totalOffers.toLocaleString(),
+      subtext: 'Campus placements',
+      subtextColor: 'text-purple-700 bg-purple-50/90 border-purple-200/80',
       icon: Award,
+      iconColor: 'text-purple-600',
+      iconBg: 'bg-purple-50',
+      border: 'border-slate-200/90',
+      hoverBorder: 'hover:border-purple-300',
+      onClick: () => setActiveTab('analytics'),
+    },
+    {
+      id: 'campus-drives',
+      title: 'Campus Drives',
+      value: stats.totalDrives.toLocaleString(),
+      subtext: 'Target institutions',
+      subtextColor: 'text-amber-700 bg-amber-50/90 border-amber-200/80',
+      icon: GraduationCap,
       iconColor: 'text-amber-600',
       iconBg: 'bg-amber-50',
       border: 'border-slate-200/90',
       hoverBorder: 'hover:border-amber-300',
-      onClick: () => setFilter('selectedStatus', 'ALL'),
-      isActive: false,
+      onClick: () => setActiveTab('jobs'),
     },
   ];
 
@@ -125,7 +113,7 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
   return (
     <div className="w-full relative group/kpis select-none">
       
-      {/* Mobile Scroll Hint Buttons */}
+      {/* Mobile Scroll Arrows */}
       {canScrollLeft && (
         <button
           type="button"
@@ -150,15 +138,7 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
         </button>
       )}
 
-      {/* 
-        Responsive Unified KPI Row:
-        - Exact Match to Dashboard KPI dimensions
-        - Top: Title + Chevron
-        - Middle: Icon + Big Bold Number
-        - Bottom: Clean full-width Growth Badge
-        - Desktop: 4-column balanced grid
-        - Mobile & Tablet: Smooth horizontal snap scroll carousel
-      */}
+      {/* Unified KPI Grid / Carousel matching dashboard & job pages */}
       <div
         ref={scrollRef}
         onScroll={checkScroll}
@@ -170,18 +150,14 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
             <div
               key={idx}
               onClick={card.onClick}
-              className={`group/card shrink-0 w-[155px] xs:w-[165px] sm:w-[180px] lg:w-auto min-w-[150px] lg:min-w-0 snap-start flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl bg-white border transition-all duration-200 hover:-translate-y-0.5 cursor-pointer select-none ${
-                card.isActive
-                  ? 'border-blue-600 ring-2 ring-blue-600/15 shadow-sm bg-blue-50/15'
-                  : `${card.border} ${card.hoverBorder} shadow-2xs hover:shadow-md`
-              }`}
+              className={`group/card shrink-0 w-[155px] xs:w-[165px] sm:w-[180px] lg:w-auto min-w-[150px] lg:min-w-0 snap-start flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl bg-white border transition-all duration-200 hover:-translate-y-0.5 cursor-pointer select-none ${card.border} ${card.hoverBorder} shadow-2xs hover:shadow-md`}
             >
               {/* Top Row: Title + Chevron */}
               <div className="flex items-center justify-between gap-1.5 pb-1">
-                <span className={`text-[11.5px] sm:text-xs font-bold truncate leading-tight ${card.isActive ? 'text-blue-700 font-black' : 'text-slate-500'}`}>
+                <span className="text-[11.5px] sm:text-xs font-bold text-slate-500 truncate leading-tight">
                   {card.title}
                 </span>
-                <ChevronRight className={`w-3.5 h-3.5 transition-colors shrink-0 ${card.isActive ? 'text-blue-600' : 'text-slate-300 group-hover/card:text-slate-600'}`} />
+                <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover/card:text-slate-600 transition-colors shrink-0" />
               </div>
 
               {/* Middle Row: Icon + Metric Value */}
@@ -211,9 +187,7 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
           <span
             key={idx}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              activeIndex === idx
-                ? 'w-4 bg-blue-600'
-                : 'w-1.5 bg-slate-300'
+              activeIndex === idx ? 'w-4 bg-blue-600' : 'w-1.5 bg-slate-300'
             }`}
           />
         ))}

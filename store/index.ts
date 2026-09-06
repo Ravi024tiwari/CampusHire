@@ -13,5 +13,7 @@ export * from './useStudentProfileStore';
 export * from './useStudentJobsStore';
 export * from './useStudentApplicationsStore';
 export * from './useStudentResumeStore';
+export * from './useRecruiterApplicationsStore';
+export * from './useRecruiterCompanyStore';
 
 

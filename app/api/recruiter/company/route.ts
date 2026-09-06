@@ -25,6 +25,27 @@ export async function GET(req: NextRequest) {
       include: {
         company: {
           include: {
+            jobs: {
+              orderBy: { createdAt: 'desc' },
+              include: {
+                college: {
+                  select: { id: true, name: true, logoUrl: true, city: true },
+                },
+                _count: {
+                  select: {
+                    applications: true,
+                    offers: true,
+                  },
+                },
+              },
+            },
+            recruiters: {
+              include: {
+                user: {
+                  select: { id: true, name: true, email: true, avatarUrl: true, role: true },
+                },
+              },
+            },
             _count: {
               select: {
                 jobs: true,
@@ -41,7 +62,27 @@ export async function GET(req: NextRequest) {
       return errorResponse('Company not found for this recruiter', 404);
     }
 
-    return successResponse(recruiter.company, 'Company profile fetched successfully');
+    const company = recruiter.company;
+    const activeJobsCount = company.jobs.filter((j) => j.status === 'ACTIVE').length;
+    const totalApplications = company.jobs.reduce((sum, j) => sum + (j._count?.applications || 0), 0);
+    const totalOffers = company._count.offers || company.jobs.reduce((sum, j) => sum + (j._count?.offers || 0), 0);
+    
+    // Unique colleges where company has posted jobs
+    const uniqueColleges = new Set(company.jobs.map((j) => j.collegeId));
+    const totalDrives = uniqueColleges.size || company.jobs.length;
+
+    const companyData = {
+      ...company,
+      stats: {
+        activeJobs: activeJobsCount,
+        totalJobs: company.jobs.length,
+        totalApplications,
+        totalOffers,
+        totalDrives,
+      },
+    };
+
+    return successResponse(companyData, 'Company profile fetched successfully');
   } catch (error: any) {
     if (error.name === 'AuthError') {
       return errorResponse(error.message, error.statusCode);
