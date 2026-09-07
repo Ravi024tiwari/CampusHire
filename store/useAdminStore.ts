@@ -315,6 +315,100 @@ export interface AdminCollegeFilterOptions {
   statuses: string[];
 }
 
+export interface AdminJobItem {
+  id: string;
+  title: string;
+  type: string;
+  rawType: string;
+  status: 'ACTIVE' | 'CLOSED' | 'DRAFT' | 'PENDING_APPROVAL';
+  location: string;
+  salaryPackage: string;
+  minCgpa: number;
+  allowedBranches: string[];
+  eligibleBatches: number[];
+  deadline: string;
+  postedAt: string;
+  company: {
+    id: string;
+    name: string;
+    logoUrl: string | null;
+    industry?: string;
+    isVerified?: boolean;
+  };
+  college?: {
+    id: string;
+    name: string;
+    code: string | null;
+    city: string | null;
+  };
+  applicantsCount: number;
+  offersIssuedCount: number;
+  isExpired: boolean;
+}
+
+export interface AdminJobKpis {
+  totalJobs: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+  activeJobs: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+  closedJobs: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+  draftJobs: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+}
+
+export interface AdminJobInsights {
+  total: number;
+  active: { count: number; percentage: number; color: string };
+  closed: { count: number; percentage: number; color: string };
+  draft: { count: number; percentage: number; color: string };
+  rejected: { count: number; percentage: number; color: string };
+}
+
+export interface AdminJobTopCompany {
+  id: string;
+  name: string;
+  logoUrl: string | null;
+  jobsCount: number;
+}
+
+export interface AdminJobRecentActivityItem {
+  id: string;
+  title: string;
+  description: string;
+  timeAgo: string;
+  timestamp: string;
+  type: string;
+  color: string;
+}
+
+export interface AdminJobFilters {
+  search: string;
+  companyId: string;
+  companyName: string;
+  collegeId: string;
+  jobRole: string;
+  type: string;
+  location: string;
+  experienceLevel: string;
+  status: string;
+  postedDate: string;
+  deadline: string;
+  startDate?: string;
+  endDate?: string;
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+export interface AdminJobFilterOptions {
+  companies: string[];
+  jobRoles: string[];
+  jobTypes: string[];
+  locations: string[];
+  experienceLevels: string[];
+  statuses: string[];
+  postedDates: string[];
+  deadlines: string[];
+}
+
 export interface AdminState {
   dashboardData: AdminDashboardData | null;
   timeframe: string;
@@ -359,6 +453,17 @@ export interface AdminState {
   adminCollegesPagination: AdminStudentPagination;
   adminCollegesFilterOptions: AdminCollegeFilterOptions | null;
   isAdminCollegesLoading: boolean;
+
+  // Job Operations State in Global Store
+  adminJobs: AdminJobItem[];
+  adminJobKpis: AdminJobKpis | null;
+  adminJobInsights: AdminJobInsights | null;
+  adminJobTopCompanies: AdminJobTopCompany[];
+  adminJobRecentActivity: AdminJobRecentActivityItem[];
+  adminJobFilters: AdminJobFilters;
+  adminJobPagination: AdminStudentPagination;
+  adminJobFilterOptions: AdminJobFilterOptions | null;
+  isAdminJobsLoading: boolean;
 }
 
 export interface AdminActions {
@@ -394,6 +499,11 @@ export interface AdminActions {
   fetchAdminColleges: (params?: Partial<AdminCollegeFilters>) => Promise<void>;
   setAdminCollegesFilters: (filters: Partial<AdminCollegeFilters>) => void;
   resetAdminCollegesFilters: () => void;
+
+  // Job Operations Actions
+  fetchAdminJobs: (params?: Partial<AdminJobFilters>) => Promise<void>;
+  setAdminJobFilters: (filters: Partial<AdminJobFilters>) => void;
+  resetAdminJobFilters: () => void;
 }
 
 export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
@@ -486,6 +596,40 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
   },
   adminCollegesFilterOptions: null,
   isAdminCollegesLoading: false,
+
+  // Initial Job State
+  adminJobs: [],
+  adminJobKpis: null,
+  adminJobInsights: null,
+  adminJobTopCompanies: [],
+  adminJobRecentActivity: [],
+  adminJobFilters: {
+    search: '',
+    companyId: 'ALL',
+    companyName: 'ALL',
+    collegeId: 'ALL',
+    jobRole: 'ALL',
+    type: 'ALL',
+    location: 'ALL',
+    experienceLevel: 'ALL',
+    status: 'ALL',
+    postedDate: 'ALL',
+    deadline: 'ALL',
+    page: 1,
+    limit: 10,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  },
+  adminJobPagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  },
+  adminJobFilterOptions: null,
+  isAdminJobsLoading: false,
 
   setTimeframe: (timeframe: string) => {
     set({ timeframe });
@@ -926,5 +1070,125 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
     };
     set({ adminCollegesFilters: resetFilters });
     get().fetchAdminColleges(resetFilters);
+  },
+
+  // Job Management Actions
+  fetchAdminJobs: async (customFilters?: Partial<AdminJobFilters>) => {
+    set({ isAdminJobsLoading: true });
+    const currentFilters = {
+      ...get().adminJobFilters,
+      ...(customFilters || {}),
+    };
+
+    try {
+      const params = new URLSearchParams();
+      if (currentFilters.page) params.set('page', String(currentFilters.page));
+      if (currentFilters.limit) params.set('limit', String(currentFilters.limit));
+      if (currentFilters.search) params.set('search', currentFilters.search);
+      if (currentFilters.companyId && currentFilters.companyId !== 'ALL') {
+        params.set('companyId', currentFilters.companyId);
+      }
+      if (currentFilters.companyName && currentFilters.companyName !== 'ALL' && currentFilters.companyName !== 'All Companies') {
+        params.set('companyName', currentFilters.companyName);
+      }
+      if (currentFilters.collegeId && currentFilters.collegeId !== 'ALL') {
+        params.set('collegeId', currentFilters.collegeId);
+      }
+      if (currentFilters.jobRole && currentFilters.jobRole !== 'ALL' && currentFilters.jobRole !== 'All Roles') {
+        params.set('jobRole', currentFilters.jobRole);
+      }
+      if (currentFilters.type && currentFilters.type !== 'ALL' && currentFilters.type !== 'All Types') {
+        params.set('type', currentFilters.type);
+      }
+      if (currentFilters.location && currentFilters.location !== 'ALL' && currentFilters.location !== 'All Locations') {
+        params.set('location', currentFilters.location);
+      }
+      if (currentFilters.experienceLevel && currentFilters.experienceLevel !== 'ALL' && currentFilters.experienceLevel !== 'All Levels') {
+        params.set('experienceLevel', currentFilters.experienceLevel);
+      }
+      if (currentFilters.status && currentFilters.status !== 'ALL' && currentFilters.status !== 'All Statuses') {
+        params.set('status', currentFilters.status);
+      }
+      if (currentFilters.postedDate && currentFilters.postedDate !== 'ALL' && currentFilters.postedDate !== 'Any Date') {
+        params.set('postedDate', currentFilters.postedDate);
+      }
+      if (currentFilters.deadline && currentFilters.deadline !== 'ALL' && currentFilters.deadline !== 'Any Date') {
+        params.set('deadline', currentFilters.deadline);
+      }
+      if (currentFilters.sortBy) params.set('sortBy', currentFilters.sortBy);
+      if (currentFilters.sortOrder) params.set('sortOrder', currentFilters.sortOrder);
+
+      const response = await apiClient.get<
+        ApiResponse<{
+          jobs: AdminJobItem[];
+          kpis: AdminJobKpis;
+          insights: AdminJobInsights;
+          topCompanies: AdminJobTopCompany[];
+          recentActivity: AdminJobRecentActivityItem[];
+          filterOptions: AdminJobFilterOptions;
+          pagination: AdminStudentPagination;
+        }>
+      >(`/api/admin/jobs?${params.toString()}`);
+
+      if (response.data.success && response.data.data) {
+        const { jobs, kpis, insights, topCompanies, recentActivity, filterOptions, pagination } = response.data.data;
+        set({
+          adminJobs: jobs,
+          adminJobKpis: kpis,
+          adminJobInsights: insights,
+          adminJobTopCompanies: topCompanies,
+          adminJobRecentActivity: recentActivity,
+          adminJobFilterOptions: filterOptions,
+          adminJobPagination: pagination,
+          adminJobFilters: currentFilters,
+          isAdminJobsLoading: false,
+        });
+      } else {
+        set({ isAdminJobsLoading: false });
+      }
+    } catch (error: any) {
+      console.error('[useAdminStore] Error fetching jobs:', error);
+      set({
+        isAdminJobsLoading: false,
+        toast: {
+          type: 'error',
+          message: error.response?.data?.message || error.message || 'Failed to fetch jobs directory',
+        },
+      });
+    }
+  },
+
+  setAdminJobFilters: (filters: Partial<AdminJobFilters>) => {
+    const updatedFilters = {
+      ...get().adminJobFilters,
+      ...filters,
+    };
+    if (!('page' in filters)) {
+      updatedFilters.page = 1;
+    }
+    set({ adminJobFilters: updatedFilters });
+    get().fetchAdminJobs(updatedFilters);
+  },
+
+  resetAdminJobFilters: () => {
+    const resetFilters: AdminJobFilters = {
+      search: '',
+      companyId: 'ALL',
+      companyName: 'ALL',
+      collegeId: 'ALL',
+      jobRole: 'ALL',
+      type: 'ALL',
+      location: 'ALL',
+      experienceLevel: 'ALL',
+      status: 'ALL',
+      postedDate: 'ALL',
+      deadline: 'ALL',
+      page: 1,
+      limit: 10,
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+    };
+    set({ adminJobFilters: resetFilters });
+    get().fetchAdminJobs(resetFilters);
   },
 }));

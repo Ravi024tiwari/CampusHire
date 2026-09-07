@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Users, 
-  Building2, 
-  GraduationCap, 
-  Menu 
+  UserCheck, 
+  Briefcase, 
+  MoreHorizontal 
 } from 'lucide-react';
 import { useAdminStore } from '@/store/useAdminStore';
 
@@ -32,14 +32,14 @@ export function AdminBottomTabBar() {
     {
       label: 'Recruiters',
       href: '/admin/recruiters',
-      icon: Building2,
+      icon: UserCheck,
       isActive: pathname.startsWith('/admin/recruiters') || pathname.startsWith('/admin/companies'),
     },
     {
-      label: 'Colleges',
-      href: '/admin/colleges',
-      icon: GraduationCap,
-      isActive: pathname.startsWith('/admin/colleges') || pathname.startsWith('/admin/verify-colleges'),
+      label: 'Jobs',
+      href: '/admin/jobs',
+      icon: Briefcase,
+      isActive: pathname.startsWith('/admin/jobs'),
     },
   ];
 
@@ -68,18 +68,18 @@ export function AdminBottomTabBar() {
         );
       })}
 
-      {/* More / Menu Drawer Trigger */}
+      {/* More / Menu Drawer Trigger (Opens the complete mobile sidebar drawer to see all other links) */}
       <button
         type="button"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-200 ${
+        className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-200 cursor-pointer ${
           isMobileMenuOpen
-            ? 'text-[#0D8B8A] font-bold'
+            ? 'text-[#0D8B8A] font-bold scale-105'
             : 'text-slate-500 hover:text-slate-800 font-medium'
         }`}
       >
         <div className={`p-1 rounded-lg ${isMobileMenuOpen ? 'bg-teal-50 text-[#0D8B8A]' : ''}`}>
-          <Menu className="w-5 h-5" />
+          <MoreHorizontal className="w-5 h-5" />
         </div>
         <span className="text-[10px] tracking-tight mt-0.5">More</span>
       </button>
