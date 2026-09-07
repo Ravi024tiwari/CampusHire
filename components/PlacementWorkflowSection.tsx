@@ -138,7 +138,7 @@ export function PlacementWorkflowSection() {
               <div
                 key={step.stepNumber}
                 onMouseEnter={() => setActiveStep(index)}
-                className={`group relative p-[2px] rounded-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(10,37,64,0.08),0_4px_10px_-2px_rgba(10,37,64,0.04)] hover:shadow-[0_20px_35px_-5px_rgba(10,37,64,0.16)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer flex flex-col ${
+                className={`group relative p-[2px] rounded-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(10,37,64,0.08),0_4px_10px_-2px_rgba(10,37,64,0.04)] hover:shadow-[0_20px_35px_-5px_rgba(10,37,64,0.16)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer flex flex-col isolate transform-gpu ${
                   isSelected ? 'ring-2 ring-blue-500/50' : ''
                 }`}
               >

@@ -134,10 +134,10 @@ export function Navbar() {
           : 'bg-white/90 backdrop-blur-sm border-b border-slate-200/60'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+      <div className="w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 h-16 sm:h-20 flex items-center justify-between gap-4">
         
-        {/* Brand Logo */}
-        <div className="flex-shrink-0">
+        {/* Brand Logo (Positioned neatly on the left) */}
+        <div className="flex-shrink-0 flex items-center">
           <BrandLogo size="md" />
         </div>
 

@@ -247,7 +247,7 @@ export function PlacementWallOfLove() {
             return (
               <div
                 key={tweet.id}
-                className="group relative p-[2px] rounded-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(10,37,64,0.08),0_4px_10px_-2px_rgba(10,37,64,0.04)] hover:shadow-[0_20px_35px_-5px_rgba(10,37,64,0.16)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer flex flex-col justify-between"
+                className="group relative p-[2px] rounded-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(10,37,64,0.08),0_4px_10px_-2px_rgba(10,37,64,0.04)] hover:shadow-[0_20px_35px_-5px_rgba(10,37,64,0.16)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer flex flex-col justify-between isolate transform-gpu"
               >
                 {/* 1. Base Static Border Background */}
                 <div className="absolute inset-0 bg-slate-200/90 rounded-2xl pointer-events-none" />

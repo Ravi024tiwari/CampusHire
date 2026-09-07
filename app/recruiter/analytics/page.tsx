@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRecruiterAnalyticsStore } from '@/store/useRecruiterAnalyticsStore';
+import React, { useEffect, useState, useRef } from 'react';
+import { useRecruiterAnalyticsStore, AnalyticsNavTab } from '@/store/useRecruiterAnalyticsStore';
 import { RecruiterAnalyticsHeader } from './_components/RecruiterAnalyticsHeader';
-import { RecruiterAnalyticsNavTabs } from './_components/RecruiterAnalyticsNavTabs';
+import { RecruiterAnalyticsNavTabs, ANALYTICS_INDEXED_TABS } from './_components/RecruiterAnalyticsNavTabs';
 import { RecruiterAnalyticsKpiCards } from './_components/RecruiterAnalyticsKpiCards';
 import { RecruiterPlacementTrendChart } from './_components/RecruiterPlacementTrendChart';
 import { RecruiterJobTypeDonutChart } from './_components/RecruiterJobTypeDonutChart';
@@ -14,26 +14,133 @@ import { RecruiterBatchBreakdownCard } from './_components/RecruiterBatchBreakdo
 import { RecruiterLocationCard } from './_components/RecruiterLocationCard';
 import { RecruiterKeyInsightsCard } from './_components/RecruiterKeyInsightsCard';
 import { RecruiterAnalyticsBottomBanner } from './_components/RecruiterAnalyticsBottomBanner';
-import { CheckCircle2, AlertCircle, X, Loader2, RefreshCw } from 'lucide-react';
+import { CheckCircle2, AlertCircle, X, RefreshCw, ArrowUp, Sparkles } from 'lucide-react';
 
 export default function RecruiterAnalyticsPage() {
   const {
     data,
     isLoading,
     error,
+    activeTab,
+    setActiveTab,
     fetchAnalytics,
   } = useRecruiterAnalyticsStore();
 
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [highlightedSection, setHighlightedSection] = useState<string | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const isUserClickScrolling = useRef(false);
 
   useEffect(() => {
     fetchAnalytics();
   }, []);
 
+  // Intersection Observer for scrollspy synchronization
+  useEffect(() => {
+    if (isLoading || !data) return;
+
+    const sectionIds = ANALYTICS_INDEXED_TABS.map((t) => t.targetId);
+    
+    // Disconnect any existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    const handleIntersection: IntersectionObserverCallback = (entries) => {
+      // Don't override active tab while automated click scrolling is animating
+      if (isUserClickScrolling.current) return;
+
+      const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+      if (visibleEntries.length > 0) {
+        // Pick the entry with the highest intersection ratio
+        const mostVisible = visibleEntries.reduce((prev, current) =>
+          current.intersectionRatio > prev.intersectionRatio ? current : prev
+        );
+        const matchingTab = ANALYTICS_INDEXED_TABS.find((t) => t.targetId === mostVisible.target.id);
+        if (matchingTab) {
+          setActiveTab(matchingTab.id);
+        }
+      }
+    };
+
+    observerRef.current = new IntersectionObserver(handleIntersection, {
+      root: null,
+      rootMargin: '-10% 0px -40% 0px',
+      threshold: [0.1, 0.3, 0.6],
+    });
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el && observerRef.current) {
+        observerRef.current.observe(el);
+      }
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [isLoading, data, setActiveTab]);
+
+  // Handle showing/hiding "Back to Top" button
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      setShowScrollTop(scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Also listen on main scrollable container if nested
+    const mainEl = document.querySelector('main');
+    if (mainEl) {
+      mainEl.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (mainEl) {
+        mainEl.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, []);
+
   const showToast = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
+  };
+
+  const handleNavigateToSection = (targetId: string, tabId: AnalyticsNavTab) => {
+    setActiveTab(tabId);
+    setHighlightedSection(targetId);
+    isUserClickScrolling.current = true;
+
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Reset lock and highlight after smooth scroll finishes
+    setTimeout(() => {
+      isUserClickScrolling.current = false;
+    }, 900);
+
+    setTimeout(() => {
+      setHighlightedSection(null);
+    }, 2200);
+  };
+
+  const handleScrollToTop = () => {
+    const mainEl = document.querySelector('main');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    setActiveTab('overview');
   };
 
   const handleExportCSV = () => {
@@ -114,7 +221,7 @@ export default function RecruiterAnalyticsPage() {
   }
 
   return (
-    <div className="p-3 sm:p-6 lg:p-8 w-full max-w-[1700px] mx-auto space-y-5 sm:space-y-6 pb-28 font-sans transition-all duration-300">
+    <div className="p-3 sm:p-6 lg:p-8 w-full max-w-[1700px] mx-auto space-y-6 sm:space-y-8 pb-32 font-sans transition-all duration-300">
       
       {/* Toast Notification */}
       {notification && (
@@ -130,59 +237,189 @@ export default function RecruiterAnalyticsPage() {
         </div>
       )}
 
-      {/* 1. Header: Title, Date Filter & Export Button */}
+      {/* 1. Header: Title, Live Status, Date Filter & Export Button */}
       <RecruiterAnalyticsHeader
         onExportReport={handleExportCSV}
         isExporting={isExporting}
       />
 
-      {/* 2. Top Segmented Navigation Tabs */}
-      <RecruiterAnalyticsNavTabs />
-
-      {/* 3. Top 4 KPI Metric Cards (Swipeable Carousel on Mobile, 4-col Grid on Desktop) */}
-      <RecruiterAnalyticsKpiCards kpis={data.kpis} />
-
-      {/* 4. Middle Visualizations Row (Placement Trend 5-Years + Offers by Job Type Donut) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-        <div className="lg:col-span-7 xl:col-span-8">
-          <RecruiterPlacementTrendChart trends={data.yearlyTrends} />
-        </div>
-        <div className="lg:col-span-5 xl:col-span-4">
-          <RecruiterJobTypeDonutChart
-            distribution={data.jobTypeDistribution}
-            totalOffers={data.kpis.totalOffers}
-          />
-        </div>
+      {/* 2. Sticky Glassmorphic Indexed Navigation Tabs Bar */}
+      <div className="sticky top-0 z-30 -mx-3 sm:-mx-6 lg:-mx-8 px-3 sm:px-6 lg:px-8 py-2 bg-[#F8FAFC]/90 backdrop-blur-md border-y border-slate-200/60 shadow-2xs transition-all duration-200">
+        <RecruiterAnalyticsNavTabs onNavigateToSection={handleNavigateToSection} />
       </div>
 
-      {/* 5. 3-Column Analytics Grid (Zero vertical gap on large screens, responsive on all devices) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 items-start">
-        
-        {/* Column 1: Top Recruiting Colleges & Batch Year Breakdown */}
-        <div className="flex flex-col gap-4 sm:gap-5">
+      {/* =========================================================================
+          SECTION 01: OVERVIEW METRICS (KPIs)
+          ========================================================================= */}
+      <section
+        id="section-01-overview"
+        className={`scroll-mt-24 sm:scroll-mt-28 space-y-3 transition-all duration-500 rounded-3xl p-1 ${
+          highlightedSection === 'section-01-overview'
+            ? 'ring-3 ring-blue-500/40 shadow-xl bg-blue-50/20'
+            : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 px-1">
+          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[11px] font-black tracking-wider">
+            INDEX 01
+          </span>
+          <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+            Key Performance Indicators
+          </h2>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">• High-level placement health</span>
+        </div>
+        <RecruiterAnalyticsKpiCards kpis={data.kpis} />
+      </section>
+
+      {/* =========================================================================
+          SECTION 02: HIRING TRENDS (5-Year Placement Trend Line Chart)
+          ========================================================================= */}
+      <section
+        id="section-02-trends"
+        className={`scroll-mt-24 sm:scroll-mt-28 space-y-3 transition-all duration-500 rounded-3xl p-1 ${
+          highlightedSection === 'section-02-trends'
+            ? 'ring-3 ring-blue-500/40 shadow-xl bg-blue-50/20'
+            : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 px-1">
+          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[11px] font-black tracking-wider">
+            INDEX 02
+          </span>
+          <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+            Multi-Year Hiring Trajectory
+          </h2>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">• 5-Year historical placement growth</span>
+        </div>
+        <RecruiterPlacementTrendChart trends={data.yearlyTrends} />
+      </section>
+
+      {/* =========================================================================
+          SECTION 03: ROLE & JOB TYPES (Offers by Job Type Donut + Top Roles)
+          ========================================================================= */}
+      <section
+        id="section-03-roles"
+        className={`scroll-mt-24 sm:scroll-mt-28 space-y-3 transition-all duration-500 rounded-3xl p-1 ${
+          highlightedSection === 'section-03-roles'
+            ? 'ring-3 ring-blue-500/40 shadow-xl bg-blue-50/20'
+            : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 px-1">
+          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[11px] font-black tracking-wider">
+            INDEX 03
+          </span>
+          <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+            Role & Job Type Distribution
+          </h2>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">• Full-Time, Internship & Role specifics</span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-stretch">
+          <div className="lg:col-span-5 xl:col-span-5 flex flex-col">
+            <RecruiterJobTypeDonutChart
+              distribution={data.jobTypeDistribution}
+              totalOffers={data.kpis.totalOffers}
+            />
+          </div>
+          <div className="lg:col-span-7 xl:col-span-7 flex flex-col">
+            <RecruiterTopRolesCard roles={data.topRoles} />
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 04: COLLEGE WISE ANALYTICS
+          ========================================================================= */}
+      <section
+        id="section-04-colleges"
+        className={`scroll-mt-24 sm:scroll-mt-28 space-y-3 transition-all duration-500 rounded-3xl p-1 ${
+          highlightedSection === 'section-04-colleges'
+            ? 'ring-3 ring-blue-500/40 shadow-xl bg-blue-50/20'
+            : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 px-1">
+          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[11px] font-black tracking-wider">
+            INDEX 04
+          </span>
+          <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+            Top Recruiting Partner Colleges
+          </h2>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">• Campus recruitment & conversion rates</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-stretch">
           <RecruiterTopCollegesCard colleges={data.topColleges} />
           <RecruiterBatchBreakdownCard batchYears={data.batchYearBreakdown} />
         </div>
+      </section>
 
-        {/* Column 2: Top Roles Offered & Offers by Location */}
-        <div className="flex flex-col gap-4 sm:gap-5">
-          <RecruiterTopRolesCard roles={data.topRoles} />
+      {/* =========================================================================
+          SECTION 05: LOCATION & BATCH WISE BREAKDOWN
+          ========================================================================= */}
+      <section
+        id="section-05-locations"
+        className={`scroll-mt-24 sm:scroll-mt-28 space-y-3 transition-all duration-500 rounded-3xl p-1 ${
+          highlightedSection === 'section-05-locations'
+            ? 'ring-3 ring-blue-500/40 shadow-xl bg-blue-50/20'
+            : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 px-1">
+          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[11px] font-black tracking-wider">
+            INDEX 05
+          </span>
+          <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+            Geographic & Hub Distribution
+          </h2>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">• Regional offer distribution across India</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-stretch">
           <RecruiterLocationCard locations={data.locationBreakdown} />
-        </div>
-
-        {/* Column 3: Placement Growth & Key Insights */}
-        <div className="flex flex-col gap-4 sm:gap-5">
           <RecruiterPlacementGrowthCard growth={data.placementGrowth} />
-          <RecruiterKeyInsightsCard insights={data.keyInsights} />
         </div>
+      </section>
 
-      </div>
+      {/* =========================================================================
+          SECTION 06: GROWTH & AI KEY INSIGHTS
+          ========================================================================= */}
+      <section
+        id="section-06-insights"
+        className={`scroll-mt-24 sm:scroll-mt-28 space-y-3 transition-all duration-500 rounded-3xl p-1 ${
+          highlightedSection === 'section-06-insights'
+            ? 'ring-3 ring-blue-500/40 shadow-xl bg-blue-50/20'
+            : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 px-1">
+          <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 text-[11px] font-black tracking-wider">
+            INDEX 06
+          </span>
+          <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+            AI-Driven Telemetry & Strategic Insights
+          </h2>
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline">• Machine-generated recruitment recommendations</span>
+        </div>
+        <RecruiterKeyInsightsCard insights={data.keyInsights} />
 
-      {/* 7. Bottom Motivational CTA Banner */}
-      <RecruiterAnalyticsBottomBanner
-        onDownloadReport={handleExportCSV}
-        isDownloading={isExporting}
-      />
+        {/* Bottom CTA Banner */}
+        <div className="pt-2">
+          <RecruiterAnalyticsBottomBanner
+            onDownloadReport={handleExportCSV}
+            isDownloading={isExporting}
+          />
+        </div>
+      </section>
+
+      {/* Floating Action Button: Scroll to Top */}
+      <button
+        type="button"
+        onClick={handleScrollToTop}
+        className="fixed bottom-20 sm:bottom-8 right-6 z-40 p-3 rounded-2xl bg-[#0A2540] text-white shadow-xl hover:bg-blue-600 active:scale-95 transition-all duration-300 cursor-pointer border border-slate-700/80 flex items-center gap-2 group"
+        title="Scroll to Top"
+      >
+        <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+        <span className="text-xs font-black hidden sm:inline">Top</span>
+      </button>
 
     </div>
   );

@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUIStore } from '@/store/useUIStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   LayoutDashboard, 
   GraduationCap,
@@ -15,16 +17,13 @@ import {
   Building2, 
   BarChart2, 
   Building, 
-  UserCheck, 
   Bell, 
   Settings, 
-  HelpCircle, 
   PanelLeftClose,
   PanelLeftOpen,
   X,
-  Mail,
-  ShieldCheck,
-  Sparkles
+  LogOut,
+  Loader2
 } from 'lucide-react';
 
 export function RecruiterSidebar() {
@@ -36,6 +35,8 @@ export function RecruiterSidebar() {
     setRecruiterSidebarCollapsed,
     toggleRecruiterSidebar 
   } = useUIStore();
+  const { user, logout } = useAuthStore();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // 1. Initialize collapse state from localStorage on mount
   useEffect(() => {
@@ -61,6 +62,19 @@ export function RecruiterSidebar() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleRecruiterSidebar]);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      if (isMobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+      await logout();
+    } catch (err) {
+      console.error('[RecruiterSidebar] Logout error:', err);
+      setIsLoggingOut(false);
+    }
+  };
 
   const isCurrentActive = (href: string) => {
     if (href === '/recruiter/dashboard') {
@@ -96,12 +110,6 @@ export function RecruiterSidebar() {
       badgeColor: 'bg-emerald-100 text-emerald-800'
     },
     { 
-      label: 'Campus Drives', 
-      href: '/recruiter/drives', 
-      icon: Calendar,
-      badge: null
-    },
-    { 
       label: 'Job Postings', 
       href: '/recruiter/jobs', 
       icon: Briefcase,
@@ -134,13 +142,7 @@ export function RecruiterSidebar() {
     { 
       label: 'Company Profile', 
       href: '/recruiter/company', 
-      icon: Building,
-      badge: null
-    },
-    { 
-      label: 'Team Members', 
-      href: '/recruiter/team', 
-      icon: UserCheck,
+      icon: Building, 
       badge: null
     },
     { 
@@ -158,14 +160,16 @@ export function RecruiterSidebar() {
     },
   ];
 
+  const initialChar = user?.name ? user.name.trim().charAt(0).toUpperCase() : 'R';
+
   const sidebarContent = (isCollapsedMode: boolean, isMobile: boolean) => (
     <div className="flex flex-col h-full justify-between select-none">
       
       {/* Top Header & Navigation Links */}
-      <div className="flex flex-col min-h-0">
+      <div className="flex flex-col min-h-0 flex-1">
         
         {/* Section Header & Collapse Toggle */}
-        <div className={`flex items-center border-b border-slate-100 transition-all duration-300 ${
+        <div className={`flex items-center border-b border-slate-100 transition-all duration-300 shrink-0 ${
           isCollapsedMode ? 'justify-center py-4 px-2' : 'justify-between px-4.5 py-4'
         }`}>
           {!isCollapsedMode ? (
@@ -217,7 +221,7 @@ export function RecruiterSidebar() {
         </div>
 
         {/* Navigation Links List */}
-        <nav className="p-2.5 space-y-1 overflow-y-auto flex-1 max-h-[calc(100vh-160px)] [scrollbar-width:thin]">
+        <nav className="p-2.5 space-y-1 overflow-y-auto flex-1 [scrollbar-width:thin]">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isCurrentActive(item.href);
@@ -287,45 +291,83 @@ export function RecruiterSidebar() {
         </nav>
       </div>
 
-      {/* Bottom Section: Support Card (Expanded) or Help Icon (Collapsed) */}
-      <div className={`border-t border-slate-100 transition-all duration-300 ${
-        isCollapsedMode ? 'p-2.5 bg-slate-50/50 flex justify-center' : 'p-3 bg-slate-50/40'
+      {/* Bottom Section: Profile Summary & Sign Out Action Button */}
+      <div className={`border-t border-slate-200/80 bg-slate-50/60 shrink-0 transition-all duration-300 ${
+        isCollapsedMode ? 'p-2 flex flex-col items-center gap-2' : 'p-3 space-y-2'
       }`}>
         {isCollapsedMode ? (
-          <Link
-            href="/recruiter/drives"
-            className="group relative p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center shadow-2xs cursor-pointer"
-            title="Partner with top tier colleges - Post Drive"
-            aria-label="Partner with top tier colleges"
+          /* Collapsed Mode: Icon-only Sign Out Button */
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="group relative p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 active:scale-95 transition-all flex items-center justify-center cursor-pointer shadow-2xs border border-transparent hover:border-red-200"
+            title="Sign Out Session"
+            aria-label="Sign Out Session"
           >
-            <ShieldCheck className="w-5 h-5 text-blue-600 group-hover:text-white" />
-            
+            {isLoggingOut ? (
+              <Loader2 className="w-4.5 h-4.5 text-red-600 animate-spin" />
+            ) : (
+              <LogOut className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+            )}
+
             {/* Tooltip */}
             <div className="absolute left-full ml-3 px-3 py-1.5 rounded-xl bg-[#0A2540] text-white text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 shadow-xl z-50 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span>Partner with Colleges</span>
+              <span className="text-red-400 font-black">●</span>
+              <span>Sign Out Session</span>
             </div>
-          </Link>
+          </button>
         ) : (
-          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/40 to-sky-50 border border-blue-100/90 space-y-2.5 text-center">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto shadow-xs">
-              <ShieldCheck className="w-4 h-4" />
+          /* Expanded Mode: Recruiter Profile Snippet + Full Sign Out Button */
+          <>
+            {/* Recruiter Identity Snippet */}
+            <div className="flex items-center gap-2.5 px-1 py-0.5">
+              <div className="relative shrink-0">
+                <Avatar size="sm" className="h-7.5 w-7.5 border border-slate-200 shadow-2xs">
+                  {user?.avatarUrl && (
+                    <AvatarImage
+                      src={user.avatarUrl}
+                      alt={user.name || 'Recruiter'}
+                      className="object-cover"
+                    />
+                  )}
+                  <AvatarFallback className="bg-gradient-to-tr from-[#2563EB] to-indigo-700 text-white font-extrabold text-[10px]">
+                    {initialChar}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 ring-1.5 ring-white" />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-black text-[#0A2540] truncate leading-tight font-heading">
+                  {user?.name || 'Recruiter'}
+                </p>
+                <p className="text-[10px] font-medium text-slate-400 truncate leading-tight">
+                  {user?.email || 'recruiter@campushire.com'}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-black text-slate-900 leading-tight font-heading">
-                Partner with top tier colleges India
-              </p>
-              <p className="text-[10px] font-medium text-slate-500 mt-0.5 leading-tight">
-                Connect, recruit and build the future.
-              </p>
-            </div>
-            <Link
-              href="/recruiter/drives"
-              className="block w-full py-1.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-extrabold shadow-xs hover:shadow-md transition-all text-center active:scale-98"
+
+            {/* Responsive Sign Out Button */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-red-600 bg-white hover:bg-red-50 hover:text-red-700 border border-slate-200/80 hover:border-red-200 shadow-2xs transition-all duration-200 cursor-pointer disabled:opacity-50 active:scale-98"
             >
-              Post a New Drive
-            </Link>
-          </div>
+              <div className="flex items-center gap-2">
+                {isLoggingOut ? (
+                  <Loader2 className="w-4 h-4 text-red-600 animate-spin" />
+                ) : (
+                  <LogOut className="w-4 h-4 text-red-500 group-hover:text-red-600" />
+                )}
+                <span>{isLoggingOut ? 'Signing out...' : 'Sign Out'}</span>
+              </div>
+              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-red-100/60 text-red-700 uppercase">
+                Exit
+              </span>
+            </button>
+          </>
         )}
       </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useUIStore } from '@/store/useUIStore';
@@ -9,7 +9,6 @@ import {
   Building2, 
   Menu, 
   X, 
-  Search,
   Bell,
   RefreshCw
 } from 'lucide-react';
@@ -31,14 +30,12 @@ export function RecruiterHeader({
     isMobileMenuOpen, 
     toggleMobileMenu
   } = useUIStore();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchExpandedMobile, setIsSearchExpandedMobile] = useState(false);
 
   return (
     <header className="sticky top-0 z-30 flex flex-col border-b border-slate-200/90 bg-white/95 backdrop-blur-md transition-all shadow-2xs shrink-0">
       <div className="flex h-16 sm:h-[4.5rem] w-full items-center justify-between px-3 sm:px-6 gap-3">
         
-        {/* Left: Mobile Toggle & Brand Emblem + Corporate Recruiter Tag (Always in place) */}
+        {/* Left: Mobile Toggle & Brand Emblem + Corporate Recruiter Tag */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
           {/* Mobile Sidebar Hamburger Toggle Button (Hidden on Desktop) */}
           <button
@@ -50,7 +47,7 @@ export function RecruiterHeader({
             {isMobileMenuOpen ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
           </button>
 
-          {/* CampusHire Official Logo & Brand Tag (In place on all devices) */}
+          {/* CampusHire Official Logo & Brand Tag */}
           <Link 
             href="/recruiter/dashboard" 
             className="flex items-center gap-2 sm:gap-3 group select-none outline-none"
@@ -79,34 +76,9 @@ export function RecruiterHeader({
           </Link>
         </div>
 
-        {/* Center: Global Search Bar (Desktop Always, Expandable on Mobile/Tablet) */}
-        <div className="flex-1 max-w-md mx-2">
-          {/* Desktop & Tablet Search Bar */}
-          <div className="relative hidden md:block w-full">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search candidates, jobs, drives..."
-              className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30 focus:border-blue-500 focus:bg-white transition-all shadow-2xs"
-            />
-          </div>
-        </div>
-
-        {/* Right: Search Toggle (Mobile), Notifications, Refresh, User Dropdown */}
+        {/* Right: Notifications, Refresh, User Dropdown */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           
-          {/* Mobile Search Toggle */}
-          <button
-            type="button"
-            onClick={() => setIsSearchExpandedMobile(!isSearchExpandedMobile)}
-            className="flex md:hidden h-8.5 w-8.5 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer shadow-2xs"
-            aria-label="Search"
-          >
-            <Search className="w-4 h-4" />
-          </button>
-
           {/* Refresh Action (if enabled) */}
           {onRefresh && (
             <button
@@ -119,7 +91,7 @@ export function RecruiterHeader({
             </button>
           )}
 
-          {/* Notification Bell with Badge 1 (Matching UI Mockup) */}
+          {/* Notification Bell with Badge 1 */}
           <Link
             href="/recruiter/notifications"
             className="relative flex h-8.5 w-8.5 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#0A2540] cursor-pointer shadow-2xs active:scale-95 transition-transform"
@@ -137,23 +109,6 @@ export function RecruiterHeader({
           <RecruiterUserDropdown companyName={companyName} designation={designation} />
         </div>
       </div>
-
-      {/* Mobile Search Dropdown Bar (when expanded) */}
-      {isSearchExpandedMobile && (
-        <div className="md:hidden px-3 py-2 border-t border-slate-100 bg-slate-50/80 animate-in fade-in slide-in-from-top-2 duration-150">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              autoFocus
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search candidates, jobs, drives..."
-              className="w-full h-9 pl-9 pr-4 rounded-lg bg-white border border-slate-200 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
-            />
-          </div>
-        </div>
-      )}
     </header>
   );
 }

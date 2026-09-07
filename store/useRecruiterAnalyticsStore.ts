@@ -85,10 +85,11 @@ export interface RecruiterAnalyticsData {
 export type AnalyticsNavTab =
   | 'overview'
   | 'trends'
-  | 'colleges'
   | 'roles'
-  | 'offers'
-  | 'insights';
+  | 'colleges'
+  | 'locations'
+  | 'insights'
+  | 'offers';
 
 interface RecruiterAnalyticsStore {
   data: RecruiterAnalyticsData | null;

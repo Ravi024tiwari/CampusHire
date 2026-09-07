@@ -156,11 +156,11 @@ export function CollegeAffiliationSection() {
     : COLLEGE_METRICS.filter(m => m.category === activeTab || m.category === 'ALL');
 
   return (
-    <section id="colleges-kpis" className="py-14 sm:py-20 bg-white border-b border-[#E2E8F0] relative overflow-hidden select-none">
+    <section id="colleges-kpis" className="py-14 sm:py-20 bg-white border-b border-[#E2E8F0] relative overflow-hidden isolate select-none">
       
       {/* Ambient Lighting Orbs */}
-      <div className="absolute top-0 right-1/3 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/3 w-80 h-80 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -222,7 +222,7 @@ export function CollegeAffiliationSection() {
             return (
               <div
                 key={metric.id}
-                className="group relative p-[2px] rounded-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(10,37,64,0.08),0_4px_10px_-2px_rgba(10,37,64,0.04)] hover:shadow-[0_20px_35px_-5px_rgba(10,37,64,0.16)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                className="group relative p-[2px] rounded-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(10,37,64,0.08),0_4px_10px_-2px_rgba(10,37,64,0.04)] hover:shadow-[0_20px_35px_-5px_rgba(10,37,64,0.16)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer isolate transform-gpu"
               >
                 {/* 1. Base Static Border Background */}
                 <div className="absolute inset-0 bg-slate-200/90 rounded-2xl pointer-events-none" />
@@ -271,17 +271,17 @@ export function CollegeAffiliationSection() {
           })}
         </div>
 
-        {/* World-Class Redesigned Institutional Showcase Bar */}
-        <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#0A2540] via-[#0E2F52] to-[#153B64] text-white shadow-[0_16px_36px_-6px_rgba(10,37,64,0.3)] overflow-hidden">
+        {/* World-Class Redesigned Institutional Showcase Bar (Fully Hardware Isolated) */}
+        <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#0A2540] via-[#0E2F52] to-[#153B64] text-white shadow-[0_16px_36px_-6px_rgba(10,37,64,0.3)] overflow-hidden isolate transform-gpu">
           
           {/* Subtle Ambient Radial Glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/15 rounded-full blur-2xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
             
             {/* Left Content Area */}
             <div className="space-y-3.5 text-center lg:text-left max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#FBAB23] text-xs font-semibold backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#FBAB23] text-xs font-semibold">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Pan-India Institutional Footprint</span>
               </div>
@@ -299,7 +299,7 @@ export function CollegeAffiliationSection() {
                 {PREMIER_CAMPUSES.map((campus, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs text-slate-100 font-medium backdrop-blur-md transition-all duration-200"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs text-slate-100 font-medium transition-colors duration-200"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                     <span>{campus.name}</span>

@@ -147,6 +147,26 @@
   animation: softGlow 5s ease-in-out infinite;
 }
 
+@keyframes spinBorder {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-border {
+  animation: spinBorder 6s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-border {
+    animation: none;
+  }
+}
+
 /* =========================================================================
    Universal Placecom-Style Components (Usable across every single page)
    ========================================================================= */

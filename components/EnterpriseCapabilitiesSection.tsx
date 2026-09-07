@@ -265,7 +265,7 @@ export function EnterpriseCapabilitiesSection() {
 
           {/* Right Column: Interactive Live Simulation Glass Card */}
           <div className="lg:col-span-5 w-full">
-            <div className="relative p-[2px] rounded-2xl overflow-hidden shadow-[0_16px_36px_-6px_rgba(10,37,64,0.12)]">
+            <div className="relative p-[2px] rounded-2xl overflow-hidden shadow-[0_16px_36px_-6px_rgba(10,37,64,0.12)] isolate transform-gpu">
               {/* Rotating Border Beam */}
               <div className="absolute inset-0 bg-slate-300 rounded-2xl pointer-events-none" />
               <div
