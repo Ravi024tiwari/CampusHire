@@ -78,10 +78,10 @@ export function AdminHeader() {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search university, code, state, or company..."
+              placeholder="Search for students, recruiters, colleges, jobs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2.5 pl-10 pr-12 text-xs sm:text-sm text-[#0A2540] placeholder-slate-400 shadow-inner transition-all focus:border-[#2563EB] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 font-medium"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2.5 pl-10 pr-12 text-xs sm:text-sm text-[#0A2540] placeholder-slate-400 shadow-inner transition-all focus:border-[#0D8B8A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0D8B8A]/20 font-medium"
             />
             <kbd className="absolute right-3 top-1/2 -translate-y-1/2 rounded bg-white px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200 shadow-2xs">
               Ctrl+K

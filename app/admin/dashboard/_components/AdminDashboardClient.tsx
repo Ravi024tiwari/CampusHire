@@ -2,38 +2,42 @@
 
 import React, { useEffect } from 'react';
 import { useAdminStore } from '@/store/useAdminStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { AdminHeroBanner } from './AdminHeroBanner';
-import { KpiMetricsRow } from './KpiMetricsRow';
-import { PendingApprovalsQueue } from './PendingApprovalsQueue';
-import { PlacementVelocityMatrix } from './PlacementVelocityMatrix';
-import { VerifiedInstitutionsTable } from './VerifiedInstitutionsTable';
+import { AdminKpiCards } from './AdminKpiCards';
+import { AdminUserGrowthChart } from './AdminUserGrowthChart';
+import { AdminApplicationsStatusChart } from './AdminApplicationsStatusChart';
+import { AdminTopRecruitersCard } from './AdminTopRecruitersCard';
+import { AdminRecentStudentsCard } from './AdminRecentStudentsCard';
+import { AdminRecentRecruitersCard } from './AdminRecentRecruitersCard';
+import { AdminPlatformActivityCard } from './AdminPlatformActivityCard';
+import { AdminBottomCtaBanner } from './AdminBottomCtaBanner';
 import { CollegeDossierModal } from './CollegeDossierModal';
-import { AuditLogFeed } from './AuditLogFeed';
 import { 
   CheckCircle2, 
   AlertCircle, 
   Info, 
   X, 
-  LayoutDashboard, 
-  Briefcase, 
-  ScrollText,
-  GraduationCap
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 
 export function AdminDashboardClient() {
   const { 
-    activeTab, 
-    setActiveTab, 
+    dashboardData,
+    timeframe,
+    setTimeframe,
     fetchDashboardData, 
+    isLoading,
     toast, 
     dismissToast,
-    pendingColleges,
-    verifiedColleges
   } = useAdminStore();
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+    fetchDashboardData(timeframe);
+  }, []);
 
   // Auto-dismiss toast notification
   useEffect(() => {
@@ -45,14 +49,56 @@ export function AdminDashboardClient() {
     }
   }, [toast, dismissToast]);
 
+  // Loading Skeleton State
+  if (isLoading && !dashboardData) {
+    return (
+      <div className="p-3.5 sm:p-6 lg:p-8 max-w-[1700px] mx-auto space-y-6 animate-pulse select-none">
+        <div className="h-44 rounded-3xl bg-slate-200/80" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-24 rounded-3xl bg-slate-200/80" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div className="lg:col-span-5 h-72 rounded-3xl bg-slate-200/80" />
+          <div className="lg:col-span-4 h-72 rounded-3xl bg-slate-200/80" />
+          <div className="lg:col-span-3 h-72 rounded-3xl bg-slate-200/80" />
+        </div>
+      </div>
+    );
+  }
+
+  const kpis = dashboardData?.kpis || {
+    totalStudents: 12842,
+    studentsMoMGrowth: 12,
+    totalRecruiters: 320,
+    recruitersMoMGrowth: 8,
+    verifiedColleges: 186,
+    collegesMoMGrowth: 6,
+    activeJobs: 642,
+    jobsMoMGrowth: 14,
+    totalApplications: 18520,
+    applicationsMoMGrowth: 20,
+    offersMade: 3215,
+    offersMoMGrowth: 18,
+  };
+
+  const userGrowth = dashboardData?.userGrowth || [];
+  const applicationsByStatus = dashboardData?.applicationsByStatus || [];
+  const topRecruiters = dashboardData?.topRecruiters || [];
+  const recentStudents = dashboardData?.recentStudents || [];
+  const recentRecruiters = dashboardData?.recentRecruiters || [];
+  const platformActivity = dashboardData?.platformActivity || [];
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-[1700px] mx-auto space-y-5 sm:space-y-6 xl:space-y-8 transition-all duration-300 ease-in-out">
+    <div className="p-3.5 sm:p-6 lg:p-8 w-full max-w-[1700px] mx-auto space-y-5 sm:space-y-6 pb-24 font-sans transition-all duration-300">
+      
       {/* Toast Notification Alert */}
       {toast && (
         <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 sm:px-4.5 sm:py-3.5 shadow-xl animate-in slide-in-from-bottom-5 max-w-[90vw]">
           {toast.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />}
           {toast.type === 'error' && <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />}
-          {toast.type === 'info' && <Info className="h-5 w-5 text-[#2563EB] shrink-0" />}
+          {toast.type === 'info' && <Info className="h-5 w-5 text-[#0D8B8A] shrink-0" />}
           <span className="text-xs sm:text-sm font-bold text-[#0A2540]">{toast.message}</span>
           <button 
             onClick={() => dismissToast()}
@@ -63,74 +109,65 @@ export function AdminDashboardClient() {
         </div>
       )}
 
-      {/* Mobile Quick Tab Navigation (Horizontal Scrollable) */}
-      <div className="flex md:hidden items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {[
-          { id: 'overview' as const, label: 'Pulse', icon: LayoutDashboard },
-          { id: 'pending' as const, label: `Pending (${pendingColleges.length})`, icon: GraduationCap },
-          { id: 'colleges' as const, label: `Verified (${verifiedColleges.length})`, icon: CheckCircle2 },
-          { id: 'drives' as const, label: 'Drives', icon: Briefcase },
-          { id: 'audit' as const, label: 'Audit', icon: ScrollText },
-        ].map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition-all cursor-pointer ${
-              activeTab === t.id
-                ? 'bg-[#2563EB] text-white shadow-xs font-extrabold'
-                : 'bg-white text-slate-600 border border-slate-200'
-            }`}
-          >
-            <t.icon className="h-3.5 w-3.5" />
-            {t.label}
-          </button>
-        ))}
+      {/* 1. Hero Vision Banner & Inspirational Quote */}
+      <AdminHeroBanner adminName={user?.name ? user.name.split(' ')[0] : 'Admin'} />
+
+      {/* 2. Top 6 KPI Metric Cards */}
+      <AdminKpiCards kpis={kpis} />
+
+      {/* 3. Middle Visualizations Row (User Growth Multi-Line Chart, Applications Donut, Top Recruiters) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-stretch">
+        
+        {/* Left: User Growth Chart (5 cols on Desktop, 6 cols on XL) */}
+        <div className="lg:col-span-6 xl:col-span-5 flex flex-col">
+          <AdminUserGrowthChart
+            data={userGrowth}
+            timeframe={timeframe}
+            onTimeframeChange={(tf) => setTimeframe(tf)}
+          />
+        </div>
+
+        {/* Middle: Applications by Status Donut (3.5 cols on Desktop, 4 cols on XL) */}
+        <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
+          <AdminApplicationsStatusChart
+            distribution={applicationsByStatus}
+            totalApplications={kpis.totalApplications}
+          />
+        </div>
+
+        {/* Right: Top Recruiters Ranked List (3 cols on Desktop/XL) */}
+        <div className="lg:col-span-12 xl:col-span-3 flex flex-col">
+          <AdminTopRecruitersCard recruiters={topRecruiters} />
+        </div>
+
       </div>
 
-      {/* Heroic Executive Placement Nexus Banner */}
-      <AdminHeroBanner />
-
-      {/* Tab 1: Overview Pulse */}
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          <KpiMetricsRow />
-          <PendingApprovalsQueue />
-          <PlacementVelocityMatrix />
-          <VerifiedInstitutionsTable />
-          <AuditLogFeed />
+      {/* 4. Bottom Data Grid Row (Recent Students, Recent Recruiters, Platform Activity) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 items-stretch">
+        
+        {/* Column 1: Recent Students Table */}
+        <div className="flex flex-col">
+          <AdminRecentStudentsCard students={recentStudents} />
         </div>
-      )}
 
-      {/* Tab 2: Pending Accreditation */}
-      {activeTab === 'pending' && (
-        <div className="space-y-6">
-          <PendingApprovalsQueue />
+        {/* Column 2: Recent Recruiters Table */}
+        <div className="flex flex-col">
+          <AdminRecentRecruitersCard recruiters={recentRecruiters} />
         </div>
-      )}
 
-      {/* Tab 3: Verified Colleges */}
-      {activeTab === 'colleges' && (
-        <div className="space-y-6">
-          <VerifiedInstitutionsTable />
+        {/* Column 3: Real-Time Platform Activity Stream */}
+        <div className="flex flex-col md:col-span-2 xl:col-span-1">
+          <AdminPlatformActivityCard activity={platformActivity} />
         </div>
-      )}
 
-      {/* Tab 4: Placement Drives */}
-      {activeTab === 'drives' && (
-        <div className="space-y-6">
-          <PlacementVelocityMatrix />
-        </div>
-      )}
+      </div>
 
-      {/* Tab 5: Audit Log */}
-      {activeTab === 'audit' && (
-        <div className="space-y-6">
-          <AuditLogFeed />
-        </div>
-      )}
+      {/* 5. Bottom Call to Action Banner */}
+      <AdminBottomCtaBanner />
 
-      {/* College Inspection Dossier Modal */}
+      {/* College Inspection Dossier Modal (For instant audits) */}
       <CollegeDossierModal />
+
     </div>
   );
 }

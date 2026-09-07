@@ -101,7 +101,223 @@ export interface CtcTier {
   color: string;
 }
 
+export interface AdminDashboardKpis {
+  totalStudents: number;
+  studentsMoMGrowth: number;
+  totalRecruiters: number;
+  recruitersMoMGrowth: number;
+  verifiedColleges: number;
+  collegesMoMGrowth: number;
+  activeJobs: number;
+  jobsMoMGrowth: number;
+  totalApplications: number;
+  applicationsMoMGrowth: number;
+  offersMade: number;
+  offersMoMGrowth: number;
+
+  // Backward compatibility keys
+  affiliatedCollegesCount?: number;
+  verifiedCollegesCount?: number;
+  totalEnrolledStudents?: number;
+  totalPlacedStudents?: number;
+  totalPlacementDrives?: number;
+  activePlacementDrives?: number;
+  totalApplicationsSubmitted?: number;
+  totalOffersIssued?: number;
+  totalOffersAccepted?: number;
+}
+
+export interface UserGrowthDataPoint {
+  month: string;
+  students: number;
+  recruiters: number;
+  colleges: number;
+}
+
+export interface ApplicationStatusBreakdownItem {
+  key: string;
+  label: string;
+  count: number;
+  percentage: number;
+  color: string;
+}
+
+export interface TopRecruiterItem {
+  id: string;
+  companyName: string;
+  logoUrl: string;
+  jobsCount: number;
+  applicationsCount: number;
+}
+
+export interface RecentStudentItem {
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+  collegeName: string;
+  branch: string;
+  status: string;
+  joinedAt: string;
+}
+
+export interface RecentRecruiterItem {
+  id: string;
+  companyName: string;
+  logoUrl: string;
+  jobsCount: number;
+  joinedAt: string;
+}
+
+export interface PlatformActivityItem {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  timeAgo: string;
+  timestamp: string;
+  icon: string;
+  color: string;
+}
+
+export interface AdminDashboardData {
+  kpis: AdminDashboardKpis;
+  userGrowth: UserGrowthDataPoint[];
+  applicationsByStatus: ApplicationStatusBreakdownItem[];
+  topRecruiters: TopRecruiterItem[];
+  recentStudents: RecentStudentItem[];
+  recentRecruiters: RecentRecruiterItem[];
+  platformActivity: PlatformActivityItem[];
+  pendingColleges: CollegeItem[];
+  verifiedColleges: CollegeItem[];
+}
+
+export interface AdminStudentItem {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  avatarUrl: string | null;
+  enrollmentNumber: string;
+  branch: string;
+  batchYear: number;
+  cgpa: number;
+  college: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  skills: string[];
+  status: 'Active' | 'Inactive';
+  placementStatus: 'Placed' | 'Interviewing' | 'Offered' | 'Not Placed';
+  totalApplications: number;
+  totalOffers: number;
+  joinedOn: string;
+}
+
+export interface AdminStudentKpis {
+  totalStudents: { value: number; growth: string; period: string };
+  totalColleges: { value: number; growth: string; period: string };
+  appliedToJobs: { value: number; growth: string; period: string };
+  placedStudents: { value: number; growth: string; period: string };
+}
+
+export interface AdminStudentFilters {
+  search: string;
+  collegeId: string;
+  batchYear: string;
+  jobRole: string;
+  status: string;
+  placementStatus: string;
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+export interface AdminStudentPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface AdminStudentFilterOptions {
+  colleges: Array<{ id: string; name: string; code: string }>;
+  batches: number[];
+  jobRoles: string[];
+  statuses: string[];
+  placementStatuses: string[];
+}
+
+export interface AdminCollegeRosterItem {
+  id: string;
+  name: string;
+  code: string;
+  domain: string;
+  city: string;
+  state: string;
+  location: string;
+  logoUrl: string | null;
+  type: string;
+  isVerified: boolean;
+  status: 'Verified' | 'Pending' | 'Rejected';
+  studentsCount: number;
+  jobsCount: number;
+  offersCount?: number;
+  tposCount?: number;
+  contactEmail: string;
+  contactPhone: string;
+  createdAt: string;
+}
+
+export interface AdminCollegeKpis {
+  totalColleges: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+  verifiedColleges: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+  pendingVerification: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+  rejectedColleges: { value: number; growth: string; trend: 'up' | 'down'; period: string };
+}
+
+export interface AdminCollegeInsights {
+  total: number;
+  verified: { count: number; percentage: number; color: string };
+  pending: { count: number; percentage: number; color: string };
+  rejected: { count: number; percentage: number; color: string };
+}
+
+export interface AdminCollegeRecentActivityItem {
+  id: string;
+  title: string;
+  description: string;
+  timeAgo: string;
+  timestamp: string;
+  type: string;
+  color: string;
+}
+
+export interface AdminCollegeFilters {
+  search: string;
+  status: string;
+  location: string;
+  type: string;
+  domain: string;
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+export interface AdminCollegeFilterOptions {
+  locations: string[];
+  types: string[];
+  domains: string[];
+  statuses: string[];
+}
+
 export interface AdminState {
+  dashboardData: AdminDashboardData | null;
+  timeframe: string;
   kpis: KpiData | null;
   recentDrives: RecentDrive[];
   pendingColleges: CollegeItem[];
@@ -125,10 +341,29 @@ export interface AdminState {
   recruiterMeta: RecruiterMeta;
   recruiterStats: RecruiterStats;
   isRecruitersLoading: boolean;
+
+  // Student Operations State in Global Store
+  adminStudents: AdminStudentItem[];
+  adminStudentKpis: AdminStudentKpis | null;
+  adminStudentFilters: AdminStudentFilters;
+  adminStudentPagination: AdminStudentPagination;
+  adminStudentFilterOptions: AdminStudentFilterOptions | null;
+  isAdminStudentsLoading: boolean;
+
+  // College Operations State in Global Store
+  adminCollegesRoster: AdminCollegeRosterItem[];
+  adminCollegesKpis: AdminCollegeKpis | null;
+  adminCollegesInsights: AdminCollegeInsights | null;
+  adminCollegesRecentActivity: AdminCollegeRecentActivityItem[];
+  adminCollegesFilters: AdminCollegeFilters;
+  adminCollegesPagination: AdminStudentPagination;
+  adminCollegesFilterOptions: AdminCollegeFilterOptions | null;
+  isAdminCollegesLoading: boolean;
 }
 
 export interface AdminActions {
-  fetchDashboardData: () => Promise<void>;
+  fetchDashboardData: (timeframe?: string) => Promise<void>;
+  setTimeframe: (timeframe: string) => void;
   verifyCollege: (id: string, isVerified: boolean, reason?: string) => Promise<boolean>;
   setActiveTab: (tab: AdminState['activeTab']) => void;
   setSearchQuery: (query: string) => void;
@@ -149,9 +384,21 @@ export interface AdminActions {
     limit?: number;
     forceRefresh?: boolean;
   }) => Promise<void>;
+
+  // Student Operations Actions
+  fetchAdminStudents: (params?: Partial<AdminStudentFilters>) => Promise<void>;
+  setAdminStudentFilters: (filters: Partial<AdminStudentFilters>) => void;
+  resetAdminStudentFilters: () => void;
+
+  // College Operations Actions
+  fetchAdminColleges: (params?: Partial<AdminCollegeFilters>) => Promise<void>;
+  setAdminCollegesFilters: (filters: Partial<AdminCollegeFilters>) => void;
+  resetAdminCollegesFilters: () => void;
 }
 
 export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
+  dashboardData: null,
+  timeframe: '8m',
   kpis: null,
   recentDrives: [],
   pendingColleges: [],
@@ -187,27 +434,87 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
   },
   isRecruitersLoading: false,
 
-  fetchDashboardData: async () => {
+  // Initial Student State
+  adminStudents: [],
+  adminStudentKpis: null,
+  adminStudentFilters: {
+    search: '',
+    collegeId: 'ALL',
+    batchYear: 'ALL',
+    jobRole: 'ALL',
+    status: 'ALL',
+    placementStatus: 'ALL',
+    page: 1,
+    limit: 10,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  },
+  adminStudentPagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  },
+  adminStudentFilterOptions: null,
+  isAdminStudentsLoading: false,
+
+  // Initial College State
+  adminCollegesRoster: [],
+  adminCollegesKpis: null,
+  adminCollegesInsights: null,
+  adminCollegesRecentActivity: [],
+  adminCollegesFilters: {
+    search: '',
+    status: 'ALL',
+    location: 'ALL',
+    type: 'ALL',
+    domain: 'ALL',
+    page: 1,
+    limit: 10,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  },
+  adminCollegesPagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  },
+  adminCollegesFilterOptions: null,
+  isAdminCollegesLoading: false,
+
+  setTimeframe: (timeframe: string) => {
+    set({ timeframe });
+    get().fetchDashboardData(timeframe);
+  },
+
+  fetchDashboardData: async (customTimeframe?: string) => {
     set({ isLoading: true });
     try {
+      const timeframeToUse = customTimeframe || get().timeframe || '8m';
       const response = await apiClient.get<
-        ApiResponse<{
-          kpis: KpiData;
+        ApiResponse<AdminDashboardData & {
+          kpis: any;
           pendingColleges: CollegeItem[];
           verifiedColleges: CollegeItem[];
-          recentDrives: RecentDrive[];
-          ctcDistribution: CtcTier[];
-          placementVelocity: VelocityBar[];
-          auditEvents: AuditEvent[];
+          recentDrives?: RecentDrive[];
+          ctcDistribution?: CtcTier[];
+          placementVelocity?: VelocityBar[];
+          auditEvents?: AuditEvent[];
         }>
-      >('/api/admin/dashboard');
+      >(`/api/admin/dashboard?timeframe=${timeframeToUse}`);
 
       if (response.data.success && response.data.data) {
         const d = response.data.data;
         const allColleges = [...(d.pendingColleges || []), ...(d.verifiedColleges || [])];
 
         set({
-          kpis: d.kpis,
+          dashboardData: d as AdminDashboardData,
+          kpis: d.kpis as unknown as KpiData,
           pendingColleges: d.pendingColleges || [],
           verifiedColleges: d.verifiedColleges || [],
           allColleges,
@@ -430,5 +737,194 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
     set((state) => ({
       auditEvents: [newEvent, ...state.auditEvents.slice(0, 19)],
     }));
+  },
+
+  // Student Management Actions
+  fetchAdminStudents: async (customFilters?: Partial<AdminStudentFilters>) => {
+    set({ isAdminStudentsLoading: true });
+    const currentFilters = {
+      ...get().adminStudentFilters,
+      ...(customFilters || {}),
+    };
+
+    try {
+      const params = new URLSearchParams();
+      if (currentFilters.page) params.set('page', String(currentFilters.page));
+      if (currentFilters.limit) params.set('limit', String(currentFilters.limit));
+      if (currentFilters.search) params.set('search', currentFilters.search);
+      if (currentFilters.collegeId && currentFilters.collegeId !== 'ALL') {
+        params.set('collegeId', currentFilters.collegeId);
+      }
+      if (currentFilters.batchYear && currentFilters.batchYear !== 'ALL') {
+        params.set('batchYear', currentFilters.batchYear);
+      }
+      if (currentFilters.jobRole && currentFilters.jobRole !== 'ALL') {
+        params.set('jobRole', currentFilters.jobRole);
+      }
+      if (currentFilters.status && currentFilters.status !== 'ALL') {
+        params.set('status', currentFilters.status);
+      }
+      if (currentFilters.placementStatus && currentFilters.placementStatus !== 'ALL') {
+        params.set('placementStatus', currentFilters.placementStatus);
+      }
+      if (currentFilters.sortBy) params.set('sortBy', currentFilters.sortBy);
+      if (currentFilters.sortOrder) params.set('sortOrder', currentFilters.sortOrder);
+
+      const response = await apiClient.get<
+        ApiResponse<{
+          students: AdminStudentItem[];
+          kpis: AdminStudentKpis;
+          filterOptions: AdminStudentFilterOptions;
+          pagination: AdminStudentPagination;
+        }>
+      >(`/api/admin/students?${params.toString()}`);
+
+      if (response.data.success && response.data.data) {
+        const { students, kpis, filterOptions, pagination } = response.data.data;
+        set({
+          adminStudents: students,
+          adminStudentKpis: kpis,
+          adminStudentFilterOptions: filterOptions,
+          adminStudentPagination: pagination,
+          adminStudentFilters: currentFilters,
+          isAdminStudentsLoading: false,
+        });
+      } else {
+        set({ isAdminStudentsLoading: false });
+      }
+    } catch (error: any) {
+      console.error('[useAdminStore] Error fetching students:', error);
+      set({
+        isAdminStudentsLoading: false,
+        toast: {
+          type: 'error',
+          message: error.response?.data?.message || error.message || 'Failed to fetch students roster',
+        },
+      });
+    }
+  },
+
+  setAdminStudentFilters: (filters: Partial<AdminStudentFilters>) => {
+    const updatedFilters = {
+      ...get().adminStudentFilters,
+      ...filters,
+    };
+    // Reset page to 1 if search or dropdown filters change (except when page itself is passed)
+    if (!('page' in filters)) {
+      updatedFilters.page = 1;
+    }
+    set({ adminStudentFilters: updatedFilters });
+    get().fetchAdminStudents(updatedFilters);
+  },
+
+  resetAdminStudentFilters: () => {
+    const resetFilters: AdminStudentFilters = {
+      search: '',
+      collegeId: 'ALL',
+      batchYear: 'ALL',
+      jobRole: 'ALL',
+      status: 'ALL',
+      placementStatus: 'ALL',
+      page: 1,
+      limit: 10,
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+    };
+    set({ adminStudentFilters: resetFilters });
+    get().fetchAdminStudents(resetFilters);
+  },
+
+  // College Management Actions
+  fetchAdminColleges: async (customFilters?: Partial<AdminCollegeFilters>) => {
+    set({ isAdminCollegesLoading: true });
+    const currentFilters = {
+      ...get().adminCollegesFilters,
+      ...(customFilters || {}),
+    };
+
+    try {
+      const params = new URLSearchParams();
+      if (currentFilters.page) params.set('page', String(currentFilters.page));
+      if (currentFilters.limit) params.set('limit', String(currentFilters.limit));
+      if (currentFilters.search) params.set('search', currentFilters.search);
+      if (currentFilters.status && currentFilters.status !== 'ALL') {
+        params.set('status', currentFilters.status);
+      }
+      if (currentFilters.location && currentFilters.location !== 'ALL') {
+        params.set('location', currentFilters.location);
+      }
+      if (currentFilters.type && currentFilters.type !== 'ALL') {
+        params.set('type', currentFilters.type);
+      }
+      if (currentFilters.domain && currentFilters.domain !== 'ALL') {
+        params.set('domain', currentFilters.domain);
+      }
+      if (currentFilters.sortBy) params.set('sortBy', currentFilters.sortBy);
+      if (currentFilters.sortOrder) params.set('sortOrder', currentFilters.sortOrder);
+
+      const response = await apiClient.get<
+        ApiResponse<{
+          colleges: AdminCollegeRosterItem[];
+          kpis: AdminCollegeKpis;
+          insights: AdminCollegeInsights;
+          recentActivity: AdminCollegeRecentActivityItem[];
+          filterOptions: AdminCollegeFilterOptions;
+          pagination: AdminStudentPagination;
+        }>
+      >(`/api/admin/colleges?${params.toString()}`);
+
+      if (response.data.success && response.data.data) {
+        const { colleges, kpis, insights, recentActivity, filterOptions, pagination } = response.data.data;
+        set({
+          adminCollegesRoster: colleges,
+          adminCollegesKpis: kpis,
+          adminCollegesInsights: insights,
+          adminCollegesRecentActivity: recentActivity,
+          adminCollegesFilterOptions: filterOptions,
+          adminCollegesPagination: pagination,
+          adminCollegesFilters: currentFilters,
+          isAdminCollegesLoading: false,
+        });
+      } else {
+        set({ isAdminCollegesLoading: false });
+      }
+    } catch (error: any) {
+      console.error('[useAdminStore] Error fetching colleges:', error);
+      set({
+        isAdminCollegesLoading: false,
+        toast: {
+          type: 'error',
+          message: error.response?.data?.message || error.message || 'Failed to fetch colleges directory',
+        },
+      });
+    }
+  },
+
+  setAdminCollegesFilters: (filters: Partial<AdminCollegeFilters>) => {
+    const updatedFilters = {
+      ...get().adminCollegesFilters,
+      ...filters,
+    };
+    if (!('page' in filters)) {
+      updatedFilters.page = 1;
+    }
+    set({ adminCollegesFilters: updatedFilters });
+    get().fetchAdminColleges(updatedFilters);
+  },
+
+  resetAdminCollegesFilters: () => {
+    const resetFilters: AdminCollegeFilters = {
+      search: '',
+      status: 'ALL',
+      location: 'ALL',
+      type: 'ALL',
+      domain: 'ALL',
+      page: 1,
+      limit: 10,
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+    };
+    set({ adminCollegesFilters: resetFilters });
+    get().fetchAdminColleges(resetFilters);
   },
 }));

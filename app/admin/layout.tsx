@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { AdminHeader } from './dashboard/_components/AdminHeader';
 import { AdminSidebar } from './dashboard/_components/AdminSidebar';
+import { AdminBottomTabBar } from './_components/AdminBottomTabBar';
 
 export const metadata: Metadata = {
   title: 'CampusHire Admin Portal | National Placement Command',
@@ -43,10 +44,13 @@ export default function AdminRootLayout({
         <AdminSidebar />
 
         {/* Dynamic Page Content (Fluidly expands/contracts and scrolls independently) */}
-        <main className="flex-1 h-full min-w-0 overflow-y-auto overflow-x-hidden relative transition-all duration-300 ease-in-out">
+        <main className="flex-1 h-full min-w-0 overflow-y-auto overflow-x-hidden relative pb-16 md:pb-0 transition-all duration-300 ease-in-out">
           {children}
         </main>
       </div>
+
+      {/* Mobile Sticky Bottom Tab Bar */}
+      <AdminBottomTabBar />
 
     </div>
   );
