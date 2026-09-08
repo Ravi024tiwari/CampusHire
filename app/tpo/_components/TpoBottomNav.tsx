@@ -7,6 +7,7 @@ import {
   LayoutDashboard, 
   Users, 
   Briefcase, 
+  Building2,
   FileText, 
   MoreHorizontal 
 } from 'lucide-react';
@@ -36,10 +37,10 @@ export function TpoBottomNav() {
       isActive: pathname.startsWith('/tpo/jobs'),
     },
     {
-      label: 'Applications',
-      href: '/tpo/applications',
-      icon: FileText,
-      isActive: pathname.startsWith('/tpo/applications'),
+      label: 'Companies',
+      href: '/tpo/companies',
+      icon: Building2,
+      isActive: pathname.startsWith('/tpo/companies') || pathname.startsWith('/tpo/recruiters'),
     },
   ];
 

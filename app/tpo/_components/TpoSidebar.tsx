@@ -61,8 +61,8 @@ export function TpoSidebar() {
       icon: Briefcase,
     },
     {
-      href: '/tpo/recruiters',
-      label: 'Recruiters',
+      href: '/tpo/companies',
+      label: 'Companies',
       icon: Building2,
     },
     {
