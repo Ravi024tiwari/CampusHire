@@ -37,15 +37,15 @@ function GitHubIcon({ className }: { className?: string }) {
 
 interface StudentOverviewTabProps {
   student: StudentDossierData;
-  onSendMessage: () => void;
-  onToggleStatus: () => void;
+  onSendMessage?: () => void;
+  onToggleStatus?: () => void;
   isUpdatingStatus?: boolean;
 }
 
 export function StudentOverviewTab({
   student,
-  onSendMessage,
-  onToggleStatus,
+  onSendMessage = () => {},
+  onToggleStatus = () => {},
   isUpdatingStatus = false,
 }: StudentOverviewTabProps) {
   return (
@@ -280,14 +280,18 @@ export function StudentOverviewTab({
               Technical Skills
             </h3>
             <div className="flex flex-wrap gap-2">
-              {student.skills.map((skill, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1.5 rounded-xl bg-sky-50/80 border border-sky-100 text-sky-800 font-bold text-xs hover:bg-sky-100/70 transition-colors"
-                >
-                  {skill}
-                </span>
-              ))}
+              {student.skills && student.skills.length > 0 ? (
+                student.skills.map((skill, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1.5 rounded-xl bg-sky-50/80 border border-sky-100 text-sky-800 font-bold text-xs hover:bg-sky-100/70 transition-colors"
+                  >
+                    {skill}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-slate-400">No technical skills listed yet.</span>
+              )}
             </div>
           </div>
 
@@ -308,7 +312,7 @@ export function StudentOverviewTab({
                       {student.primaryResume.title}
                     </h4>
                     <p className="text-[11px] text-slate-400 font-medium">
-                      PDF &bull; 512 KB &bull; Uploaded on 12 Aug 2024
+                      PDF &bull; Uploaded Resume Document
                     </p>
                   </div>
                 </div>
@@ -330,75 +334,78 @@ export function StudentOverviewTab({
             )}
           </div>
 
-          {/* C. Job Interests */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-3.5">
-            <h3 className="text-sm font-black text-[#0A2540] font-heading">
-              Job Interests & Preferred Roles
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {student.jobInterests.map((interest, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100/80 border border-slate-200 text-slate-700 font-bold text-xs"
-                >
-                  {interest}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* D. Showcase Projects */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+          {/* C. Job Interests (Render when available) */}
+          {student.jobInterests && student.jobInterests.length > 0 && (
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-3.5">
               <h3 className="text-sm font-black text-[#0A2540] font-heading">
-                Projects
+                Job Interests & Preferred Roles
               </h3>
-              <span className="text-xs font-bold text-[#0D8B8A] hover:underline cursor-pointer">
-                View All
-              </span>
+              <div className="flex flex-wrap gap-2">
+                {student.jobInterests.map((interest, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1.5 rounded-xl bg-slate-100/80 border border-slate-200 text-slate-700 font-bold text-xs"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
             </div>
+          )}
 
-            <div className="space-y-3.5">
-              {student.projects.map((proj) => (
-                <div
-                  key={proj.id}
-                  className="p-4 rounded-2xl bg-slate-50/75 border border-slate-200/70 space-y-2 hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <h4 className="text-xs sm:text-sm font-black text-[#0A2540] font-heading">
-                      {proj.title}
-                    </h4>
-                    {proj.githubUrl && (
-                      <a
-                        href={proj.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-slate-900"
-                      >
-                        <GitHubIcon className="w-3.5 h-3.5" />
-                        <span>GitHub</span>
-                      </a>
+          {/* D. Showcase Projects (Render when available) */}
+          {student.projects && student.projects.length > 0 && (
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <h3 className="text-sm font-black text-[#0A2540] font-heading">
+                  Projects
+                </h3>
+              </div>
+
+              <div className="space-y-3.5">
+                {student.projects.map((proj) => (
+                  <div
+                    key={proj.id}
+                    className="p-4 rounded-2xl bg-slate-50/75 border border-slate-200/70 space-y-2 hover:bg-slate-50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <h4 className="text-xs sm:text-sm font-black text-[#0A2540] font-heading">
+                        {proj.title}
+                      </h4>
+                      {proj.githubUrl && (
+                        <a
+                          href={proj.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-slate-900"
+                        >
+                          <GitHubIcon className="w-3.5 h-3.5" />
+                          <span>GitHub</span>
+                        </a>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                      {proj.description}
+                    </p>
+
+                    {proj.techStack && proj.techStack.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {proj.techStack.map((tech, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[10px]"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
-
-                  <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                    {proj.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {proj.techStack.map((tech, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[10px]"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* E. Additional Links */}
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-3.5">
@@ -407,7 +414,7 @@ export function StudentOverviewTab({
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              {student.socialLinks.portfolio && (
+              {student.socialLinks?.portfolio && (
                 <a
                   href={student.socialLinks.portfolio}
                   target="_blank"
@@ -419,7 +426,7 @@ export function StudentOverviewTab({
                 </a>
               )}
 
-              {student.socialLinks.linkedin && (
+              {student.socialLinks?.linkedin && (
                 <a
                   href={student.socialLinks.linkedin}
                   target="_blank"
@@ -431,7 +438,7 @@ export function StudentOverviewTab({
                 </a>
               )}
 
-              {student.socialLinks.github && (
+              {student.socialLinks?.github && (
                 <a
                   href={student.socialLinks.github}
                   target="_blank"
@@ -443,10 +450,12 @@ export function StudentOverviewTab({
                 </a>
               )}
 
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 font-bold truncate">
-                <Code2 className="w-4 h-4 text-amber-600 shrink-0" />
-                <span className="truncate">leetcode.com/u/aaravsharma</span>
-              </div>
+              {student.skills && student.skills.length > 0 && (
+                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 font-bold truncate">
+                  <Code2 className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span className="truncate">{student.skills.slice(0, 3).join(', ')}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -467,37 +476,43 @@ export function StudentOverviewTab({
             </div>
 
             <div className="space-y-3.5 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-100">
-              {student.activityStream.map((act) => (
-                <div key={act.id} className="flex items-start gap-3 relative z-10">
-                  <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-2xs ${
-                      act.type === 'PLACEMENT'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : act.type === 'OFFER'
-                        ? 'bg-amber-100 text-amber-700'
-                        : act.type === 'INTERVIEW'
-                        ? 'bg-sky-100 text-sky-700'
-                        : act.type === 'APPLICATION'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-teal-100 text-teal-700'
-                    }`}
-                  >
-                    {act.type === 'PLACEMENT' && <Trophy className="w-3.5 h-3.5" />}
-                    {act.type === 'OFFER' && <Briefcase className="w-3.5 h-3.5" />}
-                    {act.type === 'INTERVIEW' && <Calendar className="w-3.5 h-3.5" />}
-                    {act.type === 'APPLICATION' && <FileText className="w-3.5 h-3.5" />}
-                    {act.type === 'PROFILE' && <UserCheck className="w-3.5 h-3.5" />}
+              {student.activityStream && student.activityStream.length > 0 ? (
+                student.activityStream.map((act) => (
+                  <div key={act.id} className="flex items-start gap-3 relative z-10">
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-2xs ${
+                        act.type === 'PLACEMENT'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : act.type === 'OFFER'
+                          ? 'bg-amber-100 text-amber-700'
+                          : act.type === 'INTERVIEW'
+                          ? 'bg-sky-100 text-sky-700'
+                          : act.type === 'APPLICATION'
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'bg-teal-100 text-teal-700'
+                      }`}
+                    >
+                      {act.type === 'PLACEMENT' && <Trophy className="w-3.5 h-3.5" />}
+                      {act.type === 'OFFER' && <Briefcase className="w-3.5 h-3.5" />}
+                      {act.type === 'INTERVIEW' && <Calendar className="w-3.5 h-3.5" />}
+                      {act.type === 'APPLICATION' && <FileText className="w-3.5 h-3.5" />}
+                      {act.type === 'PROFILE' && <UserCheck className="w-3.5 h-3.5" />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-slate-800 leading-tight">
+                        {act.title}
+                      </p>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        {act.timeAgo}
+                      </span>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-slate-800 leading-tight">
-                      {act.title}
-                    </p>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      {act.timeAgo}
-                    </span>
-                  </div>
+                ))
+              ) : (
+                <div className="py-2 text-center text-xs text-slate-400 relative z-10 bg-white">
+                  No recent activity recorded.
                 </div>
-              ))}
+              )}
             </div>
           </div>
 

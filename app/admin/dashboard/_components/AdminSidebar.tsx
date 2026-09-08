@@ -26,7 +26,8 @@ import {
   PanelLeftOpen, 
   X, 
   LogOut, 
-  Loader2 
+  Loader2,
+  ShieldCheck
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -79,69 +80,39 @@ export function AdminSidebar() {
       icon: LayoutDashboard,
     },
     {
-      href: '/admin/students',
-      label: 'Students',
-      icon: Users,
-    },
-    {
-      href: '/admin/recruiters',
-      label: 'Recruiters',
-      icon: UserCheck,
-    },
-    {
       href: '/admin/colleges',
       label: 'Colleges',
       icon: Building2,
     },
     {
+      href: '/admin/verify-colleges',
+      label: 'Verification Queue',
+      icon: ShieldCheck,
+    },
+    {
+      href: '/admin/recruiters',
+      label: 'Recruiters & Companies',
+      icon: UserCheck,
+    },
+    {
+      href: '/admin/students',
+      label: 'Students Directory',
+      icon: Users,
+    },
+    {
       href: '/admin/jobs',
-      label: 'Jobs',
+      label: 'Placement Drives',
       icon: Briefcase,
     },
     {
-      href: '/admin/applications',
-      label: 'Applications',
-      icon: FileText,
-    },
-    {
-      href: '/admin/offers',
-      label: 'Offers',
-      icon: Award,
-    },
-    {
-      href: '/admin/drives',
-      label: 'Interviews',
-      icon: Calendar,
-    },
-    {
-      href: '/admin/placements',
-      label: 'Placements',
-      icon: GraduationCap,
-    },
-    {
       href: '/admin/analytics',
-      label: 'Analytics',
+      label: 'National Analytics',
       icon: BarChart2,
     },
     {
-      href: '/admin/content',
-      label: 'Content Management',
-      icon: Layers,
-    },
-    {
-      href: '/admin/reports',
-      label: 'Reports',
+      href: '/admin/audit',
+      label: 'Security & Audit Trail',
       icon: ScrollText,
-    },
-    {
-      href: '/admin/users',
-      label: 'Users & Roles',
-      icon: UserCog,
-    },
-    {
-      href: '/admin/settings',
-      label: 'Settings',
-      icon: Settings,
     },
   ];
 

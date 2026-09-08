@@ -63,15 +63,24 @@ export interface StudentDossierData {
   };
   placementStatus: 'Placed' | 'Interviewing' | 'Offered' | 'Not Placed';
   profileCompletion: number;
-  stats: {
+  stats?: {
     totalApplications: number;
     totalInterviews: number;
     totalOffers: number;
     totalPlaced: number;
   };
+  metrics?: {
+    totalApplications?: number;
+    interviewCount?: number;
+    offersReceived?: number;
+    offersAccepted?: number;
+    isPlaced?: boolean;
+    acceptedOfferPackage?: string | null;
+    acceptedOfferCompany?: string | null;
+  };
   skills: string[];
-  jobInterests: string[];
-  projects: Array<{
+  jobInterests?: string[];
+  projects?: Array<{
     id: string;
     title: string;
     description: string;
@@ -79,11 +88,11 @@ export interface StudentDossierData {
     githubUrl?: string;
     liveUrl?: string;
   }>;
-  socialLinks: {
-    portfolio?: string;
-    linkedin?: string;
-    github?: string;
-    leetcode?: string;
+  socialLinks?: {
+    portfolio?: string | null;
+    linkedin?: string | null;
+    github?: string | null;
+    leetcode?: string | null;
   };
   resumes: Array<{
     id: string;
@@ -152,6 +161,8 @@ interface StudentProfileHeaderProps {
   onToggleStatus: () => void;
   onSendMessage: () => void;
   isUpdatingStatus?: boolean;
+  backUrl?: string;
+  backLabel?: string;
 }
 
 export function StudentProfileHeader({
@@ -159,6 +170,8 @@ export function StudentProfileHeader({
   onToggleStatus,
   onSendMessage,
   isUpdatingStatus = false,
+  backUrl = '/admin/students',
+  backLabel = 'Students',
 }: StudentProfileHeaderProps) {
   return (
     <div className="space-y-4">
@@ -167,8 +180,8 @@ export function StudentProfileHeader({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Breadcrumb Links */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-          <Link href="/admin/students" className="hover:text-[#0D8B8A] transition-colors">
-            Students
+          <Link href={backUrl} className="hover:text-blue-600 transition-colors">
+            {backLabel}
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           <span className="text-[#0A2540] font-bold">
@@ -288,7 +301,7 @@ export function StudentProfileHeader({
                     <span>{student.address}</span>
                   </span>
                 )}
-                {student.socialLinks.linkedin && (
+                {student.socialLinks?.linkedin && (
                   <a
                     href={student.socialLinks.linkedin}
                     target="_blank"
@@ -299,7 +312,7 @@ export function StudentProfileHeader({
                     <span>LinkedIn</span>
                   </a>
                 )}
-                {student.socialLinks.github && (
+                {student.socialLinks?.github && (
                   <a
                     href={student.socialLinks.github}
                     target="_blank"

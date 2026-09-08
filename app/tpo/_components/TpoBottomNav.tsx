@@ -6,41 +6,40 @@ import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Users, 
-  UserCheck, 
   Briefcase, 
-  Building2,
+  FileText, 
   MoreHorizontal 
 } from 'lucide-react';
-import { useAdminStore } from '@/store/useAdminStore';
+import { useTpoStore } from '@/store/useTpoStore';
 
-export function AdminBottomTabBar() {
+export function TpoBottomNav() {
   const pathname = usePathname();
-  const { isMobileMenuOpen, setIsMobileMenuOpen } = useAdminStore();
+  const { isMobileMenuOpen, setIsMobileMenuOpen } = useTpoStore();
 
   const navTabs = [
     {
       label: 'Home',
-      href: '/admin/dashboard',
+      href: '/tpo/dashboard',
       icon: LayoutDashboard,
-      isActive: pathname === '/admin/dashboard' || pathname === '/admin',
+      isActive: pathname === '/tpo/dashboard' || pathname === '/tpo',
     },
     {
-      label: 'Colleges',
-      href: '/admin/colleges',
-      icon: Building2,
-      isActive: pathname.startsWith('/admin/colleges') || pathname.startsWith('/admin/verify-colleges'),
-    },
-    {
-      label: 'Recruiters',
-      href: '/admin/recruiters',
-      icon: UserCheck,
-      isActive: pathname.startsWith('/admin/recruiters') || pathname.startsWith('/admin/companies'),
+      label: 'Students',
+      href: '/tpo/students',
+      icon: Users,
+      isActive: pathname.startsWith('/tpo/students'),
     },
     {
       label: 'Jobs',
-      href: '/admin/jobs',
+      href: '/tpo/jobs',
       icon: Briefcase,
-      isActive: pathname.startsWith('/admin/jobs'),
+      isActive: pathname.startsWith('/tpo/jobs'),
+    },
+    {
+      label: 'Applications',
+      href: '/tpo/applications',
+      icon: FileText,
+      isActive: pathname.startsWith('/tpo/applications'),
     },
   ];
 
@@ -57,11 +56,11 @@ export function AdminBottomTabBar() {
             href={tab.href}
             className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-200 ${
               tab.isActive
-                ? 'text-[#0D8B8A] font-bold scale-105'
+                ? 'text-blue-600 font-bold scale-105'
                 : 'text-slate-500 hover:text-slate-800 font-medium'
             }`}
           >
-            <div className={`p-1 rounded-lg ${tab.isActive ? 'bg-teal-50 text-[#0D8B8A]' : ''}`}>
+            <div className={`p-1 rounded-lg ${tab.isActive ? 'bg-blue-50 text-blue-600' : ''}`}>
               <Icon className="w-5 h-5" />
             </div>
             <span className="text-[10px] tracking-tight mt-0.5">{tab.label}</span>
@@ -69,17 +68,17 @@ export function AdminBottomTabBar() {
         );
       })}
 
-      {/* More / Menu Drawer Trigger (Opens the complete mobile sidebar drawer to see all other links) */}
+      {/* More / Menu Drawer Trigger */}
       <button
         type="button"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-200 cursor-pointer ${
           isMobileMenuOpen
-            ? 'text-[#0D8B8A] font-bold scale-105'
+            ? 'text-blue-600 font-bold scale-105'
             : 'text-slate-500 hover:text-slate-800 font-medium'
         }`}
       >
-        <div className={`p-1 rounded-lg ${isMobileMenuOpen ? 'bg-teal-50 text-[#0D8B8A]' : ''}`}>
+        <div className={`p-1 rounded-lg ${isMobileMenuOpen ? 'bg-blue-50 text-blue-600' : ''}`}>
           <MoreHorizontal className="w-5 h-5" />
         </div>
         <span className="text-[10px] tracking-tight mt-0.5">More</span>

@@ -156,9 +156,9 @@ export function StudentProfileClient({ studentId }: StudentProfileClientProps) {
       <StudentProfileNavTabs
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        applicationsCount={student.applications.length}
-        interviewsCount={student.stats.totalInterviews}
-        offersCount={student.offers.length}
+        applicationsCount={student.applications?.length || 0}
+        interviewsCount={student.stats?.totalInterviews || 0}
+        offersCount={student.offers?.length || 0}
       />
 
       {/* 4. Tab Content Body */}
@@ -227,12 +227,12 @@ export function StudentProfileClient({ studentId }: StudentProfileClientProps) {
               Featured Portfolio Projects
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {student.projects.map((p) => (
+              {(student.projects || []).map((p) => (
                 <div key={p.id} className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
                   <h4 className="text-sm font-black text-[#0A2540] font-heading">{p.title}</h4>
                   <p className="text-xs text-slate-600 leading-relaxed font-medium">{p.description}</p>
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {p.techStack.map((t, idx) => (
+                    {(p.techStack || []).map((t, idx) => (
                       <span key={idx} className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold text-[10px]">
                         {t}
                       </span>

@@ -4,41 +4,50 @@ import React from 'react';
 import { FileText, Users, Briefcase, Trophy } from 'lucide-react';
 
 interface StudentProfileStatsProps {
-  stats: {
-    totalApplications: number;
-    totalInterviews: number;
-    totalOffers: number;
-    totalPlaced: number;
+  stats?: {
+    totalApplications?: number;
+    totalInterviews?: number;
+    interviewCount?: number;
+    totalOffers?: number;
+    offersReceived?: number;
+    totalPlaced?: number;
+    offersAccepted?: number;
+    isPlaced?: boolean;
   };
 }
 
 export function StudentProfileStats({ stats }: StudentProfileStatsProps) {
+  const totalApps = stats?.totalApplications ?? 0;
+  const totalInterviews = stats?.interviewCount ?? stats?.totalInterviews ?? 0;
+  const totalOffers = stats?.offersReceived ?? stats?.totalOffers ?? 0;
+  const totalPlaced = stats?.offersAccepted ?? stats?.totalPlaced ?? (stats?.isPlaced ? 1 : 0);
+
   const cards = [
     {
       id: 'applications',
       title: 'Applications',
-      value: stats.totalApplications,
+      value: totalApps,
       icon: FileText,
       iconBg: 'bg-blue-50 text-blue-600 border-blue-100',
     },
     {
       id: 'interviews',
       title: 'Interviews',
-      value: stats.totalInterviews,
+      value: totalInterviews,
       icon: Users,
       iconBg: 'bg-purple-50 text-purple-600 border-purple-100',
     },
     {
       id: 'offers',
       title: 'Offers',
-      value: stats.totalOffers,
+      value: totalOffers,
       icon: Briefcase,
       iconBg: 'bg-rose-50 text-rose-600 border-rose-100',
     },
     {
       id: 'placed',
       title: 'Placed',
-      value: stats.totalPlaced > 0 ? `${stats.totalPlaced} Placed` : 'Not Placed',
+      value: totalPlaced > 0 ? `${totalPlaced} Placed` : 'Not Placed',
       icon: Trophy,
       iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },

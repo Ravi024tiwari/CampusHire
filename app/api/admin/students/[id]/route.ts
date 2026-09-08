@@ -22,12 +22,23 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    await requireRole([Role.SUPER_ADMIN], req);
+    const authUser = await requireRole([Role.SUPER_ADMIN, Role.TPO_ADMIN], req);
+
+    let collegeFilter: { collegeId?: string } = {};
+    if (authUser.role === Role.TPO_ADMIN) {
+      const tpo = await prisma.tpoProfile.findUnique({
+        where: { userId: authUser.userId },
+      });
+      if (tpo?.collegeId) {
+        collegeFilter = { collegeId: tpo.collegeId };
+      }
+    }
 
     // 1. Query student profile with relations (search by StudentProfile.id OR User.id)
     let student = await prisma.studentProfile.findFirst({
       where: {
         OR: [{ id }, { userId: id }],
+        ...collegeFilter,
       },
       include: {
         user: {
@@ -345,7 +356,17 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    await requireRole([Role.SUPER_ADMIN], req);
+    const authUser = await requireRole([Role.SUPER_ADMIN, Role.TPO_ADMIN], req);
+
+    let collegeFilter: { collegeId?: string } = {};
+    if (authUser.role === Role.TPO_ADMIN) {
+      const tpo = await prisma.tpoProfile.findUnique({
+        where: { userId: authUser.userId },
+      });
+      if (tpo?.collegeId) {
+        collegeFilter = { collegeId: tpo.collegeId };
+      }
+    }
 
     const body = await req.json();
     const updateSchema = z.object({
@@ -359,7 +380,10 @@ export async function PATCH(
     const parsed = updateSchema.parse(body);
 
     const student = await prisma.studentProfile.findFirst({
-      where: { OR: [{ id }, { userId: id }] },
+      where: {
+        OR: [{ id }, { userId: id }],
+        ...collegeFilter,
+      },
       select: { id: true, userId: true },
     });
 

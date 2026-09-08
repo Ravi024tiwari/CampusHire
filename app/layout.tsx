@@ -6,6 +6,8 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+  preload: false,
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -13,12 +15,16 @@ const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-heading",
   weight: ["500", "600", "700", "800"],
   display: "swap",
+  fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+  preload: false,
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+  preload: false,
 });
 
 import { AuthProvider } from "@/context/AuthContext";

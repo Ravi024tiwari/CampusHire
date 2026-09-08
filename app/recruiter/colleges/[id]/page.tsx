@@ -522,6 +522,14 @@ export default function RecruiterCollegeDetailPage({
                     <span>{college.contactPhone}</span>
                   </a>
                 )}
+
+                <Link
+                  href={`/recruiter/colleges/${collegeId}/edit`}
+                  className="inline-flex items-center gap-1.5 text-xs text-emerald-300 hover:text-white font-bold transition-colors bg-emerald-950/60 hover:bg-emerald-900/80 px-3 py-1.5 rounded-xl border border-emerald-500/30 backdrop-blur-md shadow-sm"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Update Profile</span>
+                </Link>
               </div>
 
             </div>
