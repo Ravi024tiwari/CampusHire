@@ -227,23 +227,21 @@ export function TpoApplicationsTable({
                   {/* Actions */}
                   <td className="py-3.5 pr-5 pl-3 text-right">
                     <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => onViewDetails(app)}
+                      <Link
+                        href={`/tpo/applications/${app.id}`}
                         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors cursor-pointer"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span>View</span>
-                      </button>
+                      </Link>
 
-                      <button
-                        type="button"
-                        onClick={() => onViewDetails(app)}
+                      <Link
+                        href={`/tpo/applications/${app.id}`}
                         className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
-                        title="More Actions"
+                        title="Application Details"
                       >
                         <MoreHorizontal className="w-4 h-4" />
-                      </button>
+                      </Link>
                     </div>
                   </td>
                 </tr>

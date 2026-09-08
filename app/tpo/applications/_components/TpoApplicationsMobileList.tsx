@@ -84,10 +84,10 @@ export function TpoApplicationsMobileList({
   return (
     <div className="space-y-3">
       {applications.map((app) => (
-        <div
+        <Link
           key={app.id}
-          onClick={() => onViewDetails(app)}
-          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-[0_2px_8px_rgba(15,23,42,0.04)] hover:shadow-md hover:border-blue-300 active:scale-[0.99] transition-all cursor-pointer space-y-3 group"
+          href={`/tpo/applications/${app.id}`}
+          className="block bg-white rounded-2xl border border-slate-200/90 p-4 shadow-[0_2px_8px_rgba(15,23,42,0.04)] hover:shadow-md hover:border-blue-300 active:scale-[0.99] transition-all cursor-pointer space-y-3 group"
         >
           {/* Top Row: Student Avatar, Name, and Stage Pill */}
           <div className="flex items-center justify-between gap-3">
@@ -156,20 +156,14 @@ export function TpoApplicationsMobileList({
             </span>
 
             <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onViewDetails(app);
-                }}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs transition-colors cursor-pointer"
-              >
+              <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 group-hover:bg-blue-100 text-blue-700 font-bold text-xs transition-colors">
                 <Eye className="w-3.5 h-3.5" />
-                <span>Review</span>
-              </button>
+                <span>Review Application</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </span>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
