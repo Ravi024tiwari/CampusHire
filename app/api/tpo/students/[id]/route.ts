@@ -26,98 +26,109 @@ export async function GET(
     }
 
     // Query student profile with relations (search by StudentProfile.id OR User.id)
-    const student = await prisma.studentProfile.findFirst({
-      where: {
-        OR: [{ id }, { userId: id }],
-        ...(collegeId ? { collegeId } : {}), // Campus isolation for TPO
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatarUrl: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true,
-          },
+    const fetchStudentQuery = () =>
+      prisma.studentProfile.findFirst({
+        where: {
+          OR: [{ id }, { userId: id }],
+          ...(collegeId ? { collegeId } : {}), // Campus isolation for TPO
         },
-        college: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-            domain: true,
-            city: true,
-            state: true,
-            logoUrl: true,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatarUrl: true,
+              isActive: true,
+              createdAt: true,
+              updatedAt: true,
+            },
           },
-        },
-        resumes: {
-          orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
-          select: {
-            id: true,
-            title: true,
-            fileUrl: true,
-            fileSize: true,
-            fileType: true,
-            isDefault: true,
-            createdAt: true,
+          college: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              domain: true,
+              city: true,
+              state: true,
+              logoUrl: true,
+            },
           },
-        },
-        applications: {
-          orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            status: true,
-            resumeUrl: true,
-            notes: true,
-            createdAt: true,
-            updatedAt: true,
-            job: {
-              select: {
-                id: true,
-                title: true,
-                type: true,
-                salaryPackage: true,
-                location: true,
-                status: true,
-                company: {
-                  select: {
-                    id: true,
-                    name: true,
-                    logoUrl: true,
+          resumes: {
+            orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
+            select: {
+              id: true,
+              title: true,
+              fileUrl: true,
+              fileSize: true,
+              fileType: true,
+              isDefault: true,
+              createdAt: true,
+            },
+          },
+          applications: {
+            orderBy: { createdAt: 'desc' },
+            select: {
+              id: true,
+              status: true,
+              resumeUrl: true,
+              notes: true,
+              createdAt: true,
+              updatedAt: true,
+              job: {
+                select: {
+                  id: true,
+                  title: true,
+                  type: true,
+                  salaryPackage: true,
+                  location: true,
+                  status: true,
+                  company: {
+                    select: {
+                      id: true,
+                      name: true,
+                      logoUrl: true,
+                    },
                   },
                 },
               },
             },
           },
-        },
-        offers: {
-          orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            status: true,
-            designation: true,
-            salaryPackage: true,
-            location: true,
-            joiningDate: true,
-            letterUrl: true,
-            acceptedAt: true,
-            declinedAt: true,
-            createdAt: true,
-            company: {
-              select: {
-                id: true,
-                name: true,
-                logoUrl: true,
+          offers: {
+            orderBy: { createdAt: 'desc' },
+            select: {
+              id: true,
+              status: true,
+              designation: true,
+              salaryPackage: true,
+              location: true,
+              joiningDate: true,
+              letterUrl: true,
+              acceptedAt: true,
+              declinedAt: true,
+              createdAt: true,
+              company: {
+                select: {
+                  id: true,
+                  name: true,
+                  logoUrl: true,
+                },
               },
             },
           },
         },
-      },
-    });
+      });
+
+    let student = null;
+    try {
+      student = await fetchStudentQuery();
+    } catch (dbErr) {
+      console.warn('[RETRYING_STUDENT_QUERY_DUE_TO_TRANSIENT_DB_ERROR]', dbErr);
+      // Brief 200ms pause and retry
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      student = await fetchStudentQuery();
+    }
 
     if (!student) {
       return errorResponse('Student record not found or does not belong to your college', 404);

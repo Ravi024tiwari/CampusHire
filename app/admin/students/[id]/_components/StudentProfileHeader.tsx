@@ -231,6 +231,7 @@ export function StudentProfileHeader({
                     src={student.avatarUrl}
                     alt={student.name}
                     fill
+                    sizes="(max-width: 640px) 80px, 96px"
                     className="object-cover"
                   />
                 </div>

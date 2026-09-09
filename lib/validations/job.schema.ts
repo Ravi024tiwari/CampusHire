@@ -32,15 +32,22 @@ export const updateJobStatusSchema = z.object({
 
 export const jobQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-  status: z.nativeEnum(JobStatus).optional(),
-  type: z.nativeEnum(JobType).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  status: z.string().trim().optional(),
+  type: z.string().trim().optional(),
   collegeId: z.string().optional(),
+  companyId: z.string().optional(),
+  role: z.string().trim().optional(),
   location: z.string().trim().optional(),
+  branch: z.string().trim().optional(),
+  batchYear: z.coerce.number().int().optional(),
+  academicYear: z.string().trim().optional(),
+  tab: z.enum(['all', 'open', 'closing_soon', 'internships', 'full_time']).default('all').optional(),
   timeline: z.enum(['ALL', 'UPCOMING', 'TODAY', 'PAST']).default('ALL').optional(),
   skill: z.string().trim().optional(),
   skills: z.string().trim().optional(), // comma-separated skills list e.g. "React,Node.js"
   skillMatchMode: z.enum(['all', 'any']).default('any'),
+  sortBy: z.enum(['newest', 'oldest', 'deadline_asc', 'salary_desc']).default('newest').optional(),
   search: z.string().trim().optional(),
 });
 

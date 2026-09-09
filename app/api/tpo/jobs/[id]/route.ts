@@ -36,9 +36,37 @@ export async function GET(req: NextRequest, context: RouteContext) {
             isVerified: true,
           },
         },
+        applications: {
+          take: 50,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            status: true,
+            createdAt: true,
+            resumeUrl: true,
+            student: {
+              select: {
+                id: true,
+                enrollmentNumber: true,
+                branch: true,
+                batchYear: true,
+                cgpa: true,
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         _count: {
           select: {
             applications: true,
+            offers: true,
           },
         },
       },
