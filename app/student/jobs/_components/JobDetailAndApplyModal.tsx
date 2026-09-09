@@ -17,6 +17,10 @@ import {
   Award
 } from 'lucide-react';
 import { useStudentJobsStore } from '@/store/useStudentJobsStore';
+import { AtsScoreCard } from '@/components/ats/AtsScoreCard';
+import { AtsAnalysisResult } from '@/lib/ai/ats-pipeline';
+import apiClient from '@/lib/axios';
+import type { ApiResponse } from '@/lib/api-response';
 
 export function JobDetailAndApplyModal() {
   const {
@@ -32,10 +36,43 @@ export function JobDetailAndApplyModal() {
     applyErrorMessage,
   } = useStudentJobsStore();
 
+  const [atsScoreData, setAtsScoreData] = useState<AtsAnalysisResult | null>(null);
+  const [isAtsLoading, setIsAtsLoading] = useState(false);
+  const [isAtsCached, setIsAtsCached] = useState(false);
+  const [atsError, setAtsError] = useState<string | null>(null);
+
   if (!isDetailModalOpen || !selectedJob) return null;
 
   const job = selectedJob;
   const isEligible = job.eligibility.isEligible;
+  const selectedResume = studentResumes.find((r) => r.id === selectedResumeId) || studentResumes[0];
+
+  const handleAnalyzeAts = async (forceRefresh: boolean = false) => {
+    if (!job) return;
+    setIsAtsLoading(true);
+    setAtsError(null);
+
+    try {
+      const res = await apiClient.post<ApiResponse<{ score: AtsAnalysisResult; fromCache: boolean }>>(
+        `/api/student/jobs/${job.id}/ats-score`,
+        {
+          resumeUrl: selectedResume?.fileUrl,
+          forceRefresh,
+        }
+      );
+
+      if (res.data.success && res.data.data) {
+        setAtsScoreData(res.data.data.score);
+        setIsAtsCached(Boolean(res.data.data.fromCache));
+      } else {
+        setAtsError(res.data.message || 'Failed to analyze resume fit.');
+      }
+    } catch (err: any) {
+      setAtsError(err.response?.data?.message || err.message || 'Failed to analyze resume fit.');
+    } finally {
+      setIsAtsLoading(false);
+    }
+  };
 
   const handleApply = async () => {
     if (!isEligible || job.hasApplied) return;
@@ -159,6 +196,15 @@ export function JobDetailAndApplyModal() {
             </div>
           </div>
         )}
+
+        {/* ATS Resume Fit Analyzer */}
+        <AtsScoreCard
+          scoreData={atsScoreData}
+          isLoading={isAtsLoading}
+          isCached={isAtsCached}
+          onAnalyze={handleAnalyzeAts}
+          error={atsError}
+        />
 
         {/* Multi-Resume Selector Section */}
         {!job.hasApplied && (

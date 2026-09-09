@@ -63,6 +63,11 @@ export type Application = $Result.DefaultSelection<Prisma.$ApplicationPayload>
  * 
  */
 export type Offer = $Result.DefaultSelection<Prisma.$OfferPayload>
+/**
+ * Model AtsScoreCache
+ * 
+ */
+export type AtsScoreCache = $Result.DefaultSelection<Prisma.$AtsScoreCachePayload>
 
 /**
  * Enums
@@ -363,6 +368,16 @@ export class PrismaClient<
     * ```
     */
   get offer(): Prisma.OfferDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.atsScoreCache`: Exposes CRUD operations for the **AtsScoreCache** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AtsScoreCaches
+    * const atsScoreCaches = await prisma.atsScoreCache.findMany()
+    * ```
+    */
+  get atsScoreCache(): Prisma.AtsScoreCacheDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -819,7 +834,8 @@ export namespace Prisma {
     RecruiterProfile: 'RecruiterProfile',
     Job: 'Job',
     Application: 'Application',
-    Offer: 'Offer'
+    Offer: 'Offer',
+    AtsScoreCache: 'AtsScoreCache'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -835,7 +851,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "studentResume" | "company" | "recruiterProfile" | "job" | "application" | "offer"
+      modelProps: "user" | "college" | "tpoProfile" | "studentProfile" | "studentResume" | "company" | "recruiterProfile" | "job" | "application" | "offer" | "atsScoreCache"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1579,6 +1595,80 @@ export namespace Prisma {
           }
         }
       }
+      AtsScoreCache: {
+        payload: Prisma.$AtsScoreCachePayload<ExtArgs>
+        fields: Prisma.AtsScoreCacheFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AtsScoreCacheFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AtsScoreCacheFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>
+          }
+          findFirst: {
+            args: Prisma.AtsScoreCacheFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AtsScoreCacheFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>
+          }
+          findMany: {
+            args: Prisma.AtsScoreCacheFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>[]
+          }
+          create: {
+            args: Prisma.AtsScoreCacheCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>
+          }
+          createMany: {
+            args: Prisma.AtsScoreCacheCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AtsScoreCacheCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>[]
+          }
+          delete: {
+            args: Prisma.AtsScoreCacheDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>
+          }
+          update: {
+            args: Prisma.AtsScoreCacheUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>
+          }
+          deleteMany: {
+            args: Prisma.AtsScoreCacheDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AtsScoreCacheUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AtsScoreCacheUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>[]
+          }
+          upsert: {
+            args: Prisma.AtsScoreCacheUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AtsScoreCachePayload>
+          }
+          aggregate: {
+            args: Prisma.AtsScoreCacheAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAtsScoreCache>
+          }
+          groupBy: {
+            args: Prisma.AtsScoreCacheGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AtsScoreCacheGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AtsScoreCacheCountArgs<ExtArgs>
+            result: $Utils.Optional<AtsScoreCacheCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1712,6 +1802,7 @@ export namespace Prisma {
     job?: JobOmit
     application?: ApplicationOmit
     offer?: OfferOmit
+    atsScoreCache?: AtsScoreCacheOmit
   }
 
   /* Types for Logging */
@@ -1853,12 +1944,14 @@ export namespace Prisma {
     resumes: number
     applications: number
     offers: number
+    atsScores: number
   }
 
   export type StudentProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resumes?: boolean | StudentProfileCountOutputTypeCountResumesArgs
     applications?: boolean | StudentProfileCountOutputTypeCountApplicationsArgs
     offers?: boolean | StudentProfileCountOutputTypeCountOffersArgs
+    atsScores?: boolean | StudentProfileCountOutputTypeCountAtsScoresArgs
   }
 
   // Custom InputTypes
@@ -1891,6 +1984,13 @@ export namespace Prisma {
    */
   export type StudentProfileCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OfferWhereInput
+  }
+
+  /**
+   * StudentProfileCountOutputType without action
+   */
+  export type StudentProfileCountOutputTypeCountAtsScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AtsScoreCacheWhereInput
   }
 
 
@@ -1981,11 +2081,13 @@ export namespace Prisma {
   export type JobCountOutputType = {
     applications: number
     offers: number
+    atsScores: number
   }
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applications?: boolean | JobCountOutputTypeCountApplicationsArgs
     offers?: boolean | JobCountOutputTypeCountOffersArgs
+    atsScores?: boolean | JobCountOutputTypeCountAtsScoresArgs
   }
 
   // Custom InputTypes
@@ -2011,6 +2113,13 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountOffersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OfferWhereInput
+  }
+
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeCountAtsScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AtsScoreCacheWhereInput
   }
 
 
@@ -5947,6 +6056,7 @@ export namespace Prisma {
     resumes?: boolean | StudentProfile$resumesArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
     offers?: boolean | StudentProfile$offersArgs<ExtArgs>
+    atsScores?: boolean | StudentProfile$atsScoresArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["studentProfile"]>
 
@@ -6027,6 +6137,7 @@ export namespace Prisma {
     resumes?: boolean | StudentProfile$resumesArgs<ExtArgs>
     applications?: boolean | StudentProfile$applicationsArgs<ExtArgs>
     offers?: boolean | StudentProfile$offersArgs<ExtArgs>
+    atsScores?: boolean | StudentProfile$atsScoresArgs<ExtArgs>
     _count?: boolean | StudentProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6046,6 +6157,7 @@ export namespace Prisma {
       resumes: Prisma.$StudentResumePayload<ExtArgs>[]
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
       offers: Prisma.$OfferPayload<ExtArgs>[]
+      atsScores: Prisma.$AtsScoreCachePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6466,6 +6578,7 @@ export namespace Prisma {
     resumes<T extends StudentProfile$resumesArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     applications<T extends StudentProfile$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     offers<T extends StudentProfile$offersArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    atsScores<T extends StudentProfile$atsScoresArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfile$atsScoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6984,6 +7097,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
+   * StudentProfile.atsScores
+   */
+  export type StudentProfile$atsScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    where?: AtsScoreCacheWhereInput
+    orderBy?: AtsScoreCacheOrderByWithRelationInput | AtsScoreCacheOrderByWithRelationInput[]
+    cursor?: AtsScoreCacheWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AtsScoreCacheScalarFieldEnum | AtsScoreCacheScalarFieldEnum[]
   }
 
   /**
@@ -10768,6 +10905,7 @@ export namespace Prisma {
     college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | Job$applicationsArgs<ExtArgs>
     offers?: boolean | Job$offersArgs<ExtArgs>
+    atsScores?: boolean | Job$atsScoresArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -10838,6 +10976,7 @@ export namespace Prisma {
     college?: boolean | CollegeDefaultArgs<ExtArgs>
     applications?: boolean | Job$applicationsArgs<ExtArgs>
     offers?: boolean | Job$offersArgs<ExtArgs>
+    atsScores?: boolean | Job$atsScoresArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10856,6 +10995,7 @@ export namespace Prisma {
       college: Prisma.$CollegePayload<ExtArgs>
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
       offers: Prisma.$OfferPayload<ExtArgs>[]
+      atsScores: Prisma.$AtsScoreCachePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11272,6 +11412,7 @@ export namespace Prisma {
     college<T extends CollegeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CollegeDefaultArgs<ExtArgs>>): Prisma__CollegeClient<$Result.GetResult<Prisma.$CollegePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     applications<T extends Job$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, Job$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     offers<T extends Job$offersArgs<ExtArgs> = {}>(args?: Subset<T, Job$offersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    atsScores<T extends Job$atsScoresArgs<ExtArgs> = {}>(args?: Subset<T, Job$atsScoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11763,6 +11904,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OfferScalarFieldEnum | OfferScalarFieldEnum[]
+  }
+
+  /**
+   * Job.atsScores
+   */
+  export type Job$atsScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    where?: AtsScoreCacheWhereInput
+    orderBy?: AtsScoreCacheOrderByWithRelationInput | AtsScoreCacheOrderByWithRelationInput[]
+    cursor?: AtsScoreCacheWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AtsScoreCacheScalarFieldEnum | AtsScoreCacheScalarFieldEnum[]
   }
 
   /**
@@ -14222,6 +14387,1195 @@ export namespace Prisma {
 
 
   /**
+   * Model AtsScoreCache
+   */
+
+  export type AggregateAtsScoreCache = {
+    _count: AtsScoreCacheCountAggregateOutputType | null
+    _avg: AtsScoreCacheAvgAggregateOutputType | null
+    _sum: AtsScoreCacheSumAggregateOutputType | null
+    _min: AtsScoreCacheMinAggregateOutputType | null
+    _max: AtsScoreCacheMaxAggregateOutputType | null
+  }
+
+  export type AtsScoreCacheAvgAggregateOutputType = {
+    overallScore: number | null
+  }
+
+  export type AtsScoreCacheSumAggregateOutputType = {
+    overallScore: number | null
+  }
+
+  export type AtsScoreCacheMinAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    jobId: string | null
+    resumeUrl: string | null
+    overallScore: number | null
+    summary: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AtsScoreCacheMaxAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    jobId: string | null
+    resumeUrl: string | null
+    overallScore: number | null
+    summary: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AtsScoreCacheCountAggregateOutputType = {
+    id: number
+    studentId: number
+    jobId: number
+    resumeUrl: number
+    overallScore: number
+    categoryScores: number
+    matchedSkills: number
+    missingSkills: number
+    partialSkills: number
+    recommendations: number
+    summary: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AtsScoreCacheAvgAggregateInputType = {
+    overallScore?: true
+  }
+
+  export type AtsScoreCacheSumAggregateInputType = {
+    overallScore?: true
+  }
+
+  export type AtsScoreCacheMinAggregateInputType = {
+    id?: true
+    studentId?: true
+    jobId?: true
+    resumeUrl?: true
+    overallScore?: true
+    summary?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AtsScoreCacheMaxAggregateInputType = {
+    id?: true
+    studentId?: true
+    jobId?: true
+    resumeUrl?: true
+    overallScore?: true
+    summary?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AtsScoreCacheCountAggregateInputType = {
+    id?: true
+    studentId?: true
+    jobId?: true
+    resumeUrl?: true
+    overallScore?: true
+    categoryScores?: true
+    matchedSkills?: true
+    missingSkills?: true
+    partialSkills?: true
+    recommendations?: true
+    summary?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AtsScoreCacheAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AtsScoreCache to aggregate.
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AtsScoreCaches to fetch.
+     */
+    orderBy?: AtsScoreCacheOrderByWithRelationInput | AtsScoreCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AtsScoreCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AtsScoreCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AtsScoreCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AtsScoreCaches
+    **/
+    _count?: true | AtsScoreCacheCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AtsScoreCacheAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AtsScoreCacheSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AtsScoreCacheMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AtsScoreCacheMaxAggregateInputType
+  }
+
+  export type GetAtsScoreCacheAggregateType<T extends AtsScoreCacheAggregateArgs> = {
+        [P in keyof T & keyof AggregateAtsScoreCache]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAtsScoreCache[P]>
+      : GetScalarType<T[P], AggregateAtsScoreCache[P]>
+  }
+
+
+
+
+  export type AtsScoreCacheGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AtsScoreCacheWhereInput
+    orderBy?: AtsScoreCacheOrderByWithAggregationInput | AtsScoreCacheOrderByWithAggregationInput[]
+    by: AtsScoreCacheScalarFieldEnum[] | AtsScoreCacheScalarFieldEnum
+    having?: AtsScoreCacheScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AtsScoreCacheCountAggregateInputType | true
+    _avg?: AtsScoreCacheAvgAggregateInputType
+    _sum?: AtsScoreCacheSumAggregateInputType
+    _min?: AtsScoreCacheMinAggregateInputType
+    _max?: AtsScoreCacheMaxAggregateInputType
+  }
+
+  export type AtsScoreCacheGroupByOutputType = {
+    id: string
+    studentId: string
+    jobId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonValue
+    matchedSkills: string[]
+    missingSkills: string[]
+    partialSkills: string[]
+    recommendations: string[]
+    summary: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AtsScoreCacheCountAggregateOutputType | null
+    _avg: AtsScoreCacheAvgAggregateOutputType | null
+    _sum: AtsScoreCacheSumAggregateOutputType | null
+    _min: AtsScoreCacheMinAggregateOutputType | null
+    _max: AtsScoreCacheMaxAggregateOutputType | null
+  }
+
+  type GetAtsScoreCacheGroupByPayload<T extends AtsScoreCacheGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AtsScoreCacheGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AtsScoreCacheGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AtsScoreCacheGroupByOutputType[P]>
+            : GetScalarType<T[P], AtsScoreCacheGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AtsScoreCacheSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    resumeUrl?: boolean
+    overallScore?: boolean
+    categoryScores?: boolean
+    matchedSkills?: boolean
+    missingSkills?: boolean
+    partialSkills?: boolean
+    recommendations?: boolean
+    summary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["atsScoreCache"]>
+
+  export type AtsScoreCacheSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    resumeUrl?: boolean
+    overallScore?: boolean
+    categoryScores?: boolean
+    matchedSkills?: boolean
+    missingSkills?: boolean
+    partialSkills?: boolean
+    recommendations?: boolean
+    summary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["atsScoreCache"]>
+
+  export type AtsScoreCacheSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    resumeUrl?: boolean
+    overallScore?: boolean
+    categoryScores?: boolean
+    matchedSkills?: boolean
+    missingSkills?: boolean
+    partialSkills?: boolean
+    recommendations?: boolean
+    summary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["atsScoreCache"]>
+
+  export type AtsScoreCacheSelectScalar = {
+    id?: boolean
+    studentId?: boolean
+    jobId?: boolean
+    resumeUrl?: boolean
+    overallScore?: boolean
+    categoryScores?: boolean
+    matchedSkills?: boolean
+    missingSkills?: boolean
+    partialSkills?: boolean
+    recommendations?: boolean
+    summary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AtsScoreCacheOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "jobId" | "resumeUrl" | "overallScore" | "categoryScores" | "matchedSkills" | "missingSkills" | "partialSkills" | "recommendations" | "summary" | "createdAt" | "updatedAt", ExtArgs["result"]["atsScoreCache"]>
+  export type AtsScoreCacheInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+  export type AtsScoreCacheIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+  export type AtsScoreCacheIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentProfileDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+
+  export type $AtsScoreCachePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AtsScoreCache"
+    objects: {
+      student: Prisma.$StudentProfilePayload<ExtArgs>
+      job: Prisma.$JobPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      studentId: string
+      jobId: string
+      resumeUrl: string
+      overallScore: number
+      categoryScores: Prisma.JsonValue
+      matchedSkills: string[]
+      missingSkills: string[]
+      partialSkills: string[]
+      recommendations: string[]
+      summary: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["atsScoreCache"]>
+    composites: {}
+  }
+
+  type AtsScoreCacheGetPayload<S extends boolean | null | undefined | AtsScoreCacheDefaultArgs> = $Result.GetResult<Prisma.$AtsScoreCachePayload, S>
+
+  type AtsScoreCacheCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AtsScoreCacheFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AtsScoreCacheCountAggregateInputType | true
+    }
+
+  export interface AtsScoreCacheDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AtsScoreCache'], meta: { name: 'AtsScoreCache' } }
+    /**
+     * Find zero or one AtsScoreCache that matches the filter.
+     * @param {AtsScoreCacheFindUniqueArgs} args - Arguments to find a AtsScoreCache
+     * @example
+     * // Get one AtsScoreCache
+     * const atsScoreCache = await prisma.atsScoreCache.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AtsScoreCacheFindUniqueArgs>(args: SelectSubset<T, AtsScoreCacheFindUniqueArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AtsScoreCache that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AtsScoreCacheFindUniqueOrThrowArgs} args - Arguments to find a AtsScoreCache
+     * @example
+     * // Get one AtsScoreCache
+     * const atsScoreCache = await prisma.atsScoreCache.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AtsScoreCacheFindUniqueOrThrowArgs>(args: SelectSubset<T, AtsScoreCacheFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AtsScoreCache that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheFindFirstArgs} args - Arguments to find a AtsScoreCache
+     * @example
+     * // Get one AtsScoreCache
+     * const atsScoreCache = await prisma.atsScoreCache.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AtsScoreCacheFindFirstArgs>(args?: SelectSubset<T, AtsScoreCacheFindFirstArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AtsScoreCache that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheFindFirstOrThrowArgs} args - Arguments to find a AtsScoreCache
+     * @example
+     * // Get one AtsScoreCache
+     * const atsScoreCache = await prisma.atsScoreCache.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AtsScoreCacheFindFirstOrThrowArgs>(args?: SelectSubset<T, AtsScoreCacheFindFirstOrThrowArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AtsScoreCaches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AtsScoreCaches
+     * const atsScoreCaches = await prisma.atsScoreCache.findMany()
+     * 
+     * // Get first 10 AtsScoreCaches
+     * const atsScoreCaches = await prisma.atsScoreCache.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const atsScoreCacheWithIdOnly = await prisma.atsScoreCache.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AtsScoreCacheFindManyArgs>(args?: SelectSubset<T, AtsScoreCacheFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AtsScoreCache.
+     * @param {AtsScoreCacheCreateArgs} args - Arguments to create a AtsScoreCache.
+     * @example
+     * // Create one AtsScoreCache
+     * const AtsScoreCache = await prisma.atsScoreCache.create({
+     *   data: {
+     *     // ... data to create a AtsScoreCache
+     *   }
+     * })
+     * 
+     */
+    create<T extends AtsScoreCacheCreateArgs>(args: SelectSubset<T, AtsScoreCacheCreateArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AtsScoreCaches.
+     * @param {AtsScoreCacheCreateManyArgs} args - Arguments to create many AtsScoreCaches.
+     * @example
+     * // Create many AtsScoreCaches
+     * const atsScoreCache = await prisma.atsScoreCache.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AtsScoreCacheCreateManyArgs>(args?: SelectSubset<T, AtsScoreCacheCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AtsScoreCaches and returns the data saved in the database.
+     * @param {AtsScoreCacheCreateManyAndReturnArgs} args - Arguments to create many AtsScoreCaches.
+     * @example
+     * // Create many AtsScoreCaches
+     * const atsScoreCache = await prisma.atsScoreCache.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AtsScoreCaches and only return the `id`
+     * const atsScoreCacheWithIdOnly = await prisma.atsScoreCache.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AtsScoreCacheCreateManyAndReturnArgs>(args?: SelectSubset<T, AtsScoreCacheCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AtsScoreCache.
+     * @param {AtsScoreCacheDeleteArgs} args - Arguments to delete one AtsScoreCache.
+     * @example
+     * // Delete one AtsScoreCache
+     * const AtsScoreCache = await prisma.atsScoreCache.delete({
+     *   where: {
+     *     // ... filter to delete one AtsScoreCache
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AtsScoreCacheDeleteArgs>(args: SelectSubset<T, AtsScoreCacheDeleteArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AtsScoreCache.
+     * @param {AtsScoreCacheUpdateArgs} args - Arguments to update one AtsScoreCache.
+     * @example
+     * // Update one AtsScoreCache
+     * const atsScoreCache = await prisma.atsScoreCache.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AtsScoreCacheUpdateArgs>(args: SelectSubset<T, AtsScoreCacheUpdateArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AtsScoreCaches.
+     * @param {AtsScoreCacheDeleteManyArgs} args - Arguments to filter AtsScoreCaches to delete.
+     * @example
+     * // Delete a few AtsScoreCaches
+     * const { count } = await prisma.atsScoreCache.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AtsScoreCacheDeleteManyArgs>(args?: SelectSubset<T, AtsScoreCacheDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AtsScoreCaches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AtsScoreCaches
+     * const atsScoreCache = await prisma.atsScoreCache.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AtsScoreCacheUpdateManyArgs>(args: SelectSubset<T, AtsScoreCacheUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AtsScoreCaches and returns the data updated in the database.
+     * @param {AtsScoreCacheUpdateManyAndReturnArgs} args - Arguments to update many AtsScoreCaches.
+     * @example
+     * // Update many AtsScoreCaches
+     * const atsScoreCache = await prisma.atsScoreCache.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AtsScoreCaches and only return the `id`
+     * const atsScoreCacheWithIdOnly = await prisma.atsScoreCache.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AtsScoreCacheUpdateManyAndReturnArgs>(args: SelectSubset<T, AtsScoreCacheUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AtsScoreCache.
+     * @param {AtsScoreCacheUpsertArgs} args - Arguments to update or create a AtsScoreCache.
+     * @example
+     * // Update or create a AtsScoreCache
+     * const atsScoreCache = await prisma.atsScoreCache.upsert({
+     *   create: {
+     *     // ... data to create a AtsScoreCache
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AtsScoreCache we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AtsScoreCacheUpsertArgs>(args: SelectSubset<T, AtsScoreCacheUpsertArgs<ExtArgs>>): Prisma__AtsScoreCacheClient<$Result.GetResult<Prisma.$AtsScoreCachePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AtsScoreCaches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheCountArgs} args - Arguments to filter AtsScoreCaches to count.
+     * @example
+     * // Count the number of AtsScoreCaches
+     * const count = await prisma.atsScoreCache.count({
+     *   where: {
+     *     // ... the filter for the AtsScoreCaches we want to count
+     *   }
+     * })
+    **/
+    count<T extends AtsScoreCacheCountArgs>(
+      args?: Subset<T, AtsScoreCacheCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AtsScoreCacheCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AtsScoreCache.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AtsScoreCacheAggregateArgs>(args: Subset<T, AtsScoreCacheAggregateArgs>): Prisma.PrismaPromise<GetAtsScoreCacheAggregateType<T>>
+
+    /**
+     * Group by AtsScoreCache.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AtsScoreCacheGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AtsScoreCacheGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AtsScoreCacheGroupByArgs['orderBy'] }
+        : { orderBy?: AtsScoreCacheGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AtsScoreCacheGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAtsScoreCacheGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AtsScoreCache model
+   */
+  readonly fields: AtsScoreCacheFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AtsScoreCache.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AtsScoreCacheClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    student<T extends StudentProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentProfileDefaultArgs<ExtArgs>>): Prisma__StudentProfileClient<$Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AtsScoreCache model
+   */
+  interface AtsScoreCacheFieldRefs {
+    readonly id: FieldRef<"AtsScoreCache", 'String'>
+    readonly studentId: FieldRef<"AtsScoreCache", 'String'>
+    readonly jobId: FieldRef<"AtsScoreCache", 'String'>
+    readonly resumeUrl: FieldRef<"AtsScoreCache", 'String'>
+    readonly overallScore: FieldRef<"AtsScoreCache", 'Int'>
+    readonly categoryScores: FieldRef<"AtsScoreCache", 'Json'>
+    readonly matchedSkills: FieldRef<"AtsScoreCache", 'String[]'>
+    readonly missingSkills: FieldRef<"AtsScoreCache", 'String[]'>
+    readonly partialSkills: FieldRef<"AtsScoreCache", 'String[]'>
+    readonly recommendations: FieldRef<"AtsScoreCache", 'String[]'>
+    readonly summary: FieldRef<"AtsScoreCache", 'String'>
+    readonly createdAt: FieldRef<"AtsScoreCache", 'DateTime'>
+    readonly updatedAt: FieldRef<"AtsScoreCache", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AtsScoreCache findUnique
+   */
+  export type AtsScoreCacheFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * Filter, which AtsScoreCache to fetch.
+     */
+    where: AtsScoreCacheWhereUniqueInput
+  }
+
+  /**
+   * AtsScoreCache findUniqueOrThrow
+   */
+  export type AtsScoreCacheFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * Filter, which AtsScoreCache to fetch.
+     */
+    where: AtsScoreCacheWhereUniqueInput
+  }
+
+  /**
+   * AtsScoreCache findFirst
+   */
+  export type AtsScoreCacheFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * Filter, which AtsScoreCache to fetch.
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AtsScoreCaches to fetch.
+     */
+    orderBy?: AtsScoreCacheOrderByWithRelationInput | AtsScoreCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AtsScoreCaches.
+     */
+    cursor?: AtsScoreCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AtsScoreCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AtsScoreCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AtsScoreCaches.
+     */
+    distinct?: AtsScoreCacheScalarFieldEnum | AtsScoreCacheScalarFieldEnum[]
+  }
+
+  /**
+   * AtsScoreCache findFirstOrThrow
+   */
+  export type AtsScoreCacheFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * Filter, which AtsScoreCache to fetch.
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AtsScoreCaches to fetch.
+     */
+    orderBy?: AtsScoreCacheOrderByWithRelationInput | AtsScoreCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AtsScoreCaches.
+     */
+    cursor?: AtsScoreCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AtsScoreCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AtsScoreCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AtsScoreCaches.
+     */
+    distinct?: AtsScoreCacheScalarFieldEnum | AtsScoreCacheScalarFieldEnum[]
+  }
+
+  /**
+   * AtsScoreCache findMany
+   */
+  export type AtsScoreCacheFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * Filter, which AtsScoreCaches to fetch.
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AtsScoreCaches to fetch.
+     */
+    orderBy?: AtsScoreCacheOrderByWithRelationInput | AtsScoreCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AtsScoreCaches.
+     */
+    cursor?: AtsScoreCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AtsScoreCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AtsScoreCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AtsScoreCaches.
+     */
+    distinct?: AtsScoreCacheScalarFieldEnum | AtsScoreCacheScalarFieldEnum[]
+  }
+
+  /**
+   * AtsScoreCache create
+   */
+  export type AtsScoreCacheCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AtsScoreCache.
+     */
+    data: XOR<AtsScoreCacheCreateInput, AtsScoreCacheUncheckedCreateInput>
+  }
+
+  /**
+   * AtsScoreCache createMany
+   */
+  export type AtsScoreCacheCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AtsScoreCaches.
+     */
+    data: AtsScoreCacheCreateManyInput | AtsScoreCacheCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AtsScoreCache createManyAndReturn
+   */
+  export type AtsScoreCacheCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * The data used to create many AtsScoreCaches.
+     */
+    data: AtsScoreCacheCreateManyInput | AtsScoreCacheCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AtsScoreCache update
+   */
+  export type AtsScoreCacheUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AtsScoreCache.
+     */
+    data: XOR<AtsScoreCacheUpdateInput, AtsScoreCacheUncheckedUpdateInput>
+    /**
+     * Choose, which AtsScoreCache to update.
+     */
+    where: AtsScoreCacheWhereUniqueInput
+  }
+
+  /**
+   * AtsScoreCache updateMany
+   */
+  export type AtsScoreCacheUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AtsScoreCaches.
+     */
+    data: XOR<AtsScoreCacheUpdateManyMutationInput, AtsScoreCacheUncheckedUpdateManyInput>
+    /**
+     * Filter which AtsScoreCaches to update
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * Limit how many AtsScoreCaches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AtsScoreCache updateManyAndReturn
+   */
+  export type AtsScoreCacheUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * The data used to update AtsScoreCaches.
+     */
+    data: XOR<AtsScoreCacheUpdateManyMutationInput, AtsScoreCacheUncheckedUpdateManyInput>
+    /**
+     * Filter which AtsScoreCaches to update
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * Limit how many AtsScoreCaches to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AtsScoreCache upsert
+   */
+  export type AtsScoreCacheUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AtsScoreCache to update in case it exists.
+     */
+    where: AtsScoreCacheWhereUniqueInput
+    /**
+     * In case the AtsScoreCache found by the `where` argument doesn't exist, create a new AtsScoreCache with this data.
+     */
+    create: XOR<AtsScoreCacheCreateInput, AtsScoreCacheUncheckedCreateInput>
+    /**
+     * In case the AtsScoreCache was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AtsScoreCacheUpdateInput, AtsScoreCacheUncheckedUpdateInput>
+  }
+
+  /**
+   * AtsScoreCache delete
+   */
+  export type AtsScoreCacheDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+    /**
+     * Filter which AtsScoreCache to delete.
+     */
+    where: AtsScoreCacheWhereUniqueInput
+  }
+
+  /**
+   * AtsScoreCache deleteMany
+   */
+  export type AtsScoreCacheDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AtsScoreCaches to delete
+     */
+    where?: AtsScoreCacheWhereInput
+    /**
+     * Limit how many AtsScoreCaches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AtsScoreCache without action
+   */
+  export type AtsScoreCacheDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AtsScoreCache
+     */
+    select?: AtsScoreCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AtsScoreCache
+     */
+    omit?: AtsScoreCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AtsScoreCacheInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -14418,12 +15772,38 @@ export namespace Prisma {
   export type OfferScalarFieldEnum = (typeof OfferScalarFieldEnum)[keyof typeof OfferScalarFieldEnum]
 
 
+  export const AtsScoreCacheScalarFieldEnum: {
+    id: 'id',
+    studentId: 'studentId',
+    jobId: 'jobId',
+    resumeUrl: 'resumeUrl',
+    overallScore: 'overallScore',
+    categoryScores: 'categoryScores',
+    matchedSkills: 'matchedSkills',
+    missingSkills: 'missingSkills',
+    partialSkills: 'partialSkills',
+    recommendations: 'recommendations',
+    summary: 'summary',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AtsScoreCacheScalarFieldEnum = (typeof AtsScoreCacheScalarFieldEnum)[keyof typeof AtsScoreCacheScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -14440,6 +15820,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -14577,6 +15966,20 @@ export namespace Prisma {
    * Reference to a field of type 'OfferStatus[]'
    */
   export type ListEnumOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OfferStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
   /**
    * Deep Input Types
@@ -14889,6 +16292,7 @@ export namespace Prisma {
     resumes?: StudentResumeListRelationFilter
     applications?: ApplicationListRelationFilter
     offers?: OfferListRelationFilter
+    atsScores?: AtsScoreCacheListRelationFilter
   }
 
   export type StudentProfileOrderByWithRelationInput = {
@@ -14916,6 +16320,7 @@ export namespace Prisma {
     resumes?: StudentResumeOrderByRelationAggregateInput
     applications?: ApplicationOrderByRelationAggregateInput
     offers?: OfferOrderByRelationAggregateInput
+    atsScores?: AtsScoreCacheOrderByRelationAggregateInput
   }
 
   export type StudentProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -14946,6 +16351,7 @@ export namespace Prisma {
     resumes?: StudentResumeListRelationFilter
     applications?: ApplicationListRelationFilter
     offers?: OfferListRelationFilter
+    atsScores?: AtsScoreCacheListRelationFilter
   }, "id" | "userId" | "enrollmentNumber">
 
   export type StudentProfileOrderByWithAggregationInput = {
@@ -15263,6 +16669,7 @@ export namespace Prisma {
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
     offers?: OfferListRelationFilter
+    atsScores?: AtsScoreCacheListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
@@ -15286,6 +16693,7 @@ export namespace Prisma {
     college?: CollegeOrderByWithRelationInput
     applications?: ApplicationOrderByRelationAggregateInput
     offers?: OfferOrderByRelationAggregateInput
+    atsScores?: AtsScoreCacheOrderByRelationAggregateInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -15312,6 +16720,7 @@ export namespace Prisma {
     college?: XOR<CollegeScalarRelationFilter, CollegeWhereInput>
     applications?: ApplicationListRelationFilter
     offers?: OfferListRelationFilter
+    atsScores?: AtsScoreCacheListRelationFilter
   }, "id">
 
   export type JobOrderByWithAggregationInput = {
@@ -15575,6 +16984,107 @@ export namespace Prisma {
     declinedAt?: DateTimeNullableWithAggregatesFilter<"Offer"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Offer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Offer"> | Date | string
+  }
+
+  export type AtsScoreCacheWhereInput = {
+    AND?: AtsScoreCacheWhereInput | AtsScoreCacheWhereInput[]
+    OR?: AtsScoreCacheWhereInput[]
+    NOT?: AtsScoreCacheWhereInput | AtsScoreCacheWhereInput[]
+    id?: StringFilter<"AtsScoreCache"> | string
+    studentId?: StringFilter<"AtsScoreCache"> | string
+    jobId?: StringFilter<"AtsScoreCache"> | string
+    resumeUrl?: StringFilter<"AtsScoreCache"> | string
+    overallScore?: IntFilter<"AtsScoreCache"> | number
+    categoryScores?: JsonFilter<"AtsScoreCache">
+    matchedSkills?: StringNullableListFilter<"AtsScoreCache">
+    missingSkills?: StringNullableListFilter<"AtsScoreCache">
+    partialSkills?: StringNullableListFilter<"AtsScoreCache">
+    recommendations?: StringNullableListFilter<"AtsScoreCache">
+    summary?: StringNullableFilter<"AtsScoreCache"> | string | null
+    createdAt?: DateTimeFilter<"AtsScoreCache"> | Date | string
+    updatedAt?: DateTimeFilter<"AtsScoreCache"> | Date | string
+    student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+  }
+
+  export type AtsScoreCacheOrderByWithRelationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    resumeUrl?: SortOrder
+    overallScore?: SortOrder
+    categoryScores?: SortOrder
+    matchedSkills?: SortOrder
+    missingSkills?: SortOrder
+    partialSkills?: SortOrder
+    recommendations?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    student?: StudentProfileOrderByWithRelationInput
+    job?: JobOrderByWithRelationInput
+  }
+
+  export type AtsScoreCacheWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    studentId_jobId_resumeUrl?: AtsScoreCacheStudentIdJobIdResumeUrlCompoundUniqueInput
+    AND?: AtsScoreCacheWhereInput | AtsScoreCacheWhereInput[]
+    OR?: AtsScoreCacheWhereInput[]
+    NOT?: AtsScoreCacheWhereInput | AtsScoreCacheWhereInput[]
+    studentId?: StringFilter<"AtsScoreCache"> | string
+    jobId?: StringFilter<"AtsScoreCache"> | string
+    resumeUrl?: StringFilter<"AtsScoreCache"> | string
+    overallScore?: IntFilter<"AtsScoreCache"> | number
+    categoryScores?: JsonFilter<"AtsScoreCache">
+    matchedSkills?: StringNullableListFilter<"AtsScoreCache">
+    missingSkills?: StringNullableListFilter<"AtsScoreCache">
+    partialSkills?: StringNullableListFilter<"AtsScoreCache">
+    recommendations?: StringNullableListFilter<"AtsScoreCache">
+    summary?: StringNullableFilter<"AtsScoreCache"> | string | null
+    createdAt?: DateTimeFilter<"AtsScoreCache"> | Date | string
+    updatedAt?: DateTimeFilter<"AtsScoreCache"> | Date | string
+    student?: XOR<StudentProfileScalarRelationFilter, StudentProfileWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+  }, "id" | "studentId_jobId_resumeUrl">
+
+  export type AtsScoreCacheOrderByWithAggregationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    resumeUrl?: SortOrder
+    overallScore?: SortOrder
+    categoryScores?: SortOrder
+    matchedSkills?: SortOrder
+    missingSkills?: SortOrder
+    partialSkills?: SortOrder
+    recommendations?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AtsScoreCacheCountOrderByAggregateInput
+    _avg?: AtsScoreCacheAvgOrderByAggregateInput
+    _max?: AtsScoreCacheMaxOrderByAggregateInput
+    _min?: AtsScoreCacheMinOrderByAggregateInput
+    _sum?: AtsScoreCacheSumOrderByAggregateInput
+  }
+
+  export type AtsScoreCacheScalarWhereWithAggregatesInput = {
+    AND?: AtsScoreCacheScalarWhereWithAggregatesInput | AtsScoreCacheScalarWhereWithAggregatesInput[]
+    OR?: AtsScoreCacheScalarWhereWithAggregatesInput[]
+    NOT?: AtsScoreCacheScalarWhereWithAggregatesInput | AtsScoreCacheScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AtsScoreCache"> | string
+    studentId?: StringWithAggregatesFilter<"AtsScoreCache"> | string
+    jobId?: StringWithAggregatesFilter<"AtsScoreCache"> | string
+    resumeUrl?: StringWithAggregatesFilter<"AtsScoreCache"> | string
+    overallScore?: IntWithAggregatesFilter<"AtsScoreCache"> | number
+    categoryScores?: JsonWithAggregatesFilter<"AtsScoreCache">
+    matchedSkills?: StringNullableListFilter<"AtsScoreCache">
+    missingSkills?: StringNullableListFilter<"AtsScoreCache">
+    partialSkills?: StringNullableListFilter<"AtsScoreCache">
+    recommendations?: StringNullableListFilter<"AtsScoreCache">
+    summary?: StringNullableWithAggregatesFilter<"AtsScoreCache"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AtsScoreCache"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AtsScoreCache"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -15927,6 +17437,7 @@ export namespace Prisma {
     resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateInput = {
@@ -15952,6 +17463,7 @@ export namespace Prisma {
     resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUpdateInput = {
@@ -15977,6 +17489,7 @@ export namespace Prisma {
     resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateInput = {
@@ -16002,6 +17515,7 @@ export namespace Prisma {
     resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileCreateManyInput = {
@@ -16352,6 +17866,7 @@ export namespace Prisma {
     college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
     offers?: OfferCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateInput = {
@@ -16373,6 +17888,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
     offers?: OfferUncheckedCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobUpdateInput = {
@@ -16394,6 +17910,7 @@ export namespace Prisma {
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
     offers?: OfferUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
@@ -16415,6 +17932,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
     offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateManyInput = {
@@ -16695,6 +18213,116 @@ export namespace Prisma {
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheCreateInput = {
+    id?: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentProfileCreateNestedOneWithoutAtsScoresInput
+    job: JobCreateNestedOneWithoutAtsScoresInput
+  }
+
+  export type AtsScoreCacheUncheckedCreateInput = {
+    id?: string
+    studentId: string
+    jobId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AtsScoreCacheUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUpdateOneRequiredWithoutAtsScoresNestedInput
+    job?: JobUpdateOneRequiredWithoutAtsScoresNestedInput
+  }
+
+  export type AtsScoreCacheUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheCreateManyInput = {
+    id?: string
+    studentId: string
+    jobId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AtsScoreCacheUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17117,11 +18745,21 @@ export namespace Prisma {
     none?: ApplicationWhereInput
   }
 
+  export type AtsScoreCacheListRelationFilter = {
+    every?: AtsScoreCacheWhereInput
+    some?: AtsScoreCacheWhereInput
+    none?: AtsScoreCacheWhereInput
+  }
+
   export type StudentResumeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ApplicationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AtsScoreCacheOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -17672,6 +19310,107 @@ export namespace Prisma {
     _min?: NestedEnumOfferStatusFilter<$PrismaModel>
     _max?: NestedEnumOfferStatusFilter<$PrismaModel>
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type AtsScoreCacheStudentIdJobIdResumeUrlCompoundUniqueInput = {
+    studentId: string
+    jobId: string
+    resumeUrl: string
+  }
+
+  export type AtsScoreCacheCountOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    resumeUrl?: SortOrder
+    overallScore?: SortOrder
+    categoryScores?: SortOrder
+    matchedSkills?: SortOrder
+    missingSkills?: SortOrder
+    partialSkills?: SortOrder
+    recommendations?: SortOrder
+    summary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AtsScoreCacheAvgOrderByAggregateInput = {
+    overallScore?: SortOrder
+  }
+
+  export type AtsScoreCacheMaxOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    resumeUrl?: SortOrder
+    overallScore?: SortOrder
+    summary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AtsScoreCacheMinOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    jobId?: SortOrder
+    resumeUrl?: SortOrder
+    overallScore?: SortOrder
+    summary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AtsScoreCacheSumOrderByAggregateInput = {
+    overallScore?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
 
   export type StudentProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<StudentProfileCreateWithoutUserInput, StudentProfileUncheckedCreateWithoutUserInput>
@@ -18041,6 +19780,13 @@ export namespace Prisma {
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
+  export type AtsScoreCacheCreateNestedManyWithoutStudentInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutStudentInput, AtsScoreCacheUncheckedCreateWithoutStudentInput> | AtsScoreCacheCreateWithoutStudentInput[] | AtsScoreCacheUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutStudentInput | AtsScoreCacheCreateOrConnectWithoutStudentInput[]
+    createMany?: AtsScoreCacheCreateManyStudentInputEnvelope
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+  }
+
   export type StudentResumeUncheckedCreateNestedManyWithoutStudentInput = {
     create?: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput> | StudentResumeCreateWithoutStudentInput[] | StudentResumeUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: StudentResumeCreateOrConnectWithoutStudentInput | StudentResumeCreateOrConnectWithoutStudentInput[]
@@ -18060,6 +19806,13 @@ export namespace Prisma {
     connectOrCreate?: OfferCreateOrConnectWithoutStudentInput | OfferCreateOrConnectWithoutStudentInput[]
     createMany?: OfferCreateManyStudentInputEnvelope
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
+  export type AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutStudentInput, AtsScoreCacheUncheckedCreateWithoutStudentInput> | AtsScoreCacheCreateWithoutStudentInput[] | AtsScoreCacheUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutStudentInput | AtsScoreCacheCreateOrConnectWithoutStudentInput[]
+    createMany?: AtsScoreCacheCreateManyStudentInputEnvelope
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -18149,6 +19902,20 @@ export namespace Prisma {
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
+  export type AtsScoreCacheUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutStudentInput, AtsScoreCacheUncheckedCreateWithoutStudentInput> | AtsScoreCacheCreateWithoutStudentInput[] | AtsScoreCacheUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutStudentInput | AtsScoreCacheCreateOrConnectWithoutStudentInput[]
+    upsert?: AtsScoreCacheUpsertWithWhereUniqueWithoutStudentInput | AtsScoreCacheUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: AtsScoreCacheCreateManyStudentInputEnvelope
+    set?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    disconnect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    delete?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    update?: AtsScoreCacheUpdateWithWhereUniqueWithoutStudentInput | AtsScoreCacheUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: AtsScoreCacheUpdateManyWithWhereWithoutStudentInput | AtsScoreCacheUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: AtsScoreCacheScalarWhereInput | AtsScoreCacheScalarWhereInput[]
+  }
+
   export type StudentResumeUncheckedUpdateManyWithoutStudentNestedInput = {
     create?: XOR<StudentResumeCreateWithoutStudentInput, StudentResumeUncheckedCreateWithoutStudentInput> | StudentResumeCreateWithoutStudentInput[] | StudentResumeUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: StudentResumeCreateOrConnectWithoutStudentInput | StudentResumeCreateOrConnectWithoutStudentInput[]
@@ -18189,6 +19956,20 @@ export namespace Prisma {
     update?: OfferUpdateWithWhereUniqueWithoutStudentInput | OfferUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: OfferUpdateManyWithWhereWithoutStudentInput | OfferUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
+  export type AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutStudentInput, AtsScoreCacheUncheckedCreateWithoutStudentInput> | AtsScoreCacheCreateWithoutStudentInput[] | AtsScoreCacheUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutStudentInput | AtsScoreCacheCreateOrConnectWithoutStudentInput[]
+    upsert?: AtsScoreCacheUpsertWithWhereUniqueWithoutStudentInput | AtsScoreCacheUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: AtsScoreCacheCreateManyStudentInputEnvelope
+    set?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    disconnect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    delete?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    update?: AtsScoreCacheUpdateWithWhereUniqueWithoutStudentInput | AtsScoreCacheUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: AtsScoreCacheUpdateManyWithWhereWithoutStudentInput | AtsScoreCacheUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: AtsScoreCacheScalarWhereInput | AtsScoreCacheScalarWhereInput[]
   }
 
   export type StudentProfileCreateNestedOneWithoutResumesInput = {
@@ -18456,6 +20237,13 @@ export namespace Prisma {
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
   }
 
+  export type AtsScoreCacheCreateNestedManyWithoutJobInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutJobInput, AtsScoreCacheUncheckedCreateWithoutJobInput> | AtsScoreCacheCreateWithoutJobInput[] | AtsScoreCacheUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutJobInput | AtsScoreCacheCreateOrConnectWithoutJobInput[]
+    createMany?: AtsScoreCacheCreateManyJobInputEnvelope
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+  }
+
   export type ApplicationUncheckedCreateNestedManyWithoutJobInput = {
     create?: XOR<ApplicationCreateWithoutJobInput, ApplicationUncheckedCreateWithoutJobInput> | ApplicationCreateWithoutJobInput[] | ApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutJobInput | ApplicationCreateOrConnectWithoutJobInput[]
@@ -18468,6 +20256,13 @@ export namespace Prisma {
     connectOrCreate?: OfferCreateOrConnectWithoutJobInput | OfferCreateOrConnectWithoutJobInput[]
     createMany?: OfferCreateManyJobInputEnvelope
     connect?: OfferWhereUniqueInput | OfferWhereUniqueInput[]
+  }
+
+  export type AtsScoreCacheUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutJobInput, AtsScoreCacheUncheckedCreateWithoutJobInput> | AtsScoreCacheCreateWithoutJobInput[] | AtsScoreCacheUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutJobInput | AtsScoreCacheCreateOrConnectWithoutJobInput[]
+    createMany?: AtsScoreCacheCreateManyJobInputEnvelope
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
   }
 
   export type EnumJobTypeFieldUpdateOperationsInput = {
@@ -18537,6 +20332,20 @@ export namespace Prisma {
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
   }
 
+  export type AtsScoreCacheUpdateManyWithoutJobNestedInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutJobInput, AtsScoreCacheUncheckedCreateWithoutJobInput> | AtsScoreCacheCreateWithoutJobInput[] | AtsScoreCacheUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutJobInput | AtsScoreCacheCreateOrConnectWithoutJobInput[]
+    upsert?: AtsScoreCacheUpsertWithWhereUniqueWithoutJobInput | AtsScoreCacheUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: AtsScoreCacheCreateManyJobInputEnvelope
+    set?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    disconnect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    delete?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    update?: AtsScoreCacheUpdateWithWhereUniqueWithoutJobInput | AtsScoreCacheUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: AtsScoreCacheUpdateManyWithWhereWithoutJobInput | AtsScoreCacheUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: AtsScoreCacheScalarWhereInput | AtsScoreCacheScalarWhereInput[]
+  }
+
   export type ApplicationUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<ApplicationCreateWithoutJobInput, ApplicationUncheckedCreateWithoutJobInput> | ApplicationCreateWithoutJobInput[] | ApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: ApplicationCreateOrConnectWithoutJobInput | ApplicationCreateOrConnectWithoutJobInput[]
@@ -18563,6 +20372,20 @@ export namespace Prisma {
     update?: OfferUpdateWithWhereUniqueWithoutJobInput | OfferUpdateWithWhereUniqueWithoutJobInput[]
     updateMany?: OfferUpdateManyWithWhereWithoutJobInput | OfferUpdateManyWithWhereWithoutJobInput[]
     deleteMany?: OfferScalarWhereInput | OfferScalarWhereInput[]
+  }
+
+  export type AtsScoreCacheUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<AtsScoreCacheCreateWithoutJobInput, AtsScoreCacheUncheckedCreateWithoutJobInput> | AtsScoreCacheCreateWithoutJobInput[] | AtsScoreCacheUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: AtsScoreCacheCreateOrConnectWithoutJobInput | AtsScoreCacheCreateOrConnectWithoutJobInput[]
+    upsert?: AtsScoreCacheUpsertWithWhereUniqueWithoutJobInput | AtsScoreCacheUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: AtsScoreCacheCreateManyJobInputEnvelope
+    set?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    disconnect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    delete?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    connect?: AtsScoreCacheWhereUniqueInput | AtsScoreCacheWhereUniqueInput[]
+    update?: AtsScoreCacheUpdateWithWhereUniqueWithoutJobInput | AtsScoreCacheUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: AtsScoreCacheUpdateManyWithWhereWithoutJobInput | AtsScoreCacheUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: AtsScoreCacheScalarWhereInput | AtsScoreCacheScalarWhereInput[]
   }
 
   export type JobCreateNestedOneWithoutApplicationsInput = {
@@ -18717,6 +20540,70 @@ export namespace Prisma {
     upsert?: CollegeUpsertWithoutOffersInput
     connect?: CollegeWhereUniqueInput
     update?: XOR<XOR<CollegeUpdateToOneWithWhereWithoutOffersInput, CollegeUpdateWithoutOffersInput>, CollegeUncheckedUpdateWithoutOffersInput>
+  }
+
+  export type AtsScoreCacheCreatematchedSkillsInput = {
+    set: string[]
+  }
+
+  export type AtsScoreCacheCreatemissingSkillsInput = {
+    set: string[]
+  }
+
+  export type AtsScoreCacheCreatepartialSkillsInput = {
+    set: string[]
+  }
+
+  export type AtsScoreCacheCreaterecommendationsInput = {
+    set: string[]
+  }
+
+  export type StudentProfileCreateNestedOneWithoutAtsScoresInput = {
+    create?: XOR<StudentProfileCreateWithoutAtsScoresInput, StudentProfileUncheckedCreateWithoutAtsScoresInput>
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutAtsScoresInput
+    connect?: StudentProfileWhereUniqueInput
+  }
+
+  export type JobCreateNestedOneWithoutAtsScoresInput = {
+    create?: XOR<JobCreateWithoutAtsScoresInput, JobUncheckedCreateWithoutAtsScoresInput>
+    connectOrCreate?: JobCreateOrConnectWithoutAtsScoresInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type AtsScoreCacheUpdatematchedSkillsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type AtsScoreCacheUpdatemissingSkillsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type AtsScoreCacheUpdatepartialSkillsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type AtsScoreCacheUpdaterecommendationsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type StudentProfileUpdateOneRequiredWithoutAtsScoresNestedInput = {
+    create?: XOR<StudentProfileCreateWithoutAtsScoresInput, StudentProfileUncheckedCreateWithoutAtsScoresInput>
+    connectOrCreate?: StudentProfileCreateOrConnectWithoutAtsScoresInput
+    upsert?: StudentProfileUpsertWithoutAtsScoresInput
+    connect?: StudentProfileWhereUniqueInput
+    update?: XOR<XOR<StudentProfileUpdateToOneWithWhereWithoutAtsScoresInput, StudentProfileUpdateWithoutAtsScoresInput>, StudentProfileUncheckedUpdateWithoutAtsScoresInput>
+  }
+
+  export type JobUpdateOneRequiredWithoutAtsScoresNestedInput = {
+    create?: XOR<JobCreateWithoutAtsScoresInput, JobUncheckedCreateWithoutAtsScoresInput>
+    connectOrCreate?: JobCreateOrConnectWithoutAtsScoresInput
+    upsert?: JobUpsertWithoutAtsScoresInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutAtsScoresInput, JobUpdateWithoutAtsScoresInput>, JobUncheckedUpdateWithoutAtsScoresInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -19053,6 +20940,29 @@ export namespace Prisma {
     _min?: NestedEnumOfferStatusFilter<$PrismaModel>
     _max?: NestedEnumOfferStatusFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type StudentProfileCreateWithoutUserInput = {
     id?: string
@@ -19076,6 +20986,7 @@ export namespace Prisma {
     resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutUserInput = {
@@ -19100,6 +21011,7 @@ export namespace Prisma {
     resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutUserInput = {
@@ -19190,6 +21102,7 @@ export namespace Prisma {
     resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutUserInput = {
@@ -19214,6 +21127,7 @@ export namespace Prisma {
     resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type RecruiterProfileUpsertWithoutUserInput = {
@@ -19334,6 +21248,7 @@ export namespace Prisma {
     resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutCollegeInput = {
@@ -19358,6 +21273,7 @@ export namespace Prisma {
     resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutCollegeInput = {
@@ -19388,6 +21304,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
     offers?: OfferCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCollegeInput = {
@@ -19408,6 +21325,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
     offers?: OfferUncheckedCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCollegeInput = {
@@ -19993,6 +21911,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AtsScoreCacheCreateWithoutStudentInput = {
+    id?: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutAtsScoresInput
+  }
+
+  export type AtsScoreCacheUncheckedCreateWithoutStudentInput = {
+    id?: string
+    jobId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AtsScoreCacheCreateOrConnectWithoutStudentInput = {
+    where: AtsScoreCacheWhereUniqueInput
+    create: XOR<AtsScoreCacheCreateWithoutStudentInput, AtsScoreCacheUncheckedCreateWithoutStudentInput>
+  }
+
+  export type AtsScoreCacheCreateManyStudentInputEnvelope = {
+    data: AtsScoreCacheCreateManyStudentInput | AtsScoreCacheCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutStudentInput = {
     update: XOR<UserUpdateWithoutStudentInput, UserUncheckedUpdateWithoutStudentInput>
     create: XOR<UserCreateWithoutStudentInput, UserUncheckedCreateWithoutStudentInput>
@@ -20164,6 +22122,41 @@ export namespace Prisma {
     data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutStudentInput>
   }
 
+  export type AtsScoreCacheUpsertWithWhereUniqueWithoutStudentInput = {
+    where: AtsScoreCacheWhereUniqueInput
+    update: XOR<AtsScoreCacheUpdateWithoutStudentInput, AtsScoreCacheUncheckedUpdateWithoutStudentInput>
+    create: XOR<AtsScoreCacheCreateWithoutStudentInput, AtsScoreCacheUncheckedCreateWithoutStudentInput>
+  }
+
+  export type AtsScoreCacheUpdateWithWhereUniqueWithoutStudentInput = {
+    where: AtsScoreCacheWhereUniqueInput
+    data: XOR<AtsScoreCacheUpdateWithoutStudentInput, AtsScoreCacheUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type AtsScoreCacheUpdateManyWithWhereWithoutStudentInput = {
+    where: AtsScoreCacheScalarWhereInput
+    data: XOR<AtsScoreCacheUpdateManyMutationInput, AtsScoreCacheUncheckedUpdateManyWithoutStudentInput>
+  }
+
+  export type AtsScoreCacheScalarWhereInput = {
+    AND?: AtsScoreCacheScalarWhereInput | AtsScoreCacheScalarWhereInput[]
+    OR?: AtsScoreCacheScalarWhereInput[]
+    NOT?: AtsScoreCacheScalarWhereInput | AtsScoreCacheScalarWhereInput[]
+    id?: StringFilter<"AtsScoreCache"> | string
+    studentId?: StringFilter<"AtsScoreCache"> | string
+    jobId?: StringFilter<"AtsScoreCache"> | string
+    resumeUrl?: StringFilter<"AtsScoreCache"> | string
+    overallScore?: IntFilter<"AtsScoreCache"> | number
+    categoryScores?: JsonFilter<"AtsScoreCache">
+    matchedSkills?: StringNullableListFilter<"AtsScoreCache">
+    missingSkills?: StringNullableListFilter<"AtsScoreCache">
+    partialSkills?: StringNullableListFilter<"AtsScoreCache">
+    recommendations?: StringNullableListFilter<"AtsScoreCache">
+    summary?: StringNullableFilter<"AtsScoreCache"> | string | null
+    createdAt?: DateTimeFilter<"AtsScoreCache"> | Date | string
+    updatedAt?: DateTimeFilter<"AtsScoreCache"> | Date | string
+  }
+
   export type StudentProfileCreateWithoutResumesInput = {
     id?: string
     enrollmentNumber: string
@@ -20186,6 +22179,7 @@ export namespace Prisma {
     college: CollegeCreateNestedOneWithoutStudentsInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutResumesInput = {
@@ -20210,6 +22204,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutResumesInput = {
@@ -20284,6 +22279,7 @@ export namespace Prisma {
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutResumesInput = {
@@ -20308,6 +22304,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type ApplicationUpsertWithWhereUniqueWithoutResumeInput = {
@@ -20370,6 +22367,7 @@ export namespace Prisma {
     college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
     offers?: OfferCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCompanyInput = {
@@ -20390,6 +22388,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
     offers?: OfferUncheckedCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCompanyInput = {
@@ -20832,6 +22831,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AtsScoreCacheCreateWithoutJobInput = {
+    id?: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentProfileCreateNestedOneWithoutAtsScoresInput
+  }
+
+  export type AtsScoreCacheUncheckedCreateWithoutJobInput = {
+    id?: string
+    studentId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AtsScoreCacheCreateOrConnectWithoutJobInput = {
+    where: AtsScoreCacheWhereUniqueInput
+    create: XOR<AtsScoreCacheCreateWithoutJobInput, AtsScoreCacheUncheckedCreateWithoutJobInput>
+  }
+
+  export type AtsScoreCacheCreateManyJobInputEnvelope = {
+    data: AtsScoreCacheCreateManyJobInput | AtsScoreCacheCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CompanyUpsertWithoutJobsInput = {
     update: XOR<CompanyUpdateWithoutJobsInput, CompanyUncheckedUpdateWithoutJobsInput>
     create: XOR<CompanyCreateWithoutJobsInput, CompanyUncheckedCreateWithoutJobsInput>
@@ -20960,6 +22999,22 @@ export namespace Prisma {
     data: XOR<OfferUpdateManyMutationInput, OfferUncheckedUpdateManyWithoutJobInput>
   }
 
+  export type AtsScoreCacheUpsertWithWhereUniqueWithoutJobInput = {
+    where: AtsScoreCacheWhereUniqueInput
+    update: XOR<AtsScoreCacheUpdateWithoutJobInput, AtsScoreCacheUncheckedUpdateWithoutJobInput>
+    create: XOR<AtsScoreCacheCreateWithoutJobInput, AtsScoreCacheUncheckedCreateWithoutJobInput>
+  }
+
+  export type AtsScoreCacheUpdateWithWhereUniqueWithoutJobInput = {
+    where: AtsScoreCacheWhereUniqueInput
+    data: XOR<AtsScoreCacheUpdateWithoutJobInput, AtsScoreCacheUncheckedUpdateWithoutJobInput>
+  }
+
+  export type AtsScoreCacheUpdateManyWithWhereWithoutJobInput = {
+    where: AtsScoreCacheScalarWhereInput
+    data: XOR<AtsScoreCacheUpdateManyMutationInput, AtsScoreCacheUncheckedUpdateManyWithoutJobInput>
+  }
+
   export type JobCreateWithoutApplicationsInput = {
     id?: string
     title: string
@@ -20978,6 +23033,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobsInput
     college: CollegeCreateNestedOneWithoutJobsInput
     offers?: OfferCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutApplicationsInput = {
@@ -20998,6 +23054,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     offers?: OfferUncheckedCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutApplicationsInput = {
@@ -21027,6 +23084,7 @@ export namespace Prisma {
     college: CollegeCreateNestedOneWithoutStudentsInput
     resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     offers?: OfferCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutApplicationsInput = {
@@ -21051,6 +23109,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutApplicationsInput = {
@@ -21163,6 +23222,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     offers?: OfferUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutApplicationsInput = {
@@ -21183,6 +23243,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type StudentProfileUpsertWithoutApplicationsInput = {
@@ -21218,6 +23279,7 @@ export namespace Prisma {
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutApplicationsInput = {
@@ -21242,6 +23304,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentResumeUpsertWithoutApplicationsInput = {
@@ -21383,6 +23446,7 @@ export namespace Prisma {
     college: CollegeCreateNestedOneWithoutStudentsInput
     resumes?: StudentResumeCreateNestedManyWithoutStudentInput
     applications?: ApplicationCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileUncheckedCreateWithoutOffersInput = {
@@ -21407,6 +23471,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentProfileCreateOrConnectWithoutOffersInput = {
@@ -21432,6 +23497,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobsInput
     college: CollegeCreateNestedOneWithoutJobsInput
     applications?: ApplicationCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutOffersInput = {
@@ -21452,6 +23518,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+    atsScores?: AtsScoreCacheUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutOffersInput = {
@@ -21611,6 +23678,7 @@ export namespace Prisma {
     college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
     resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutOffersInput = {
@@ -21635,6 +23703,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type JobUpsertWithoutOffersInput = {
@@ -21666,6 +23735,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutOffersInput = {
@@ -21686,6 +23756,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type CompanyUpsertWithoutOffersInput = {
@@ -21782,6 +23853,222 @@ export namespace Prisma {
     tpos?: TpoProfileUncheckedUpdateManyWithoutCollegeNestedInput
     students?: StudentProfileUncheckedUpdateManyWithoutCollegeNestedInput
     jobs?: JobUncheckedUpdateManyWithoutCollegeNestedInput
+  }
+
+  export type StudentProfileCreateWithoutAtsScoresInput = {
+    id?: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    phone?: string | null
+    bio?: string | null
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStudentInput
+    college: CollegeCreateNestedOneWithoutStudentsInput
+    resumes?: StudentResumeCreateNestedManyWithoutStudentInput
+    applications?: ApplicationCreateNestedManyWithoutStudentInput
+    offers?: OfferCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileUncheckedCreateWithoutAtsScoresInput = {
+    id?: string
+    userId: string
+    collegeId: string
+    enrollmentNumber: string
+    branch: string
+    batchYear: number
+    cgpa: number
+    phone?: string | null
+    bio?: string | null
+    tenthMarks?: number | null
+    twelfthMarks?: number | null
+    resumeUrl?: string | null
+    skills?: StudentProfileCreateskillsInput | string[]
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    isVerified?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    resumes?: StudentResumeUncheckedCreateNestedManyWithoutStudentInput
+    applications?: ApplicationUncheckedCreateNestedManyWithoutStudentInput
+    offers?: OfferUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentProfileCreateOrConnectWithoutAtsScoresInput = {
+    where: StudentProfileWhereUniqueInput
+    create: XOR<StudentProfileCreateWithoutAtsScoresInput, StudentProfileUncheckedCreateWithoutAtsScoresInput>
+  }
+
+  export type JobCreateWithoutAtsScoresInput = {
+    id?: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutJobsInput
+    college: CollegeCreateNestedOneWithoutJobsInput
+    applications?: ApplicationCreateNestedManyWithoutJobInput
+    offers?: OfferCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutAtsScoresInput = {
+    id?: string
+    companyId: string
+    collegeId: string
+    title: string
+    description: string
+    type?: $Enums.JobType
+    status?: $Enums.JobStatus
+    location: string
+    salaryPackage: string
+    skills?: JobCreateskillsInput | string[]
+    minCgpa?: number
+    allowedBranches?: JobCreateallowedBranchesInput | string[]
+    eligibleBatches?: JobCreateeligibleBatchesInput | number[]
+    deadline: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applications?: ApplicationUncheckedCreateNestedManyWithoutJobInput
+    offers?: OfferUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutAtsScoresInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutAtsScoresInput, JobUncheckedCreateWithoutAtsScoresInput>
+  }
+
+  export type StudentProfileUpsertWithoutAtsScoresInput = {
+    update: XOR<StudentProfileUpdateWithoutAtsScoresInput, StudentProfileUncheckedUpdateWithoutAtsScoresInput>
+    create: XOR<StudentProfileCreateWithoutAtsScoresInput, StudentProfileUncheckedCreateWithoutAtsScoresInput>
+    where?: StudentProfileWhereInput
+  }
+
+  export type StudentProfileUpdateToOneWithWhereWithoutAtsScoresInput = {
+    where?: StudentProfileWhereInput
+    data: XOR<StudentProfileUpdateWithoutAtsScoresInput, StudentProfileUncheckedUpdateWithoutAtsScoresInput>
+  }
+
+  export type StudentProfileUpdateWithoutAtsScoresInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStudentNestedInput
+    college?: CollegeUpdateOneRequiredWithoutStudentsNestedInput
+    resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
+    applications?: ApplicationUpdateManyWithoutStudentNestedInput
+    offers?: OfferUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentProfileUncheckedUpdateWithoutAtsScoresInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    enrollmentNumber?: StringFieldUpdateOperationsInput | string
+    branch?: StringFieldUpdateOperationsInput | string
+    batchYear?: IntFieldUpdateOperationsInput | number
+    cgpa?: FloatFieldUpdateOperationsInput | number
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    tenthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    twelfthMarks?: NullableFloatFieldUpdateOperationsInput | number | null
+    resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StudentProfileUpdateskillsInput | string[]
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
+    applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type JobUpsertWithoutAtsScoresInput = {
+    update: XOR<JobUpdateWithoutAtsScoresInput, JobUncheckedUpdateWithoutAtsScoresInput>
+    create: XOR<JobCreateWithoutAtsScoresInput, JobUncheckedCreateWithoutAtsScoresInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutAtsScoresInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutAtsScoresInput, JobUncheckedUpdateWithoutAtsScoresInput>
+  }
+
+  export type JobUpdateWithoutAtsScoresInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
+    college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
+    applications?: ApplicationUpdateManyWithoutJobNestedInput
+    offers?: OfferUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutAtsScoresInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    collegeId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: StringFieldUpdateOperationsInput | string
+    salaryPackage?: StringFieldUpdateOperationsInput | string
+    skills?: JobUpdateskillsInput | string[]
+    minCgpa?: FloatFieldUpdateOperationsInput | number
+    allowedBranches?: JobUpdateallowedBranchesInput | string[]
+    eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
+    offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type TpoProfileCreateManyCollegeInput = {
@@ -21913,6 +24200,7 @@ export namespace Prisma {
     resumes?: StudentResumeUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUpdateManyWithoutStudentNestedInput
     offers?: OfferUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateWithoutCollegeInput = {
@@ -21937,6 +24225,7 @@ export namespace Prisma {
     resumes?: StudentResumeUncheckedUpdateManyWithoutStudentNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutStudentNestedInput
     offers?: OfferUncheckedUpdateManyWithoutStudentNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentProfileUncheckedUpdateManyWithoutCollegeInput = {
@@ -21978,6 +24267,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
     offers?: OfferUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCollegeInput = {
@@ -21998,6 +24288,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
     offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutCollegeInput = {
@@ -22117,6 +24408,21 @@ export namespace Prisma {
     expiresAt?: Date | string | null
     acceptedAt?: Date | string | null
     declinedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AtsScoreCacheCreateManyStudentInput = {
+    id?: string
+    jobId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22250,6 +24556,51 @@ export namespace Prisma {
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutAtsScoresNestedInput
+  }
+
+  export type AtsScoreCacheUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22388,6 +24739,7 @@ export namespace Prisma {
     college?: CollegeUpdateOneRequiredWithoutJobsNestedInput
     applications?: ApplicationUpdateManyWithoutJobNestedInput
     offers?: OfferUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCompanyInput = {
@@ -22408,6 +24760,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ApplicationUncheckedUpdateManyWithoutJobNestedInput
     offers?: OfferUncheckedUpdateManyWithoutJobNestedInput
+    atsScores?: AtsScoreCacheUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutCompanyInput = {
@@ -22519,6 +24872,21 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AtsScoreCacheCreateManyJobInput = {
+    id?: string
+    studentId: string
+    resumeUrl: string
+    overallScore: number
+    categoryScores: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheCreatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheCreatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheCreatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheCreaterecommendationsInput | string[]
+    summary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ApplicationUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
@@ -22610,6 +24978,51 @@ export namespace Prisma {
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     declinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentProfileUpdateOneRequiredWithoutAtsScoresNestedInput
+  }
+
+  export type AtsScoreCacheUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AtsScoreCacheUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    resumeUrl?: StringFieldUpdateOperationsInput | string
+    overallScore?: IntFieldUpdateOperationsInput | number
+    categoryScores?: JsonNullValueInput | InputJsonValue
+    matchedSkills?: AtsScoreCacheUpdatematchedSkillsInput | string[]
+    missingSkills?: AtsScoreCacheUpdatemissingSkillsInput | string[]
+    partialSkills?: AtsScoreCacheUpdatepartialSkillsInput | string[]
+    recommendations?: AtsScoreCacheUpdaterecommendationsInput | string[]
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

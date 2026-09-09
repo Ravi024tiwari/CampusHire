@@ -12,8 +12,7 @@ import { JobDetailRightSidebar } from './_components/JobDetailRightSidebar';
 import { JobDetailMobileStickyBar } from './_components/JobDetailMobileStickyBar';
 import { JobDetailFooterTrustBanner } from './_components/JobDetailFooterTrustBanner';
 import { JobDetailAndApplyModal } from '../_components/JobDetailAndApplyModal';
-import { ArrowLeft, Briefcase, Search, Sparkles, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, Briefcase } from 'lucide-react';
 
 export default function StudentJobDetailPage({
   params,
@@ -39,6 +38,44 @@ export default function StudentJobDetailPage({
       fetchStudentResumes();
     }
   }, [jobId, fetchJobById, fetchStudentResumes]);
+
+  // ScrollSpy: Automatically highlight active tab based on scroll position
+  useEffect(() => {
+    const sectionMap: Array<{ id: string; tab: JobDetailTabKey }> = [
+      { id: 'section-overview', tab: 'overview' },
+      { id: 'section-job-description', tab: 'job_description' },
+      { id: 'section-eligibility', tab: 'eligibility' },
+      { id: 'section-selection-process', tab: 'selection_process' },
+      { id: 'section-about-company', tab: 'about_company' },
+    ];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find visible entry with highest intersection ratio
+        const visibleEntries = entries.filter((e) => e.isIntersecting);
+        if (visibleEntries.length > 0) {
+          // Sort by bounding top
+          visibleEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          const activeEntry = visibleEntries[0];
+          const matched = sectionMap.find((s) => s.id === activeEntry.target.id);
+          if (matched) {
+            setActiveTab(matched.tab);
+          }
+        }
+      },
+      {
+        rootMargin: '-100px 0px -40% 0px',
+        threshold: [0.1, 0.3, 0.6],
+      }
+    );
+
+    sectionMap.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [currentJobDetail]);
 
   // Loading skeleton
   if (isDetailLoading && !currentJobDetail) {
@@ -91,10 +128,10 @@ export default function StudentJobDetailPage({
     <div className="w-full bg-[#F8FAFC] pb-20 lg:pb-8">
       <div className="max-w-[1700px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-7 animate-in fade-in duration-300">
         
-        {/* 1. Top Breadcrumbs & Luminous Hero Showcase */}
+        {/* 1. Top Breadcrumbs & Hero Showcase */}
         <JobDetailHeroHeader job={job} />
 
-        {/* 2. Interactive Navigation Tabs */}
+        {/* 2. Sticky Smooth-Scrolling Navigation Tabs */}
         <JobDetailNavigationTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -104,33 +141,21 @@ export default function StudentJobDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Left Main Content Column (8 cols on Desktop) */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-8 space-y-8">
             
-            {/* Conditional Tab Views */}
-            {activeTab === 'overview' && (
-              <JobDetailOverviewSection job={job} />
-            )}
+            {/* 3a. Overview (ATS Matcher), Job Description, & Eligibility Sections */}
+            <JobDetailOverviewSection job={job} />
 
-            {activeTab === 'job_description' && (
-              <JobDetailOverviewSection job={job} />
-            )}
+            {/* 3b. Selection Process Timeline */}
+            <JobDetailSelectionProcessSection job={job} />
 
-            {activeTab === 'eligibility' && (
-              <JobDetailOverviewSection job={job} />
-            )}
-
-            {activeTab === 'selection_process' && (
-              <JobDetailSelectionProcessSection job={job} />
-            )}
-
-            {activeTab === 'about_company' && (
-              <JobDetailAboutCompanySection job={job} />
-            )}
+            {/* 3c. About Company & Benefits */}
+            <JobDetailAboutCompanySection job={job} />
 
           </div>
 
           {/* Right Column: Sticky Application & Similar Jobs Sidebar (4 cols on Desktop) */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-4 sticky top-20">
             <JobDetailRightSidebar
               job={job}
               onApplyClick={() => openJobDetail(job)}

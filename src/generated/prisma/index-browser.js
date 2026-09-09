@@ -273,9 +273,29 @@ exports.Prisma.OfferScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AtsScoreCacheScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  jobId: 'jobId',
+  resumeUrl: 'resumeUrl',
+  overallScore: 'overallScore',
+  categoryScores: 'categoryScores',
+  matchedSkills: 'matchedSkills',
+  missingSkills: 'missingSkills',
+  partialSkills: 'partialSkills',
+  recommendations: 'recommendations',
+  summary: 'summary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -286,6 +306,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   SUPER_ADMIN: 'SUPER_ADMIN',
@@ -336,7 +362,8 @@ exports.Prisma.ModelName = {
   RecruiterProfile: 'RecruiterProfile',
   Job: 'Job',
   Application: 'Application',
-  Offer: 'Offer'
+  Offer: 'Offer',
+  AtsScoreCache: 'AtsScoreCache'
 };
 
 /**

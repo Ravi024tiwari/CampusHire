@@ -141,6 +141,7 @@ model StudentProfile {
   resumes      StudentResume[]
   applications Application[]
   offers       Offer[]
+  atsScores    AtsScoreCache[]
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
 
@@ -230,8 +231,9 @@ model Job {
 
   applications Application[]
   offers       Offer[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  atsScores    AtsScoreCache[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   // Composite indexes for student job feeds and recruiter listings
   @@index([collegeId])
@@ -303,5 +305,30 @@ model Offer {
   @@index([collegeId, status])
   @@index([companyId, status])
   @@index([studentId, status])
+  @@index([createdAt])
+}
+
+// 8. AI ATS Resume Match Cache
+model AtsScoreCache {
+  id        String         @id @default(cuid())
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  jobId     String
+  job       Job            @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resumeUrl String // Snapshot URL of the evaluated resume
+
+  overallScore    Int // 0 - 100
+  categoryScores  Json // { skills: number, experience: number, keywords: number, education: number }
+  matchedSkills   String[] @default([])
+  missingSkills   String[] @default([])
+  partialSkills   String[] @default([])
+  recommendations String[] @default([])
+  summary         String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, jobId, resumeUrl])
+  @@index([studentId, jobId])
   @@index([createdAt])
 }

@@ -58,7 +58,7 @@ export function JobDetailSelectionProcessSection({ job }: JobDetailSelectionProc
   ];
 
   return (
-    <div className="space-y-6">
+    <div id="section-selection-process" className="scroll-mt-28 space-y-6">
       <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-xs space-y-5">
         
         {/* Header */}
