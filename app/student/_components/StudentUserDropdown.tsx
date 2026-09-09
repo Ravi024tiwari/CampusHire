@@ -18,15 +18,13 @@ import {
   User, 
   FileText, 
   Briefcase, 
-  Calendar, 
-  Settings, 
   LogOut, 
   ShieldCheck, 
   GraduationCap,
   ChevronDown,
+  ChevronRight,
   Copy,
   Check,
-  Award,
   Sparkles
 } from 'lucide-react';
 
@@ -38,13 +36,12 @@ export function StudentUserDropdown() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
-  // Dynamic fallback values merging store and auth state
-  const studentName = user?.name || data?.student?.name || 'Ravi Tiwari';
-  const studentEmail = user?.email || 'ravi.tiwari@campus.edu';
-  const studentSubtitle = data?.student?.subtitle || 'B.Tech CSE (2026)';
-  const collegeName = data?.student?.college || 'Delhi Technological University';
+  // Dynamic values merging store and auth state
+  const studentName = user?.name || data?.student?.name || 'Student';
+  const studentEmail = user?.email || 'student@campus.edu';
+  const studentSubtitle = data?.student?.subtitle || 'B.Tech';
   const avatarUrl = user?.avatarUrl || data?.student?.avatarUrl;
-  const profileCompletion = data?.stats?.profileCompletion?.percentage ?? 78;
+  const profileCompletion = data?.stats?.profileCompletion?.percentage ?? 80;
 
   const initialChar = studentName.trim().charAt(0).toUpperCase() || 'S';
 
@@ -70,7 +67,7 @@ export function StudentUserDropdown() {
     <DropdownMenu>
       {/* 1. Tactile Circular Avatar Trigger (Responsive for all screen sizes) */}
       <DropdownMenuTrigger
-        className="group relative flex items-center gap-2 sm:gap-2.5 p-1 sm:py-1 sm:pl-1 sm:pr-3 rounded-full border border-slate-200/90 hover:border-blue-400/80 bg-white/90 hover:bg-slate-50/90 focus:ring-2 focus:ring-blue-600 focus:outline-none hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
+        className="group relative flex items-center gap-2 sm:gap-2.5 p-1 sm:py-1.5 sm:pl-1.5 sm:pr-3 rounded-full border border-slate-200/90 hover:border-blue-400/80 bg-white hover:bg-slate-50/90 focus:ring-2 focus:ring-blue-600 focus:outline-none hover:shadow-xs active:scale-95 transition-all duration-200 cursor-pointer"
         title={`Student Profile (${studentName})`}
         aria-label="Student profile menu"
       >
@@ -98,7 +95,7 @@ export function StudentUserDropdown() {
           <p className="text-xs font-black text-[#0A2540] leading-tight group-hover:text-blue-600 transition-colors">
             {studentName}
           </p>
-          <p className="text-[10px] font-semibold text-slate-400 leading-tight truncate max-w-[120px]">
+          <p className="text-[10.5px] font-semibold text-slate-400 leading-tight truncate max-w-[130px]">
             {studentSubtitle}
           </p>
         </div>
@@ -111,7 +108,7 @@ export function StudentUserDropdown() {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-[calc(100vw-24px)] xs:w-80 max-w-[330px] rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white/98 backdrop-blur-xl p-2 sm:p-2.5 shadow-2xl z-50 text-[#0A2540] animate-in fade-in zoom-in-95 duration-150"
+        className="w-[calc(100vw-24px)] xs:w-80 max-w-[320px] rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white/98 backdrop-blur-xl p-2 sm:p-2.5 shadow-2xl z-50 text-[#0A2540] animate-in fade-in zoom-in-95 duration-150"
       >
         {/* Student Profile Card Header */}
         <DropdownMenuLabel className="p-1 font-normal">
@@ -182,67 +179,59 @@ export function StudentUserDropdown() {
 
         <DropdownMenuSeparator className="bg-slate-100 my-1.5" />
 
-        {/* Quick Navigation Group */}
-        <DropdownMenuGroup className="space-y-0.5 px-0.5">
+        {/* Clean, Functional Quick Navigation Group */}
+        <DropdownMenuGroup className="space-y-1 px-0.5">
+          {/* 1. Profile & Academics */}
           <DropdownMenuItem
             onClick={() => router.push('/student/profile')}
-            className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
+            className="flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-              <User className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <User className="h-3.5 w-3.5" />
+              </div>
+              <span>My Profile & Academics</span>
             </div>
-            <span>My Profile & Academics</span>
+            <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
           </DropdownMenuItem>
 
+          {/* 2. Resume & ATS Score */}
           <DropdownMenuItem
-            onClick={() => router.push('/student/resume')}
-            className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
+            onClick={() => router.push('/student/profile')}
+            className="flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
-              <FileText className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                <FileText className="h-3.5 w-3.5" />
+              </div>
+              <span>Resume & ATS Management</span>
             </div>
-            <span>Resume & ATS Score</span>
+            <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
           </DropdownMenuItem>
 
+          {/* 3. Applied Jobs */}
           <DropdownMenuItem
             onClick={() => router.push('/student/applications')}
-            className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
+            className="flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-              <Briefcase className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <Briefcase className="h-3.5 w-3.5" />
+              </div>
+              <span>Applied Jobs & Drives</span>
             </div>
-            <span>Applied Jobs & Drives</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => router.push('/student/interviews')}
-            className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-bold text-[#0A2540] hover:bg-blue-50/90 hover:text-blue-600 transition-colors cursor-pointer"
-          >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-              <Calendar className="h-3.5 w-3.5" />
-            </div>
-            <span>Interviews & Schedules</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => router.push('/student/settings')}
-            className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-          >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-              <Settings className="h-3.5 w-3.5" />
-            </div>
-            <span>Settings & Privacy</span>
+            <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className="bg-slate-100 my-1.5" />
 
         {/* Sign Out Action Button */}
-        <div className="p-1">
+        <div className="p-0.5">
           <DropdownMenuItem
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+            className="flex items-center justify-between rounded-xl px-2.5 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 text-red-600">
@@ -250,7 +239,7 @@ export function StudentUserDropdown() {
               </div>
               <span>{isLoggingOut ? 'Signing out...' : 'Sign Out Session'}</span>
             </div>
-            <span className="rounded bg-red-100/60 px-1.5 py-0.5 text-[9px] font-mono font-bold text-red-600 uppercase">
+            <span className="rounded bg-red-100/60 px-1.5 py-0.5 text-[9.5px] font-mono font-bold text-red-600 uppercase">
               Exit
             </span>
           </DropdownMenuItem>
