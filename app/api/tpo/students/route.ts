@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/rbac';
 import { Role, ApplicationStatus } from '@/src/generated/prisma';
 import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
+import { normalizeBranchCode, BRANCH_NAME_MAP, BRANCH_CODES } from '@/lib/constants/branches';
 
 const tpoStudentRosterQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -187,7 +188,10 @@ export async function GET(req: NextRequest) {
 
     // Branch filter
     if (query.branch && query.branch !== 'ALL') {
-      where.branch = { equals: query.branch, mode: 'insensitive' };
+      const norm = normalizeBranchCode(query.branch);
+      const fullName = BRANCH_NAME_MAP[norm];
+      const matchBranches = Array.from(new Set([norm, fullName, query.branch].filter(Boolean) as string[]));
+      where.branch = { in: matchBranches, mode: 'insensitive' };
     }
 
     // Batch year filter
@@ -534,7 +538,10 @@ const addStudentSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   enrollmentNumber: z.string().min(3, 'Enrollment number required'),
-  branch: z.string().min(2, 'Branch is required'),
+  branch: z
+    .string()
+    .min(1, 'Branch selection is required')
+    .transform((val) => normalizeBranchCode(val)),
   batchYear: z.coerce.number().int().min(2000).max(2040),
   cgpa: z.coerce.number().min(0).max(10),
   phone: z.string().optional(),

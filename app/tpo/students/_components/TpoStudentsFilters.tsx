@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { Search, Filter, X, ChevronDown, RotateCcw } from 'lucide-react';
+import { ACADEMIC_BRANCHES } from '@/lib/constants/branches';
 
 export interface FilterState {
   search: string;
@@ -95,20 +96,18 @@ export function TpoStudentsFilters({
               className="w-full appearance-none bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-xs font-medium text-slate-700 py-2 pl-3 pr-8 rounded-xl border border-slate-200 focus:border-blue-500 outline-none transition-all cursor-pointer"
             >
               <option value="ALL">All Branches</option>
-              {availableBranches.map((branch) => (
-                <option key={branch} value={branch}>
-                  {branch}
-                </option>
-              ))}
-              {availableBranches.length === 0 && (
-                <>
-                  <option value="CSE">CSE</option>
-                  <option value="ECE">ECE</option>
-                  <option value="ME">ME</option>
-                  <option value="EE">EE</option>
-                  <option value="CE">CE</option>
-                  <option value="IT">IT</option>
-                </>
+              {availableBranches.length > 0 ? (
+                availableBranches.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))
+              ) : (
+                ACADEMIC_BRANCHES.map((b) => (
+                  <option key={b.code} value={b.code}>
+                    {b.code} - {b.name}
+                  </option>
+                ))
               )}
             </select>
             <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />

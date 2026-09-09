@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/rbac';
 import { Role } from '@/src/generated/prisma';
 import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
+import { isBranchEligible } from '@/lib/constants/branches';
 
 const studentJobQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -198,13 +199,12 @@ export async function GET(req: NextRequest) {
     // Map jobs with dynamic eligibility and application status computation
     const jobs = rawJobs.map((job) => {
       const isCgpaEligible = student.cgpa >= job.minCgpa;
-      const isBranchEligible =
-        job.allowedBranches.length === 0 || job.allowedBranches.includes(student.branch);
+      const isBranchEligibleForJob = isBranchEligible(student.branch, job.allowedBranches);
       const isBatchEligible =
         job.eligibleBatches.length === 0 || job.eligibleBatches.includes(student.batchYear);
       const isDeadlineActive = now <= new Date(job.deadline);
 
-      const isEligible = !isAlreadyPlaced && isCgpaEligible && isBranchEligible && isBatchEligible && isDeadlineActive;
+      const isEligible = !isAlreadyPlaced && isCgpaEligible && isBranchEligibleForJob && isBatchEligible && isDeadlineActive;
       const application = job.applications[0] || null;
 
       const { applications: _, ...jobData } = job;
@@ -216,7 +216,7 @@ export async function GET(req: NextRequest) {
           isAlreadyPlaced,
           placedCompany: acceptedOffer?.job.company.name || null,
           isCgpaEligible,
-          isBranchEligible,
+          isBranchEligible: isBranchEligibleForJob,
           isBatchEligible,
           isDeadlineActive,
           studentCgpa: student.cgpa,

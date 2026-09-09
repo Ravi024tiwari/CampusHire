@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useStudentProfileStore } from '@/store/useStudentProfileStore';
+import { BRANCHES_BY_CATEGORY, normalizeBranchCode } from '@/lib/constants/branches';
 
 export function EditProfileModal() {
   const { 
@@ -254,14 +255,23 @@ export function EditProfileModal() {
                 <GitBranch className="w-3.5 h-3.5 text-blue-600" />
                 <span>Branch / Specialization</span>
               </label>
-              <input
-                type="text"
+              <select
                 required
-                value={formData.branch}
+                value={normalizeBranchCode(formData.branch)}
                 onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="Computer Science & Engineering"
-              />
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
+              >
+                <option value="" disabled>Select Academic Branch...</option>
+                {Object.entries(BRANCHES_BY_CATEGORY).map(([category, branches]) => (
+                  <optgroup key={category} label={category}>
+                    {branches.map((b) => (
+                      <option key={b.code} value={b.code}>
+                        {b.name} ({b.code})
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
             </div>
 
             {/* Batch Year */}

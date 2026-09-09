@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { JobType, JobStatus } from '@/src/generated/prisma';
+import { normalizeBranchCode } from '@/lib/constants/branches';
 
 export const createJobSchema = z.object({
   collegeId: z.string().min(1, 'Target college ID is required'),
@@ -13,7 +14,10 @@ export const createJobSchema = z.object({
   
   // Eligibility criteria
   minCgpa: z.coerce.number().min(0.0, 'CGPA cannot be negative').max(10.0, 'CGPA cannot exceed 10.0').default(0.0),
-  allowedBranches: z.array(z.string().trim()).default([]),
+  allowedBranches: z
+    .array(z.string().trim())
+    .transform((branches) => branches.map(normalizeBranchCode).filter(Boolean))
+    .default([]),
   eligibleBatches: z.array(z.coerce.number().int()).default([]),
   deadline: z.coerce.date().refine((date) => date > new Date(), {
     message: 'Application deadline must be a future date and time',

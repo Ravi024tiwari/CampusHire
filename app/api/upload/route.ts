@@ -12,7 +12,7 @@ const ALLOWED_MIME_TYPES: Record<string, { mimes: string[]; folder: string; maxB
     mimes: ['application/pdf'],
     folder: 'campushire/resumes',
     maxBytes: MAX_DOCUMENT_SIZE,
-    resourceType: 'auto',
+    resourceType: 'raw',
   },
   avatar: {
     mimes: ['image/jpeg', 'image/png', 'image/webp'],
@@ -42,7 +42,7 @@ const ALLOWED_MIME_TYPES: Record<string, { mimes: string[]; folder: string; maxB
     mimes: ['application/pdf'],
     folder: 'campushire/offer_letters',
     maxBytes: MAX_DOCUMENT_SIZE,
-    resourceType: 'auto',
+    resourceType: 'raw',
   },
   general: {
     mimes: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'],

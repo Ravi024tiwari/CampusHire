@@ -113,7 +113,7 @@ const defaultFallbackProfile: StudentProfileData = {
   userId: 'user-default',
   collegeId: 'college-default',
   enrollmentNumber: 'GGU/22/CSE/1045',
-  branch: 'Computer Science & Engineering',
+  branch: 'CSE',
   batchYear: 2026,
   cgpa: 8.75,
   tenthMarks: 92.4,

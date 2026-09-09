@@ -2,8 +2,9 @@
 'use client';
 
 import React from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, RotateCcw } from 'lucide-react';
 import { FilterState } from './TpoStudentsFilters';
+import { ACADEMIC_BRANCHES } from '@/lib/constants/branches';
 
 interface TpoMobileFilterDrawerProps {
   isOpen: boolean;
@@ -62,11 +63,19 @@ export function TpoMobileFilterDrawer({
                 className="w-full appearance-none bg-slate-50 text-xs font-medium text-slate-800 py-2.5 pl-3 pr-8 rounded-xl border border-slate-200 outline-none"
               >
                 <option value="ALL">All Branches</option>
-                {availableBranches.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
+                {availableBranches.length > 0 ? (
+                  availableBranches.map((b) => (
+                    <option key={b} value={b}>
+                      {b}
+                    </option>
+                  ))
+                ) : (
+                  ACADEMIC_BRANCHES.map((b) => (
+                    <option key={b.code} value={b.code}>
+                      {b.code} - {b.name}
+                    </option>
+                  ))
+                )}
               </select>
               <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>

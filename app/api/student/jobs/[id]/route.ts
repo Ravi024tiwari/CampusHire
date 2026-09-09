@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/rbac';
 import { Role } from '@/src/generated/prisma';
 import { successResponse, errorResponse } from '@/lib/api-response';
+import { isBranchEligible } from '@/lib/constants/branches';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -90,12 +91,11 @@ export async function GET(req: NextRequest, context: RouteContext) {
     const now = new Date();
     const isAlreadyPlaced = Boolean(acceptedOffer);
     const isCgpaEligible = student.cgpa >= job.minCgpa;
-    const isBranchEligible =
-      job.allowedBranches.length === 0 || job.allowedBranches.includes(student.branch);
+    const isBranchEligibleForJob = isBranchEligible(student.branch, job.allowedBranches);
     const isBatchEligible =
       job.eligibleBatches.length === 0 || job.eligibleBatches.includes(student.batchYear);
     const isDeadlineActive = now <= new Date(job.deadline);
-    const isEligible = !isAlreadyPlaced && isCgpaEligible && isBranchEligible && isBatchEligible && isDeadlineActive;
+    const isEligible = !isAlreadyPlaced && isCgpaEligible && isBranchEligibleForJob && isBatchEligible && isDeadlineActive;
 
     const application = job.applications[0] || null;
     const { applications: _, ...jobDetails } = job;
@@ -108,7 +108,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
           isAlreadyPlaced,
           placedCompany: acceptedOffer?.job.company.name || null,
           isCgpaEligible,
-          isBranchEligible,
+          isBranchEligible: isBranchEligibleForJob,
           isBatchEligible,
           isDeadlineActive,
           studentCgpa: student.cgpa,

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { Role } from '@/src/generated/prisma';
+import { normalizeBranchCode } from '@/lib/constants/branches';
 
 export const loginSchema = z.object({
   email: z.string().trim().email('Please enter a valid email address'),
@@ -14,7 +15,11 @@ export const studentRegisterSchema = z.object({
   
   collegeId: z.string().min(1, 'College selection is required'),
   enrollmentNumber: z.string().trim().min(3, 'Enrollment number is required'),
-  branch: z.string().trim().min(2, 'Branch is required (e.g. Computer Science)'),
+  branch: z
+    .string()
+    .trim()
+    .min(1, 'Academic branch selection is required')
+    .transform((val) => normalizeBranchCode(val)),
   batchYear: z.coerce.number().int().min(2020).max(2028, 'Please provide a valid batch year'),
   cgpa: z.coerce.number().min(0.0).max(10.0, 'CGPA must be between 0.0 and 10.0'),
   tenthMarks: z.coerce.number().min(0).max(100).optional(),

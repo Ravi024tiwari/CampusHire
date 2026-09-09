@@ -14,6 +14,7 @@ import {
   Edit3 
 } from 'lucide-react';
 import { useStudentProfileStore } from '@/store/useStudentProfileStore';
+import { formatBranchDisplay } from '@/lib/constants/branches';
 
 export function PersonalInfoCard() {
   const { profile, setEditProfileOpen } = useStudentProfileStore();
@@ -49,7 +50,7 @@ export function PersonalInfoCard() {
     {
       icon: GitBranch,
       label: 'Branch',
-      value: profile.branch || 'Computer Science & Engineering',
+      value: formatBranchDisplay(profile.branch || 'CSE'),
     },
     {
       icon: Calendar,

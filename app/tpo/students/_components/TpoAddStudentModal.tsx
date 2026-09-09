@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { X, UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
+import { ACADEMIC_BRANCHES } from '@/lib/constants/branches';
 
 interface TpoAddStudentModalProps {
   isOpen: boolean;
@@ -16,13 +17,17 @@ export function TpoAddStudentModal({
   isOpen,
   onClose,
   onStudentAdded,
-  availableBranches = ['CSE', 'ECE', 'ME', 'EE', 'CE', 'IT'],
+  availableBranches,
 }: TpoAddStudentModalProps) {
+  const branchesList = availableBranches && availableBranches.length > 0
+    ? availableBranches
+    : ACADEMIC_BRANCHES.map((b) => b.code);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     enrollmentNumber: '',
-    branch: 'CSE',
+    branch: branchesList[0] || 'CSE',
     batchYear: new Date().getFullYear(),
     cgpa: '8.0',
     phone: '',
@@ -181,7 +186,7 @@ export function TpoAddStudentModal({
                 onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
                 className="w-full px-3 py-2.5 bg-slate-50 text-xs font-medium rounded-xl border border-slate-200 focus:border-blue-500 outline-none"
               >
-                {availableBranches.map((b) => (
+                {branchesList.map((b) => (
                   <option key={b} value={b}>
                     {b}
                   </option>

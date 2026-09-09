@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useStudentProfileStore } from '@/store/useStudentProfileStore';
+import { formatBranchDisplay } from '@/lib/constants/branches';
 
 export function ProfileHeroBanner() {
   const { 
@@ -29,7 +30,7 @@ export function ProfileHeroBanner() {
   const studentName = profile.user.name || 'Ravi Tiwari';
   const avatarUrl = profile.user.avatarUrl;
   const initial = studentName.trim().charAt(0).toUpperCase() || 'S';
-  const branch = profile.branch || 'Computer Science & Engineering';
+  const branch = formatBranchDisplay(profile.branch || 'CSE');
   const batchYear = profile.batchYear || 2026;
   const collegeName = profile.college?.name || 'Guru Ghasidas University';
   const collegeCity = profile.college?.city || 'Bilaspur';

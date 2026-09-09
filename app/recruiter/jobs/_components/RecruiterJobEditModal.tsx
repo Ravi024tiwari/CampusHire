@@ -13,24 +13,13 @@ import {
   Trash2 
 } from 'lucide-react';
 import { RecruiterJobItem, useRecruiterJobsStore } from '@/store/useRecruiterJobsStore';
+import { ACADEMIC_BRANCHES, normalizeBranchCode } from '@/lib/constants/branches';
 
 interface RecruiterJobEditModalProps {
   job: RecruiterJobItem | null;
   onClose: () => void;
   onSuccess: () => void;
 }
-
-const COMMON_BRANCHES = [
-  'Computer Science & Engineering (CSE)',
-  'Information Technology (IT)',
-  'Electronics & Communication (ECE)',
-  'Electrical Engineering (EE)',
-  'Mechanical Engineering (ME)',
-  'Civil Engineering (CE)',
-  'Data Science & AI',
-  'Master of Computer Applications (MCA)',
-  'MBA / Management',
-];
 
 const SUGGESTED_SKILLS = [
   'React', 'Node.js', 'TypeScript', 'Python', 'Java', 'C++', 'SQL', 'PostgreSQL', 
@@ -409,22 +398,26 @@ export function RecruiterJobEditModal({
             </div>
 
             <div className="space-y-1.5 pt-2 border-t border-slate-200/60">
-              <label className="text-xs font-bold text-slate-700">Allowed Disciplines</label>
+              <label className="text-xs font-bold text-slate-700">Allowed Academic Disciplines / Branches</label>
               <div className="flex flex-wrap gap-1.5">
-                {COMMON_BRANCHES.map((branch) => {
-                  const isSelected = allowedBranches.includes(branch);
+                {ACADEMIC_BRANCHES.map((b) => {
+                  const isSelected = allowedBranches.map(normalizeBranchCode).includes(b.code);
                   return (
                     <button
-                      key={branch}
+                      key={b.code}
                       type="button"
-                      onClick={() => toggleBranch(branch)}
+                      onClick={() => toggleBranch(b.code)}
+                      title={`${b.name} (${b.category})`}
                       className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer border ${
                         isSelected
                           ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
                           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      {branch}
+                      {b.code}
+                      <span className="hidden sm:inline text-[10px] ml-1 opacity-75 font-normal">
+                        ({b.name.split(' ')[0]})
+                      </span>
                     </button>
                   );
                 })}

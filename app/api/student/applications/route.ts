@@ -5,6 +5,7 @@ import { requireRole } from '@/lib/rbac';
 import { Role } from '@/src/generated/prisma';
 import { applyJobSchema, applicationQuerySchema } from '@/lib/validations/application.schema';
 import { successResponse, errorResponse, handleValidationError } from '@/lib/api-response';
+import { isBranchEligible, formatBranchDisplay } from '@/lib/constants/branches';
 
 export async function POST(req: NextRequest) {
   try {
@@ -78,9 +79,9 @@ export async function POST(req: NextRequest) {
     }
 
     // 4. Branch Eligibility Guard
-    if (job.allowedBranches.length > 0 && !job.allowedBranches.includes(student.branch)) {
+    if (!isBranchEligible(student.branch, job.allowedBranches)) {
       return errorResponse(
-        `Ineligible for this drive. Allowed branch(es): ${job.allowedBranches.join(', ')} (your branch: ${student.branch})`,
+        `Ineligible for this drive. Allowed branch(es): ${job.allowedBranches.map(formatBranchDisplay).join(', ')} (your branch: ${formatBranchDisplay(student.branch)})`,
         400
       );
     }

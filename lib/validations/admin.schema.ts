@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { JobStatus } from '@/src/generated/prisma';
+import { normalizeBranchCode } from '@/lib/constants/branches';
 
 export const adminCollegeQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -117,7 +118,10 @@ export const createAdminJobSchema = z.object({
   location: z.string().min(2, 'Location is required'),
   salaryPackage: z.string().min(2, 'Salary package is required'),
   minCgpa: z.coerce.number().min(0).max(10).default(0),
-  allowedBranches: z.array(z.string()).default([]),
+  allowedBranches: z
+    .array(z.string())
+    .transform((branches) => branches.map(normalizeBranchCode).filter(Boolean))
+    .default([]),
   eligibleBatches: z.array(z.coerce.number()).default([]),
   skills: z.array(z.string()).default([]),
   deadline: z.string().min(1, 'Deadline date is required'),
