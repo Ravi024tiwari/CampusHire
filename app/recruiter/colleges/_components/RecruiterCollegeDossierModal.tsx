@@ -55,10 +55,36 @@ export function RecruiterCollegeDossierModal({
         const response = await apiClient.get<ApiResponse<CollegeDetail>>(`/api/colleges/${collegeId}`);
         if (isMounted && response.data.success && response.data.data) {
           setDetail(response.data.data);
+        } else if (isMounted && initialCollege) {
+          setDetail({
+            ...initialCollege,
+            placementStats: {
+              enrolledStudents: initialCollege._count?.students || 0,
+              placedStudents: 0,
+              totalOffers: initialCollege._count?.offers || 0,
+              totalApplications: 0,
+              placementRate: 0,
+              activeDrives: initialCollege._count?.jobs || 0,
+            },
+          });
         }
       } catch (err: any) {
         if (isMounted) {
-          setError(err.message || 'Failed to load college details');
+          if (initialCollege) {
+            setDetail({
+              ...initialCollege,
+              placementStats: {
+                enrolledStudents: initialCollege._count?.students || 0,
+                placedStudents: 0,
+                totalOffers: initialCollege._count?.offers || 0,
+                totalApplications: 0,
+                placementRate: 0,
+                activeDrives: initialCollege._count?.jobs || 0,
+              },
+            });
+          } else {
+            setError(err.message || 'Failed to load college details');
+          }
         }
       } finally {
         if (isMounted) setIsLoading(false);

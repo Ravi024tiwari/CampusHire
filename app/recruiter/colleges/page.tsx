@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import apiClient from '@/lib/axios';
 import type { ApiResponse } from '@/lib/api-response';
 import { CollegeItem, CollegesApiResponse } from './_types/recruiter-colleges.types';
@@ -112,12 +113,24 @@ export default function RecruiterCollegesPage() {
   const [colleges, setColleges] = useState<CollegeItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUsingFallback, setIsUsingFallback] = useState(false);
+
+  // Real Database Metrics & Fallback Stats State
+  const [heroStats, setHeroStats] = useState<{
+    totalVerified: number | string;
+    totalStates: number | string;
+    totalStudents: number | string;
+  }>({
+    totalVerified: 0,
+    totalStates: 0,
+    totalStudents: 0,
+  });
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(6);
-  const [totalCount, setTotalCount] = useState(238);
-  const [totalPages, setTotalPages] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Filters & View State
   const [searchQuery, setSearchQuery] = useState('');
@@ -140,24 +153,67 @@ export default function RecruiterCollegesPage() {
       );
       if (response.data.success && response.data.data) {
         const fetched = response.data.data.colleges || [];
+        const pagination = response.data.data.pagination;
+        const apiStats = response.data.data.stats;
+
         if (fetched.length > 0) {
+          // REAL DATABASE DATA FOUND -> Render ONLY real data!
           setColleges(fetched);
-          if (response.data.data.pagination) {
-            setTotalCount(response.data.data.pagination.total);
-            setTotalPages(response.data.data.pagination.totalPages);
+          setIsUsingFallback(false);
+          if (pagination) {
+            setTotalCount(pagination.total);
+            setTotalPages(pagination.totalPages);
+          }
+          if (apiStats) {
+            setHeroStats({
+              totalVerified: apiStats.totalVerified,
+              totalStates: apiStats.totalStates,
+              totalStudents: apiStats.totalStudents,
+            });
+          } else {
+            const distinctStates = new Set(fetched.map((c) => c.state).filter(Boolean)).size;
+            const studentsSum = fetched.reduce((sum, c) => sum + (c._count?.students || 0), 0);
+            setHeroStats({
+              totalVerified: pagination?.total || fetched.length,
+              totalStates: distinctStates || 1,
+              totalStudents: studentsSum,
+            });
           }
         } else {
-          // If database is empty, provide mockup demo data
+          // NO DATA PRESENT IN DATABASE -> Fallback to mock demo data
           setColleges(MOCK_FALLBACK_COLLEGES);
-          setTotalCount(238);
-          setTotalPages(20);
+          setIsUsingFallback(true);
+          setTotalCount(MOCK_FALLBACK_COLLEGES.length);
+          setTotalPages(Math.ceil(MOCK_FALLBACK_COLLEGES.length / pageSize));
+          setHeroStats({
+            totalVerified: 500,
+            totalStates: 28,
+            totalStudents: '1.2M+',
+          });
         }
       } else {
+        // Fallback on unexpected structure
         setColleges(MOCK_FALLBACK_COLLEGES);
+        setIsUsingFallback(true);
+        setTotalCount(MOCK_FALLBACK_COLLEGES.length);
+        setTotalPages(Math.ceil(MOCK_FALLBACK_COLLEGES.length / pageSize));
+        setHeroStats({
+          totalVerified: 500,
+          totalStates: 28,
+          totalStudents: '1.2M+',
+        });
       }
     } catch (err: any) {
-      // Fallback on failure
+      // Fallback on network/fetch failure
       setColleges(MOCK_FALLBACK_COLLEGES);
+      setIsUsingFallback(true);
+      setTotalCount(MOCK_FALLBACK_COLLEGES.length);
+      setTotalPages(Math.ceil(MOCK_FALLBACK_COLLEGES.length / pageSize));
+      setHeroStats({
+        totalVerified: 500,
+        totalStates: 28,
+        totalStudents: '1.2M+',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -169,17 +225,23 @@ export default function RecruiterCollegesPage() {
 
   // Unique list of states
   const statesList = useMemo(() => {
-    const defaultStates = ['Maharashtra', 'Tamil Nadu', 'Rajasthan', 'Karnataka', 'Delhi', 'Telangana'];
-    const currentStates = Array.from(new Set(colleges.map((c) => c.state).filter(Boolean))) as string[];
-    return Array.from(new Set([...defaultStates, ...currentStates]));
-  }, [colleges]);
+    if (isUsingFallback) {
+      const defaultStates = ['Maharashtra', 'Tamil Nadu', 'Rajasthan', 'Karnataka', 'Delhi', 'Telangana'];
+      const currentStates = Array.from(new Set(colleges.map((c) => c.state).filter(Boolean))) as string[];
+      return Array.from(new Set([...defaultStates, ...currentStates])).sort();
+    }
+    return Array.from(new Set(colleges.map((c) => c.state).filter(Boolean))).sort() as string[];
+  }, [colleges, isUsingFallback]);
 
   // Unique list of locations
   const locationsList = useMemo(() => {
-    const defaultCities = ['Mumbai', 'Chennai', 'Pilani', 'Vellore', 'Manipal', 'New Delhi', 'Hyderabad'];
-    const currentCities = Array.from(new Set(colleges.map((c) => c.city).filter(Boolean))) as string[];
-    return Array.from(new Set([...defaultCities, ...currentCities]));
-  }, [colleges]);
+    if (isUsingFallback) {
+      const defaultCities = ['Mumbai', 'Chennai', 'Pilani', 'Vellore', 'Manipal', 'New Delhi', 'Hyderabad'];
+      const currentCities = Array.from(new Set(colleges.map((c) => c.city).filter(Boolean))) as string[];
+      return Array.from(new Set([...defaultCities, ...currentCities])).sort();
+    }
+    return Array.from(new Set(colleges.map((c) => c.city).filter(Boolean))).sort() as string[];
+  }, [colleges, isUsingFallback]);
 
   // Active filter tags
   const activeFilters = useMemo(() => {
@@ -232,9 +294,10 @@ export default function RecruiterCollegesPage() {
     });
   }, [colleges, selectedState, selectedLocation, searchQuery, sortBy]);
 
+  const router = useRouter();
+
   const handleSelectCollege = (college: CollegeItem) => {
-    setSelectedCollegeId(college.id);
-    setSelectedCollegeObj(college);
+    router.push(`/recruiter/colleges/${college.id}`);
   };
 
   const handleCloseModal = () => {
@@ -243,13 +306,14 @@ export default function RecruiterCollegesPage() {
   };
 
   return (
-    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-300">
+    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-5 sm:space-y-6 animate-in fade-in duration-300">
       
-      {/* 1. Hero Banner matching Mockup */}
+      {/* 1. Hero Banner with Real or Fallback Stats */}
       <VerifiedCollegesHero
-        totalVerified={500}
-        totalStates={28}
-        totalStudents="1.2M+"
+        totalVerified={heroStats.totalVerified}
+        totalStates={heroStats.totalStates}
+        totalStudents={heroStats.totalStudents}
+        isRealData={!isUsingFallback && colleges.length > 0}
       />
 
       {/* 2. Interactive Search, Filter Selectors & Sort Bar */}
@@ -293,7 +357,7 @@ export default function RecruiterCollegesPage() {
         />
       )}
 
-      {/* 4. Interactive Bottom Pagination matching Mockup */}
+      {/* 4. Interactive Bottom Pagination */}
       <VerifiedCollegesPagination
         currentPage={currentPage}
         totalPages={totalPages}

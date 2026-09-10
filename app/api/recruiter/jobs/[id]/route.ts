@@ -56,26 +56,27 @@ export async function GET(req: NextRequest, context: RouteContext) {
       return errorResponse('Job drive not found', 404);
     }
 
-    // Security Check: Enforce company isolation
-    if (job.companyId !== recruiter.companyId) {
-      return errorResponse('Access denied. You can only view jobs from your company.', 403);
+    const isOwner = job.companyId === recruiter.companyId;
+
+    // Pipeline status distribution statistics (for owner recruiters)
+    let pipelineBreakdown: Record<string, number> = {};
+    if (isOwner) {
+      const statusCounts = await prisma.application.groupBy({
+        by: ['status'],
+        where: { jobId: id },
+        _count: { status: true },
+      });
+
+      pipelineBreakdown = statusCounts.reduce((acc, curr) => {
+        acc[curr.status] = curr._count.status;
+        return acc;
+      }, {} as Record<string, number>);
     }
-
-    // Pipeline status distribution statistics
-    const statusCounts = await prisma.application.groupBy({
-      by: ['status'],
-      where: { jobId: id },
-      _count: { status: true },
-    });
-
-    const pipelineBreakdown = statusCounts.reduce((acc, curr) => {
-      acc[curr.status] = curr._count.status;
-      return acc;
-    }, {} as Record<string, number>);
 
     return successResponse({
       job,
       pipelineBreakdown,
+      isOwner,
     }, 'Job drive details retrieved successfully');
   } catch (error: any) {
     if (error.name === 'AuthError') {

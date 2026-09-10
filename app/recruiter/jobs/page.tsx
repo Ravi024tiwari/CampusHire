@@ -31,7 +31,6 @@ import { RecruiterJobsStatusTabs } from './_components/RecruiterJobsStatusTabs';
 import { RecruiterJobsList, DEMO_JOBS } from './_components/RecruiterJobsList';
 import { RecruiterJobsPagination } from './_components/RecruiterJobsPagination';
 import { RecruiterJobsValuePillars } from './_components/RecruiterJobsValuePillars';
-import { RecruiterJobDetailModal } from './_components/RecruiterJobDetailModal';
 import { RecruiterJobEditModal } from './_components/RecruiterJobEditModal';
 
 export default function RecruiterJobsPage() {
@@ -48,7 +47,6 @@ export default function RecruiterJobsPage() {
   } = useRecruiterJobsStore();
 
   const [selectedJobIds, setSelectedJobIds] = useState<string[]>([]);
-  const [selectedJobDetail, setSelectedJobDetail] = useState<RecruiterJobItem | null>(null);
   const [selectedJobToEdit, setSelectedJobToEdit] = useState<RecruiterJobItem | null>(null);
   const [jobToDelete, setJobToDelete] = useState<RecruiterJobItem | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
@@ -113,9 +111,6 @@ export default function RecruiterJobsPage() {
     const res = await updateJob(job.id, { status: nextStatus });
     if (res.success) {
       showToast(`Job status updated to ${nextStatus}`);
-      if (selectedJobDetail?.id === job.id) {
-        setSelectedJobDetail({ ...selectedJobDetail, status: nextStatus });
-      }
     } else {
       showToast(res.message || 'Failed to update status', 'info');
     }
@@ -127,7 +122,6 @@ export default function RecruiterJobsPage() {
     if (res.success) {
       showToast(res.message || 'Job posting removed successfully');
       setJobToDelete(null);
-      setSelectedJobDetail(null);
     } else {
       showToast(res.message || 'Failed to delete job', 'info');
     }
@@ -213,7 +207,7 @@ export default function RecruiterJobsPage() {
       
       {/* 1. Notification Toast */}
       {notification && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl bg-[#0A2540] text-white px-4 py-3 shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl bg-slate-900 text-white px-4 py-3 shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-top-4 duration-300">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span className="text-xs font-bold">{notification.message}</span>
           <button 
@@ -229,7 +223,7 @@ export default function RecruiterJobsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-1">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black text-[#0A2540] font-heading tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-heading tracking-tight">
               My Jobs
             </h1>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-black">
@@ -337,7 +331,7 @@ export default function RecruiterJobsPage() {
           <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center mx-auto">
             <Briefcase className="w-7 h-7" />
           </div>
-          <h3 className="text-base font-black text-[#0A2540]">No job postings match criteria</h3>
+          <h3 className="text-base font-black text-slate-900">No job postings match criteria</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             No active jobs match your current search and filter settings. Try adjusting your filters or post a new job.
           </p>
@@ -348,7 +342,7 @@ export default function RecruiterJobsPage() {
           selectedJobIds={selectedJobIds}
           onToggleSelectJob={handleToggleSelectJob}
           onSelectAll={handleSelectAll}
-          onSelectJob={(j) => setSelectedJobDetail(j)}
+          onSelectJob={(j) => router.push(`/recruiter/jobs/${j.id}`)}
           onEditJob={(j) => setSelectedJobToEdit(j)}
           onToggleStatus={handleToggleStatus}
           onDeleteJob={(j) => setJobToDelete(j)}
@@ -374,20 +368,7 @@ export default function RecruiterJobsPage() {
       {/* 9. Bottom Value Pillars Strip */}
       <RecruiterJobsValuePillars />
 
-      {/* 10. Job Detail Dossier Modal */}
-      {selectedJobDetail && (
-        <RecruiterJobDetailModal
-          job={selectedJobDetail}
-          onClose={() => setSelectedJobDetail(null)}
-          onEdit={(j) => {
-            setSelectedJobDetail(null);
-            setSelectedJobToEdit(j);
-          }}
-          onToggleStatus={handleToggleStatus}
-        />
-      )}
-
-      {/* 11. In-place Job Edit Modal */}
+      {/* 10. In-place Job Edit Modal */}
       {selectedJobToEdit && (
         <RecruiterJobEditModal
           job={selectedJobToEdit}
@@ -400,7 +381,7 @@ export default function RecruiterJobsPage() {
         />
       )}
 
-      {/* 12. Delete Confirmation Dialog */}
+      {/* 11. Delete Confirmation Dialog */}
       {jobToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 
@@ -412,7 +393,7 @@ export default function RecruiterJobsPage() {
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-black text-[#0A2540]">
+              <h3 className="text-base font-black text-slate-900">
                 Delete Job Posting?
               </h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed font-medium">

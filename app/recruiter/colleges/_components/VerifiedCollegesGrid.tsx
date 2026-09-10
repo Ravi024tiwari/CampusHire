@@ -17,7 +17,8 @@ import {
   Award,
   PlusCircle,
   School,
-  Star
+  Star,
+  Check
 } from 'lucide-react';
 
 interface VerifiedCollegesGridProps {
@@ -55,6 +56,7 @@ export function VerifiedCollegesGrid({
   onToggleSave,
 }: VerifiedCollegesGridProps) {
   const [bookmarkedIds, setBookmarkedIds] = useState<Record<string, boolean>>({});
+  const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
 
   const handleBookmark = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -62,9 +64,16 @@ export function VerifiedCollegesGrid({
     if (onToggleSave) onToggleSave(id);
   };
 
+  const handleCopyCode = (e: React.MouseEvent, id: string, code: string) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(code);
+    setCopiedCodeId(id);
+    setTimeout(() => setCopiedCodeId(null), 2000);
+  };
+
   if (colleges.length === 0) {
     return (
-      <div className="p-12 text-center rounded-3xl bg-white border border-dashed border-slate-300 shadow-xs space-y-3">
+      <div className="p-8 sm:p-12 text-center rounded-3xl bg-white border border-dashed border-slate-300 shadow-xs space-y-3">
         <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto shadow-2xs">
           <GraduationCap className="w-7 h-7" />
         </div>
@@ -82,15 +91,25 @@ export function VerifiedCollegesGrid({
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
       {colleges.map((college) => {
         const code = (college.code || 'CAMPUS').toUpperCase();
-        const bannerImg = CAMPUS_PREVIEWS[code] || college.images?.[0] || CAMPUS_PREVIEWS.DEFAULT;
-        const description = CAMPUS_DESCRIPTIONS[code] || CAMPUS_DESCRIPTIONS.DEFAULT;
-        const isSaved = Boolean(bookmarkedIds[college.id] || savedColleges.includes(college.id));
-        const studentsCount = college._count?.students 
-          ? `${(college._count.students > 1000 ? `${(college._count.students / 1000).toFixed(0)}K+` : college._count.students)} Students`
-          : '15K+ Students';
-        const deptsCount = '12 Departments';
-        const naacGrade = 'A++ NAAC Grade';
+        const bannerImg = (college.images && college.images.length > 0)
+          ? college.images[0]
+          : (CAMPUS_PREVIEWS[code] || CAMPUS_PREVIEWS.DEFAULT);
+
         const locationText = [college.city, college.state].filter(Boolean).join(', ') || 'India';
+        const description = CAMPUS_DESCRIPTIONS[code] || 
+          `Accredited higher education institution in ${locationText} with verified candidate profiles and active campus placement operations.`;
+
+        const isSaved = Boolean(bookmarkedIds[college.id] || savedColleges.includes(college.id));
+        const isCopied = copiedCodeId === college.id;
+
+        // Real counts directly from database
+        const students = college._count?.students ?? 0;
+        const jobsCount = college._count?.jobs ?? 0;
+        const tposCount = college._count?.tpos ?? 0;
+
+        const studentsFormatted = students >= 1000 
+          ? `${(students / 1000).toFixed(students % 1000 === 0 ? 0 : 1)}K+` 
+          : `${students}`;
 
         return (
           <div
@@ -107,11 +126,11 @@ export function VerifiedCollegesGrid({
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
 
               {/* Verified Green Badge (Top Left) */}
               <div className="absolute top-3 left-3">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-black tracking-wide shadow-sm border border-emerald-400/40">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/95 backdrop-blur-md text-white text-[10px] font-black tracking-wide shadow-sm border border-emerald-400/40">
                   <ShieldCheck className="w-3 h-3" />
                   <span>Verified</span>
                 </span>
@@ -124,7 +143,7 @@ export function VerifiedCollegesGrid({
                 className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition-all cursor-pointer shadow-sm ${
                   isSaved
                     ? 'bg-blue-600 text-white shadow-blue-500/30'
-                    : 'bg-white/80 hover:bg-white text-slate-700 hover:text-[#0A2540]'
+                    : 'bg-white/85 hover:bg-white text-slate-700 hover:text-[#0A2540]'
                 }`}
                 title={isSaved ? 'Remove from saved' : 'Save college'}
                 aria-label="Bookmark college"
@@ -151,15 +170,23 @@ export function VerifiedCollegesGrid({
                 </div>
               </div>
 
-              {/* Code Pill on bottom right */}
-              <div className="absolute bottom-2.5 right-3">
-                <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white text-[10px] font-mono font-bold">
-                  {code}
-                </span>
-              </div>
+              {/* Code Pill with Quick Copy on bottom right */}
+              {college.code && (
+                <div className="absolute bottom-2.5 right-3">
+                  <button
+                    type="button"
+                    onClick={(e) => handleCopyCode(e, college.id, college.code!)}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/70 hover:bg-black/90 backdrop-blur-md text-white text-[10px] font-mono font-bold transition-colors cursor-pointer"
+                    title="Click to copy code"
+                  >
+                    <span>{college.code}</span>
+                    {isCopied ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Bookmark className="w-2.5 h-2.5 opacity-0" />}
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Middle Content: Name, Location, Description, Stats */}
+            {/* Middle Content: Name, Location, Description, Real Stats */}
             <div className="p-4 sm:p-5 pt-5 space-y-3 flex-1 flex flex-col justify-between">
               <div>
                 {/* College Name */}
@@ -179,43 +206,43 @@ export function VerifiedCollegesGrid({
                 </p>
               </div>
 
-              {/* 3 Metric Badges Strip (Students, Depts, NAAC) */}
+              {/* 3 Real Metric Badges Strip (Candidate Pool, Live Drives, TPO Placement Cell) */}
               <div>
                 <div className="grid grid-cols-3 gap-1.5 py-2.5 px-2 rounded-xl bg-slate-50 border border-slate-200/80 text-center mb-3">
                   
-                  {/* Metric 1: Students */}
+                  {/* Metric 1: Real Students Pool */}
                   <div className="space-y-0.5">
                     <span className="text-[11px] font-black text-[#0A2540] block truncate">
-                      {studentsCount}
+                      {studentsFormatted}
                     </span>
                     <span className="text-[9.5px] font-bold text-slate-400 block uppercase">
-                      Pool
+                      Candidates
                     </span>
                   </div>
 
-                  {/* Metric 2: Depts */}
+                  {/* Metric 2: Real Active Drives */}
                   <div className="space-y-0.5 border-x border-slate-200">
-                    <span className="text-[11px] font-black text-[#0A2540] block truncate">
-                      {deptsCount}
+                    <span className={`text-[11px] font-black block truncate ${jobsCount > 0 ? 'text-[#2563EB]' : 'text-[#0A2540]'}`}>
+                      {jobsCount} Drives
                     </span>
                     <span className="text-[9.5px] font-bold text-slate-400 block uppercase">
-                      Streams
+                      Hiring
                     </span>
                   </div>
 
-                  {/* Metric 3: NAAC */}
+                  {/* Metric 3: Real TPO Officers */}
                   <div className="space-y-0.5">
                     <span className="text-[11px] font-black text-emerald-700 block truncate">
-                      {naacGrade}
+                      {tposCount > 0 ? `${tposCount} TPOs` : 'Verified Cell'}
                     </span>
                     <span className="text-[9.5px] font-bold text-slate-400 block uppercase">
-                      Rating
+                      Placement
                     </span>
                   </div>
 
                 </div>
 
-                {/* Bottom Actions Row: View Details CTA */}
+                {/* Bottom Actions Row: Inspect Details & Direct Post Drive CTA */}
                 <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                   <button
                     type="button"
@@ -232,7 +259,7 @@ export function VerifiedCollegesGrid({
                   <Link
                     href={`/recruiter/jobs/create?collegeId=${college.id}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white text-xs font-extrabold transition-all cursor-pointer shadow-2xs"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white text-xs font-extrabold transition-all cursor-pointer shadow-2xs active:scale-95"
                   >
                     <PlusCircle className="w-3.5 h-3.5" />
                     <span>Post Drive</span>

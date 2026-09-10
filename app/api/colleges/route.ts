@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const [total, colleges] = await Promise.all([
+    const [total, colleges, totalVerifiedColleges, distinctStates, totalVerifiedStudents] = await Promise.all([
       prisma.college.count({ where }),
       prisma.college.findMany({
         where,
@@ -65,15 +65,30 @@ export async function GET(req: NextRequest) {
           logoUrl: true,
           images: true,
           isVerified: true,
+          contactEmail: true,
+          contactPhone: true,
           _count: {
             select: {
               students: true,
               jobs: true,
+              tpos: true,
+              offers: true,
             },
           },
         },
         orderBy: {
           name: 'asc',
+        },
+      }),
+      prisma.college.count({ where: { isVerified: true } }),
+      prisma.college.findMany({
+        where: { isVerified: true, state: { not: null } },
+        select: { state: true },
+        distinct: ['state'],
+      }),
+      prisma.studentProfile.count({
+        where: {
+          college: { isVerified: true },
         },
       }),
     ]);
@@ -87,6 +102,11 @@ export async function GET(req: NextRequest) {
         totalPages: Math.ceil(total / limit),
         hasMore: page * limit < total,
       },
+      stats: {
+        totalVerified: totalVerifiedColleges,
+        totalStates: distinctStates.length,
+        totalStudents: totalVerifiedStudents,
+      },
     }, 'Colleges fetched successfully');
   } catch (error: any) {
     if (error.code === 'P2021' || error.message?.includes('does not exist')) {
@@ -98,6 +118,11 @@ export async function GET(req: NextRequest) {
           total: 0,
           totalPages: 0,
           hasMore: false,
+        },
+        stats: {
+          totalVerified: 0,
+          totalStates: 0,
+          totalStudents: 0,
         },
       }, 'No colleges found');
     }

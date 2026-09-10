@@ -46,7 +46,7 @@ export function RecruiterJobsCards({
           <Briefcase className="w-8 h-8" />
         </div>
         <div className="max-w-md mx-auto space-y-1">
-          <h3 className="text-lg font-extrabold text-[#0A2540] font-heading">
+          <h3 className="text-lg font-extrabold text-slate-900 font-heading">
             No Placement Drives Found
           </h3>
           <p className="text-xs sm:text-sm text-slate-500 font-medium">
@@ -155,18 +155,18 @@ export function RecruiterJobsCards({
                     {getTypeBadge(job.type)}
                   </span>
                   {job.minCgpa > 0 && (
-                    <span className="rounded-md bg-purple-50 px-2 py-0.5 text-[10.5px] font-bold text-purple-700 border border-purple-200/80">
+                    <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10.5px] font-bold text-slate-700 border border-slate-200/80">
                       {job.minCgpa}+ CGPA
                     </span>
                   )}
                 </div>
 
-                <h3 
-                  onClick={() => onSelectJob(job)}
-                  className="text-base sm:text-lg font-black font-heading text-[#0A2540] group-hover:text-blue-600 transition-colors cursor-pointer line-clamp-1 mt-1"
+                <Link 
+                  href={`/recruiter/jobs/${job.id}`}
+                  className="text-base sm:text-lg font-black font-heading text-slate-900 hover:text-blue-600 transition-colors cursor-pointer line-clamp-1 mt-1 block"
                 >
                   {job.title}
-                </h3>
+                </Link>
               </div>
 
               {/* Salary & Location Strip */}
@@ -212,7 +212,7 @@ export function RecruiterJobsCards({
             {/* Bottom Meta & Action Row */}
             <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-2">
               <div className="space-y-0.5">
-                <div className="flex items-center gap-1 text-xs font-bold text-[#0A2540]">
+                <div className="flex items-center gap-1 text-xs font-bold text-slate-900">
                   <Users className="w-3.5 h-3.5 text-blue-600" />
                   <span>{job._count?.applications || 0} Candidates</span>
                 </div>
@@ -224,13 +224,13 @@ export function RecruiterJobsCards({
 
               {/* Card Action Buttons */}
               <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  onClick={() => onSelectJob(job)}
+                <Link
+                  href={`/recruiter/jobs/${job.id}`}
                   className="p-2 rounded-xl bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-colors cursor-pointer"
                   title="Inspect Drive Details"
                 >
                   <Eye className="w-4 h-4" />
-                </button>
+                </Link>
 
                 <button
                   onClick={() => onEditJob(job)}

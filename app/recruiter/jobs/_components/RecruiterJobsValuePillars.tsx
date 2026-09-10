@@ -15,13 +15,13 @@ export function RecruiterJobsValuePillars() {
       title: 'Streamline Hiring',
       subtitle: 'Manage applications, tests & drives',
       icon: Gauge,
-      iconColor: 'text-purple-600 bg-purple-50 border-purple-100/80',
+      iconColor: 'text-sky-600 bg-sky-50 border-sky-100/80',
     },
     {
       title: 'Grow with Campuses',
       subtitle: 'Build long-term university partnerships',
       icon: Building2,
-      iconColor: 'text-indigo-600 bg-indigo-50 border-indigo-100/80',
+      iconColor: 'text-emerald-600 bg-emerald-50 border-emerald-100/80',
     },
   ];
 
@@ -39,7 +39,7 @@ export function RecruiterJobsValuePillars() {
                 <Icon className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <h4 className="text-xs font-black text-[#0A2540] truncate">
+                <h4 className="text-xs font-black text-slate-900 truncate">
                   {p.title}
                 </h4>
                 <p className="text-[11px] font-semibold text-slate-400 truncate">

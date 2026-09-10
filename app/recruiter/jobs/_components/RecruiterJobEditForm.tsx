@@ -137,7 +137,7 @@ export function RecruiterJobEditForm({ job, onCancel, onSaved, showToast }: Recr
     <form onSubmit={handleSaveEdits} className="bg-white p-5 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-6">
       <div className="flex items-center justify-between pb-4 border-b border-slate-200">
         <div>
-          <h2 className="text-base sm:text-lg font-extrabold text-[#0A2540]">
+          <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
             Edit Drive Parameters
           </h2>
           <p className="text-xs text-slate-500 font-medium mt-0.5">Modify placement parameters, required skills, cutoffs, and description.</p>
@@ -248,7 +248,7 @@ export function RecruiterJobEditForm({ job, onCancel, onSaved, showToast }: Recr
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyDown={handleSkillKeyDown}
-            className="flex-1 min-w-[140px] text-xs sm:text-sm bg-transparent border-none outline-none font-medium text-[#0A2540]"
+            className="flex-1 min-w-[140px] text-xs sm:text-sm bg-transparent border-none outline-none font-medium text-slate-900"
           />
         </div>
 
@@ -338,7 +338,7 @@ export function RecruiterJobEditForm({ job, onCancel, onSaved, showToast }: Recr
                   title={`${b.name} (${b.category})`}
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer border ${
                     isSelected
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
                       : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                   }`}
                 >

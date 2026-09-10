@@ -82,7 +82,7 @@ export function RecruiterCollegesTable({
         return (college._count?.jobs || 0) > 0;
       }
       if (segmentFilter === 'large_pool') {
-        return (college._count?.students || 0) >= 10;
+        return (college._count?.students || 0) > 0;
       }
       return true;
     });
@@ -133,7 +133,7 @@ export function RecruiterCollegesTable({
   const counts = useMemo(() => ({
     all: colleges.length,
     active_drives: colleges.filter(c => (c._count?.jobs || 0) > 0).length,
-    large_pool: colleges.filter(c => (c._count?.students || 0) >= 10).length,
+    large_pool: colleges.filter(c => (c._count?.students || 0) > 0).length,
   }), [colleges]);
 
   if (colleges.length === 0) {
@@ -245,7 +245,7 @@ export function RecruiterCollegesTable({
             }`}
           >
             <Users className="w-3 h-3" />
-            <span>Candidate Pool (10+)</span>
+            <span>With Candidates</span>
             <span className={`text-[10.5px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
               segmentFilter === 'large_pool' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700'
             }`}>
@@ -436,7 +436,7 @@ export function RecruiterCollegesTable({
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-[#2563EB] hover:border-[#2563EB] hover:text-white text-xs font-bold text-[#0A2540] shadow-2xs transition-all cursor-pointer group/btn"
                         >
                           <Eye className="w-3.5 h-3.5 text-slate-500 group-hover/btn:text-white" />
-                          <span>Inspect</span>
+                          <span>View Details</span>
                           <ChevronRight className="w-3 h-3 text-slate-400 group-hover/btn:text-white group-hover/btn:translate-x-0.5 transition-transform" />
                         </button>
                       </div>

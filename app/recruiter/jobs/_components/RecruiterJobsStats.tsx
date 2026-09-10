@@ -70,12 +70,12 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
       title: 'Applications',
       value: totalApplications.toLocaleString(),
       subtext: '+28% vs last month',
-      subtextColor: 'text-purple-700 bg-purple-50/90 border-purple-200/80',
+      subtextColor: 'text-sky-700 bg-sky-50/90 border-sky-200/80',
       icon: Users,
-      iconColor: 'text-purple-600',
-      iconBg: 'bg-purple-50',
+      iconColor: 'text-sky-600',
+      iconBg: 'bg-sky-50',
       border: 'border-slate-200/90',
-      hoverBorder: 'hover:border-purple-300',
+      hoverBorder: 'hover:border-sky-300',
       onClick: () => setFilter('sortBy', 'applications'),
       isActive: filters.sortBy === 'applications',
     },
@@ -84,12 +84,12 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
       title: 'Offers Made',
       value: totalOffers.toLocaleString(),
       subtext: '+20% this session',
-      subtextColor: 'text-amber-700 bg-amber-50/90 border-amber-200/80',
+      subtextColor: 'text-emerald-700 bg-emerald-50/90 border-emerald-200/80',
       icon: Award,
-      iconColor: 'text-amber-600',
-      iconBg: 'bg-amber-50',
+      iconColor: 'text-emerald-600',
+      iconBg: 'bg-emerald-50',
       border: 'border-slate-200/90',
-      hoverBorder: 'hover:border-amber-300',
+      hoverBorder: 'hover:border-emerald-300',
       onClick: () => setFilter('selectedStatus', 'ALL'),
       isActive: false,
     },
@@ -168,9 +168,9 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
           const Icon = card.icon;
           return (
             <div
-              key={idx}
+              key={card.id}
               onClick={card.onClick}
-              className={`group/card shrink-0 w-[155px] xs:w-[165px] sm:w-[180px] lg:w-auto min-w-[150px] lg:min-w-0 snap-start flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl bg-white border transition-all duration-200 hover:-translate-y-0.5 cursor-pointer select-none ${
+              className={`flex-none w-[170px] sm:w-[200px] lg:w-auto snap-start p-3 sm:p-3.5 lg:p-4 rounded-2xl bg-white border transition-all duration-200 cursor-pointer group/card flex flex-col justify-between ${
                 card.isActive
                   ? 'border-blue-600 ring-2 ring-blue-600/15 shadow-sm bg-blue-50/15'
                   : `${card.border} ${card.hoverBorder} shadow-2xs hover:shadow-md`
@@ -189,7 +189,7 @@ export function RecruiterJobsStats({ jobs }: RecruiterJobsStatsProps) {
                 <div className={`p-2 rounded-xl ${card.iconBg} ${card.iconColor} shrink-0 shadow-2xs group-hover/card:scale-105 transition-transform`}>
                   <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                 </div>
-                <span className="text-xl sm:text-2xl font-black text-[#0A2540] font-heading leading-tight tracking-tight">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 font-heading leading-tight tracking-tight">
                   {card.value}
                 </span>
               </div>

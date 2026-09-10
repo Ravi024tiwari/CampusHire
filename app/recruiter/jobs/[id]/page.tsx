@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, use } from 'react';
+import React, { useState, useEffect, useCallback, use, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -33,14 +33,19 @@ import {
   Loader2,
   Tag,
   Briefcase,
-  Radio,
-  SlidersHorizontal,
   ExternalLink,
   Target,
   ArrowRight,
   TrendingUp,
   ChevronRight,
-  MoreVertical
+  MoreVertical,
+  Share2,
+  Bookmark,
+  Mail,
+  Phone,
+  Sparkles,
+  Globe,
+  SlidersHorizontal
 } from 'lucide-react';
 import { RecruiterJobItem, useRecruiterJobsStore } from '@/store/useRecruiterJobsStore';
 import { RecruiterJobEditForm } from '../_components/RecruiterJobEditForm';
@@ -48,6 +53,7 @@ import { RecruiterJobEditForm } from '../_components/RecruiterJobEditForm';
 interface JobDetailResponse {
   job: RecruiterJobItem;
   pipelineBreakdown: Record<string, number>;
+  isOwner?: boolean;
 }
 
 export default function RecruiterJobDetailPage({
@@ -67,9 +73,11 @@ export default function RecruiterJobDetailPage({
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(searchParams.get('edit') === 'true');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'eligibility' | 'logistics'>('overview');
 
   const fetchJobDetail = useCallback(async () => {
     setIsLoading(true);
@@ -98,9 +106,21 @@ export default function RecruiterJobDetailPage({
   };
 
   const handleCopyId = () => {
-    navigator.clipboard.writeText(jobId);
-    setCopiedId(true);
-    setTimeout(() => setCopiedId(false), 2000);
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(jobId);
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
+    }
+  };
+
+  const handleCopyShareLink = () => {
+    if (typeof window !== 'undefined') {
+      const shareUrl = `${window.location.origin}/student/jobs/${jobId}`;
+      navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      showToast('Student application link copied to clipboard');
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
   };
 
   const handleToggleStatus = async () => {
@@ -127,14 +147,20 @@ export default function RecruiterJobDetailPage({
 
   if (isLoading) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-7xl mx-auto space-y-6 animate-pulse">
-        <div className="h-10 w-44 bg-slate-200 rounded-xl" />
-        <div className="h-72 rounded-3xl bg-slate-200" />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="h-28 rounded-2xl bg-slate-200" />
-          <div className="h-28 rounded-2xl bg-slate-200" />
-          <div className="h-28 rounded-2xl bg-slate-200" />
-          <div className="h-28 rounded-2xl bg-slate-200" />
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
+        <div className="flex items-center justify-between">
+          <div className="h-9 w-36 bg-slate-200 rounded-xl" />
+          <div className="h-9 w-48 bg-slate-200 rounded-xl" />
+        </div>
+        <div className="h-64 rounded-3xl bg-slate-200" />
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-24 rounded-2xl bg-slate-200" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 h-96 rounded-3xl bg-slate-200" />
+          <div className="h-96 rounded-3xl bg-slate-200" />
         </div>
       </div>
     );
@@ -143,14 +169,15 @@ export default function RecruiterJobDetailPage({
   if (error || !data) {
     return (
       <div className="p-6 md:p-12 max-w-2xl mx-auto text-center space-y-4">
-        <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center mx-auto shadow-xs">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-xs">
           <AlertCircle className="w-7 h-7" />
         </div>
-        <h2 className="text-xl font-extrabold text-[#0A2540]">Unable to Load Campus Drive Profile</h2>
+        <h2 className="text-xl font-extrabold text-slate-900 font-heading">Unable to Load Campus Drive Profile</h2>
         <p className="text-xs sm:text-sm text-slate-600">{error || 'The requested placement drive was not found or access is restricted.'}</p>
         <button
+          type="button"
           onClick={() => router.push('/recruiter/jobs')}
-          className="py-2.5 px-6 rounded-xl bg-[#2563EB] text-white text-xs font-bold inline-flex items-center gap-2 shadow-md cursor-pointer"
+          className="py-2.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold inline-flex items-center gap-2 shadow-md cursor-pointer transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Drives Catalog</span>
@@ -159,17 +186,16 @@ export default function RecruiterJobDetailPage({
     );
   }
 
-  const { job, pipelineBreakdown } = data;
-  const isDeadlineExpired = new Date(job.deadline) < new Date();
-  const formattedDeadline = new Date(job.deadline).toLocaleDateString('en-US', {
+  const { job, pipelineBreakdown, isOwner = true } = data;
+  const isDeadlineExpired = job.deadline ? new Date(job.deadline) < new Date() : false;
+  const formattedDeadline = job.deadline ? new Date(job.deadline).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  }) : 'Rolling Recruitment';
 
-  const calculateDaysLeft = (deadlineStr: string) => {
+  const calculateDaysLeft = (deadlineStr?: string) => {
+    if (!deadlineStr) return 'Active drive';
     const deadlineDate = new Date(deadlineStr);
     const now = new Date();
     const diffTime = deadlineDate.getTime() - now.getTime();
@@ -181,91 +207,78 @@ export default function RecruiterJobDetailPage({
   };
 
   const daysLeftText = calculateDaysLeft(job.deadline);
+  const totalApplications = job._count?.applications || 0;
+  const isLive = job.status === 'ACTIVE';
 
   const pipelineStages = [
     { 
       label: 'Applied', 
       key: 'APPLIED', 
       count: pipelineBreakdown['APPLIED'] || 0, 
-      trend: '+8 this week',
-      isPositive: true,
-      cardBg: 'bg-blue-50/70 border-blue-200/90 hover:border-blue-400', 
-      iconBg: 'bg-blue-100/90 text-blue-600',
-      numColor: 'text-blue-600',
-      chevronColor: 'text-blue-400',
+      trend: 'Initial pool',
+      cardBg: 'bg-white hover:bg-blue-50/50 border-slate-200/90 hover:border-blue-300', 
+      iconBg: 'bg-blue-50 text-blue-600',
+      numColor: 'text-slate-900',
       Icon: FileText 
     },
     { 
       label: 'Under Review', 
       key: 'UNDER_REVIEW', 
       count: pipelineBreakdown['UNDER_REVIEW'] || 0, 
-      trend: '+4 this week',
-      isPositive: true,
-      cardBg: 'bg-amber-50/70 border-amber-200/90 hover:border-amber-400', 
-      iconBg: 'bg-amber-100/90 text-amber-600',
-      numColor: 'text-amber-600',
-      chevronColor: 'text-amber-400',
+      trend: 'Screening',
+      cardBg: 'bg-white hover:bg-amber-50/50 border-slate-200/90 hover:border-amber-300', 
+      iconBg: 'bg-amber-50 text-amber-600',
+      numColor: 'text-slate-900',
       Icon: Clock 
     },
     { 
       label: 'Shortlisted', 
       key: 'SHORTLISTED', 
       count: pipelineBreakdown['SHORTLISTED'] || 0, 
-      trend: '+3 this week',
-      isPositive: true,
-      cardBg: 'bg-purple-50/70 border-purple-200/90 hover:border-purple-400', 
-      iconBg: 'bg-purple-100/90 text-purple-600',
-      numColor: 'text-purple-600',
-      chevronColor: 'text-purple-400',
+      trend: 'Eligible for test',
+      cardBg: 'bg-white hover:bg-sky-50/50 border-slate-200/90 hover:border-sky-300', 
+      iconBg: 'bg-sky-50 text-sky-600',
+      numColor: 'text-slate-900',
       Icon: Users 
     },
     { 
-      label: 'Interviewed', 
+      label: 'Interviews', 
       key: 'INTERVIEW_SCHEDULED', 
       count: pipelineBreakdown['INTERVIEW_SCHEDULED'] || 0, 
-      trend: '+2 this week',
-      isPositive: true,
-      cardBg: 'bg-fuchsia-50/70 border-fuchsia-200/90 hover:border-fuchsia-400', 
-      iconBg: 'bg-fuchsia-100/90 text-fuchsia-600',
-      numColor: 'text-fuchsia-600',
-      chevronColor: 'text-fuchsia-400',
+      trend: 'Technical rounds',
+      cardBg: 'bg-white hover:bg-indigo-50/50 border-slate-200/90 hover:border-indigo-300', 
+      iconBg: 'bg-indigo-50 text-indigo-600',
+      numColor: 'text-slate-900',
       Icon: Calendar 
     },
     { 
-      label: 'Offers Generated', 
+      label: 'Offers Made', 
       key: 'OFFERED', 
       count: pipelineBreakdown['OFFERED'] || 0, 
-      trend: '+1 this week',
-      isPositive: true,
-      cardBg: 'bg-emerald-50/70 border-emerald-200/90 hover:border-emerald-400', 
-      iconBg: 'bg-emerald-100/90 text-emerald-600',
-      numColor: 'text-emerald-600',
-      chevronColor: 'text-emerald-400',
+      trend: 'Offers generated',
+      cardBg: 'bg-white hover:bg-emerald-50/50 border-slate-200/90 hover:border-emerald-300', 
+      iconBg: 'bg-emerald-50 text-emerald-600',
+      numColor: 'text-emerald-700',
       Icon: CheckCircle2 
     },
     { 
       label: 'Declined / Rejected', 
       key: 'REJECTED', 
       count: pipelineBreakdown['REJECTED'] || 0, 
-      trend: '0 this week',
-      isPositive: null,
-      cardBg: 'bg-rose-50/70 border-rose-200/90 hover:border-rose-400', 
-      iconBg: 'bg-rose-100/90 text-rose-600',
-      numColor: 'text-rose-600',
-      chevronColor: 'text-rose-400',
+      trend: 'Closed files',
+      cardBg: 'bg-white hover:bg-slate-100/50 border-slate-200/90 hover:border-slate-300', 
+      iconBg: 'bg-slate-100 text-slate-600',
+      numColor: 'text-slate-600',
       Icon: X 
     },
   ];
 
-  const totalApplications = job._count?.applications || 0;
-  const campusBackground = (job.college as any).images?.[0] || '/images/college/College.png';
-
   return (
-    <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-7xl mx-auto space-y-6 pb-24 transition-all duration-300">
+    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 pb-24 text-slate-800 transition-all duration-300">
       
-      {/* Toast Feedback */}
+      {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-2 rounded-2xl bg-[#0A2540] text-white px-4 py-3 shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-2 rounded-2xl bg-slate-900 text-white px-4 py-3 shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-top-4 duration-300">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span className="text-xs font-bold">{toastMessage}</span>
           <button onClick={() => setToastMessage(null)} className="ml-2 text-slate-400 hover:text-white">
@@ -274,398 +287,304 @@ export default function RecruiterJobDetailPage({
         </div>
       )}
 
-      {/* 1. Industrial-Grade Top Action Header (Clean Interactive Back Button + Responsive Menu) */}
-      <div className="flex items-center justify-between gap-3 pb-1">
-        <button
-          onClick={() => {
-            if (typeof window !== 'undefined' && window.history.length > 1) {
-              router.back();
-            } else {
-              router.push('/recruiter/jobs');
-            }
-          }}
-          className="group inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 text-xs sm:text-sm font-extrabold text-slate-700 hover:text-[#0A2540] shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95"
-          title="Return to previous page"
-        >
-          <ArrowLeft className="h-4 w-4 text-slate-600 group-hover:-translate-x-0.5 transition-transform" />
-          <span className="hidden sm:inline">Back to Drives</span>
-          <span className="sm:hidden">Back</span>
-        </button>
-
-        {/* Desktop Action Controls (sm+) */}
-        <div className="hidden sm:flex items-center gap-2">
+      {/* 1. Top Breadcrumb & Action Navigation Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-200/80">
+        
+        {/* Left: Back Link & Breadcrumbs */}
+        <div className="flex items-center gap-2 min-w-0">
           <button
-            onClick={() => setIsEditing(!isEditing)}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer border shadow-2xs ${
-              isEditing
-                ? 'bg-slate-100 text-slate-800 border-slate-300'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-[#0A2540]'
-            }`}
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push('/recruiter/jobs');
+              }
+            }}
+            className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 hover:text-slate-900 transition-all shadow-2xs cursor-pointer shrink-0"
           >
-            <Edit3 className="w-3.5 h-3.5 text-blue-600" />
-            <span>{isEditing ? 'View Overview' : 'Edit Drive'}</span>
+            <ArrowLeft className="h-3.5 w-3.5 text-slate-500 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Back</span>
           </button>
 
+          <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 font-medium truncate">
+            <span>/</span>
+            <Link href="/recruiter/jobs" className="hover:text-blue-600 transition-colors">Drives Catalog</Link>
+            <span>/</span>
+            {job.college && (
+              <>
+                <Link href={`/recruiter/colleges/${job.collegeId}`} className="hover:text-blue-600 transition-colors truncate max-w-[140px]">
+                  {job.college.name}
+                </Link>
+                <span>/</span>
+              </>
+            )}
+            <span className="font-bold text-slate-900 truncate max-w-[160px]">{job.title}</span>
+          </div>
+        </div>
+
+        {/* Right: Desktop Action Controls */}
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          {/* Share Button */}
           <button
-            onClick={handleToggleStatus}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer border shadow-2xs ${
-              job.status === 'ACTIVE'
-                ? 'bg-white text-red-600 border-red-200 hover:bg-red-50'
-                : 'bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50'
-            }`}
+            type="button"
+            onClick={handleCopyShareLink}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+            title="Copy Student Share Link"
           >
-            {job.status === 'ACTIVE' ? <Lock className="w-3.5 h-3.5 text-red-500" /> : <Unlock className="w-3.5 h-3.5 text-emerald-500" />}
-            <span>{job.status === 'ACTIVE' ? 'Close Drive' : 'Reactivate Drive'}</span>
+            {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-slate-500" />}
+            <span className="hidden sm:inline">{copiedLink ? 'Link Copied' : 'Share'}</span>
           </button>
 
+          {isOwner && (
+            <>
+              {/* Edit Drive Button */}
+              <button
+                type="button"
+                onClick={() => setIsEditing(!isEditing)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border shadow-2xs cursor-pointer ${
+                  isEditing
+                    ? 'bg-slate-100 text-slate-800 border-slate-300'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <Edit3 className="w-3.5 h-3.5 text-blue-600" />
+                <span className="hidden sm:inline">{isEditing ? 'View Drive' : 'Edit Parameters'}</span>
+                <span className="sm:hidden">Edit</span>
+              </button>
+
+              {/* Status Toggle Button */}
+              <button
+                type="button"
+                onClick={handleToggleStatus}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-colors shadow-2xs cursor-pointer ${
+                  isLive
+                    ? 'bg-white text-rose-600 border-rose-200 hover:bg-rose-50'
+                    : 'bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50'
+                }`}
+              >
+                {isLive ? <Lock className="w-3.5 h-3.5 text-rose-500" /> : <Unlock className="w-3.5 h-3.5 text-emerald-500" />}
+                <span className="hidden sm:inline">{isLive ? 'Close Drive' : 'Reopen Drive'}</span>
+                <span className="sm:hidden">{isLive ? 'Close' : 'Reopen'}</span>
+              </button>
+            </>
+          )}
+
+          {/* View Candidate Stream CTA */}
           <Link
-            href={`/recruiter/dashboard#applications`}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-extrabold shadow-md shadow-blue-600/25 transition-all cursor-pointer"
+            href={`/recruiter/applications?jobId=${job.id}`}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all cursor-pointer"
           >
             <Users className="w-3.5 h-3.5" />
-            <span>Candidate Stream ({totalApplications})</span>
+            <span>Applicants ({totalApplications})</span>
           </Link>
         </div>
 
-        {/* Mobile Actions Dropdown Menu (3-dots vertical kebab trigger) */}
-        <div className="relative sm:hidden">
+      </div>
+
+      {/* 2. Executive Showcase Hero Header Card (Clean Modern Card with Slate & Emerald Accents) */}
+      <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-7 lg:p-8 shadow-xs space-y-6 transition-all">
+        
+        {/* Top Header Strip: Badges & ID */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Live Status Badge */}
+            {isLive ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-xs font-extrabold shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Active Campus Placement Drive</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold">
+                <span>Closed Drive</span>
+              </span>
+            )}
+
+            {/* Workplace / Type Pill */}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/70 text-xs font-bold">
+              <Briefcase className="w-3.5 h-3.5" />
+              <span>{job.type === 'FULL_TIME' ? 'Full-Time Role' : job.type === 'INTERNSHIP' ? 'Internship Drive' : 'Internship + Full-Time'}</span>
+            </span>
+
+            {/* Verified Campus Partner */}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Verified Campus Placement</span>
+            </span>
+          </div>
+
+          {/* Drive Reference ID */}
           <button
             type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-2xs cursor-pointer active:scale-95 transition-all"
-            title="Drive actions menu"
-            aria-label="Drive actions menu"
+            onClick={handleCopyId}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 text-xs font-mono font-bold transition-colors cursor-pointer"
+            title="Click to copy Drive ID"
           >
-            <MoreVertical className="w-4 h-4 text-slate-700" />
+            <span>ID: {job.id.slice(0, 10)}</span>
+            {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
           </button>
-
-          {isMobileMenuOpen && (
-            <>
-              <div 
-                className="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[1px]" 
-                onClick={() => setIsMobileMenuOpen(false)} 
-              />
-              <div className="absolute right-0 top-11 z-50 w-56 rounded-2xl bg-white border border-slate-200/90 p-1.5 shadow-2xl space-y-1 animate-in fade-in zoom-in-95 duration-150">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(!isEditing);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer text-left"
-                >
-                  <Edit3 className="w-4 h-4 text-blue-600" />
-                  <span>{isEditing ? 'View Overview' : 'Edit Drive Parameters'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleToggleStatus();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer text-left hover:bg-slate-50"
-                >
-                  {job.status === 'ACTIVE' ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-emerald-500" />}
-                  <span className={job.status === 'ACTIVE' ? 'text-red-600' : 'text-emerald-600'}>
-                    {job.status === 'ACTIVE' ? 'Close Drive' : 'Reactivate Drive'}
-                  </span>
-                </button>
-
-                <Link
-                  href="/recruiter/dashboard#applications"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer text-left"
-                >
-                  <Users className="w-4 h-4" />
-                  <span>Candidate Stream ({totalApplications})</span>
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* 2. Executive Showcase Banner (Lighter Radiant Blue with Silky Smooth Micro-Animations) */}
-      <div className="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(37,99,235,0.18)] border border-blue-200/40 group transition-all duration-500 bg-gradient-to-br from-[#2563EB] via-[#3B82F6] to-[#1D4ED8] text-white">
-        
-        {/* Layer A: Campus Background Photo with Luminous Soft Blue Gradient Overlay */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={campusBackground}
-            alt={`${job.college.name} Campus Infrastructure`}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 1200px"
-            className="object-cover object-center opacity-30 mix-blend-luminosity scale-100 group-hover:scale-105 transition-all duration-1000 ease-out"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 via-blue-600/25 to-indigo-900/45" />
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-950/50 via-transparent to-blue-400/10" />
-          
-          {/* Silky Floating Ambient Glow Orbs */}
-          <div className="absolute -top-16 -right-16 w-88 h-88 bg-sky-200/30 rounded-full blur-3xl pointer-events-none animate-float-slow" />
-          <div className="absolute -bottom-16 left-1/4 w-88 h-88 bg-orange-300/30 rounded-full blur-3xl pointer-events-none animate-float-delayed" />
-          <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-cyan-300/25 rounded-full blur-2xl pointer-events-none animate-soft-glow" />
-          
-          {/* Subtle Dynamic Mesh Texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
         </div>
 
-        {/* Layer B: Content Container */}
-        <div className="relative z-10 p-5 sm:p-7 lg:p-8 space-y-6">
+        {/* Main Hero Identity Strip */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           
-          {/* Top Status & Accreditation Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-white/20">
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Active Drive Pill with Ripple Dot (Vibrant Orange Accent) */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/30 hover:bg-orange-500/40 border border-orange-300/60 text-orange-100 text-xs font-bold backdrop-blur-md shadow-xs transition-transform hover:scale-[1.02]">
-                <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-300 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-300" />
-                </div>
-                <span className="hidden sm:inline">{job.status === 'ACTIVE' ? 'Active Recruitment Drive' : `${job.status} Drive`}</span>
-                <span className="sm:hidden">{job.status === 'ACTIVE' ? 'Active Drive' : job.status}</span>
-              </div>
-
-              {/* Verified Badge (Visible on SM+) */}
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs font-semibold backdrop-blur-md shadow-xs transition-transform hover:scale-[1.02]">
-                <ShieldCheck className="w-3.5 h-3.5 text-sky-200" />
-                <span>Verified by Placement Cell</span>
-              </div>
-            </div>
-
-            {/* Drive ID with Copy */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleCopyId}
-                className="text-xs text-white hover:text-sky-100 font-mono flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 backdrop-blur-md transition-all cursor-pointer shadow-xs active:scale-95"
-                title="Click to copy full Drive Reference ID"
+          {/* Left: University Logo + Job Title + Sub-meta */}
+          <div className="flex items-start gap-4 min-w-0">
+            {/* Institution Avatar */}
+            {job.college ? (
+              <Link
+                href={`/recruiter/colleges/${job.collegeId}`}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-50 border border-slate-200 p-2.5 shrink-0 flex items-center justify-center hover:border-blue-300 transition-colors shadow-2xs"
+                title={`View ${job.college.name}`}
               >
-                <span className="hidden sm:inline">Drive ID: {job.id.slice(0, 8)}</span>
-                <span className="sm:hidden">ID: {job.id.slice(0, 8)}</span>
-                {copiedId ? <Check className="w-3.5 h-3.5 text-orange-300" /> : <Copy className="w-3.5 h-3.5 text-sky-200" />}
-              </button>
-            </div>
-          </div>
+                {job.college.logoUrl ? (
+                  <img
+                    src={job.college.logoUrl}
+                    alt={job.college.name}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                ) : (
+                  <Building2 className="w-8 h-8 text-blue-600" />
+                )}
+              </Link>
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 font-black text-xl shrink-0">
+                {job.title.charAt(0).toUpperCase()}
+              </div>
+            )}
 
-          {/* Main Grid: Identity vs CTC & Location Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            {/* Left Col (8 cols on Desktop): Logo + Title + Tags + Deadline */}
-            <div className="lg:col-span-8 space-y-4">
-              
-              <div className="flex items-start sm:items-center gap-4">
-                {/* University Logo Card with Hover Elevation */}
-                <Link 
+            <div className="min-w-0 space-y-1">
+              {job.college && (
+                <Link
                   href={`/recruiter/colleges/${job.collegeId}`}
-                  className="group/logo relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-2.5 shadow-lg border-2 border-white/90 shrink-0 overflow-hidden flex items-center justify-center backdrop-blur-md hover:scale-105 hover:-rotate-1 transition-all duration-300"
-                  title="View University Placement Profile"
+                  className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1.5"
                 >
-                  {job.college.logoUrl ? (
-                    <img
-                      src={job.college.logoUrl}
-                      alt={job.college.name}
-                      className="h-full w-full object-contain"
-                    />
-                  ) : (
-                    <Building2 className="w-8 h-8 text-blue-800" />
+                  <span>{job.college.name}</span>
+                  {job.college.code && (
+                    <span className="px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 text-[10px] font-mono border border-slate-200">
+                      {job.college.code}
+                    </span>
                   )}
                 </Link>
+              )}
 
-                <div className="space-y-1">
-                  {/* University Name & Code */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Link 
-                      href={`/recruiter/colleges/${job.collegeId}`}
-                      className="text-xs sm:text-sm font-bold text-sky-100 hover:text-white flex items-center gap-1.5 transition-colors"
-                    >
-                      <span>{job.college.name}</span>
-                      {job.college.code && (
-                        <span className="bg-white/20 border border-white/30 text-white px-1.5 py-0.2 rounded text-[10.5px] font-mono font-bold shadow-2xs">
-                          {job.college.code}
-                        </span>
-                      )}
-                    </Link>
-                  </div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 font-heading leading-tight">
+                {job.title}
+              </h1>
 
-                  {/* Main Job Title */}
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading tracking-tight text-white leading-tight drop-shadow-sm">
-                    {job.title}
-                  </h1>
-
-                  {/* Sub-row: Location | Type | Cutoff */}
-                  <div className="flex items-center gap-2 pt-1 flex-wrap text-xs text-blue-100 font-medium">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-sky-200" />
-                      <span>{job.college.city || 'Campus Partner'}{job.college.state ? `, ${job.college.state}` : ''}</span>
-                    </span>
-                    
-                    <span className="text-blue-200/50 hidden sm:inline">|</span>
-
-                    <span className="flex items-center gap-1">
-                      <Briefcase className="w-3.5 h-3.5 text-sky-200" />
-                      <span>{job.type === 'FULL_TIME' ? 'Full Time' : job.type === 'INTERNSHIP' ? 'Internship' : 'Internship + Full Time'}</span>
-                    </span>
-
-                    <span className="text-blue-200/50 hidden sm:inline">|</span>
-
-                    <span className="flex items-center gap-1 text-purple-100 font-semibold">
-                      <GraduationCap className="w-3.5 h-3.5 text-purple-200" />
-                      <span>{job.minCgpa > 0 ? `${job.minCgpa}+ CGPA` : 'Open Cutoff'}</span>
-                    </span>
-                  </div>
-                </div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 font-medium pt-0.5">
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                  <span>{job.location || job.college?.city || 'Campus / Hybrid'}</span>
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
+                  <span>{job.minCgpa && job.minCgpa > 0 ? `${job.minCgpa}+ CGPA` : 'Open Cutoff'}</span>
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Deadline: <strong className="text-slate-800">{formattedDeadline}</strong></span>
+                </span>
               </div>
-
-              {/* Deadline & Days Left Row */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-white">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-white/20 text-white border border-white/30 shadow-2xs">
-                    <Calendar className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] text-blue-100 block font-medium">Application Deadline</span>
-                    <span className="font-bold text-white">{formattedDeadline}</span>
-                  </div>
-                </div>
-
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-500/30 hover:bg-orange-500/40 border border-orange-300/60 text-orange-100 text-xs font-bold backdrop-blur-md shadow-xs transition-transform hover:scale-105">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{daysLeftText}</span>
-                </div>
-              </div>
-
             </div>
+          </div>
 
-            {/* Right Col (4 cols on Desktop, Full Width on Mobile): CTC & Location Cards */}
-            <div className="lg:col-span-4 space-y-3">
-              
-              {/* Compensation Package Card with Hover Lift (Orange Accent) */}
-              <div className="bg-white/15 hover:bg-white/20 border border-white/30 hover:border-orange-300/50 rounded-2xl p-4 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 backdrop-blur-md group/ctc">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-400/30 text-orange-100 border border-orange-300/50 font-bold text-lg shrink-0 group-hover/ctc:scale-110 transition-transform">
-                    ₹
-                  </div>
-                  <div>
-                    <p className="text-xl sm:text-2xl font-black text-white font-heading tracking-tight">
-                      {job.salaryPackage}
-                    </p>
-                    <span className="text-[11px] font-bold text-orange-200 uppercase tracking-wider block">
-                      Compensation Package
-                    </span>
-                  </div>
-                </div>
-                <div className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl bg-orange-400/20 text-orange-200">
-                  <Banknote className="w-5 h-5" />
-                </div>
-              </div>
-
-              {/* Work Location Card with Hover Lift */}
-              <div className="bg-white/15 hover:bg-white/20 border border-white/30 rounded-2xl p-3.5 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex items-center justify-between gap-3 backdrop-blur-md group/loc">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-400/25 text-sky-100 border border-sky-300/40 shrink-0 group-hover/loc:scale-110 transition-transform">
-                    <MapPin className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm sm:text-base font-bold text-white truncate max-w-[200px]">
-                      {job.location}
-                    </p>
-                    <span className="text-[10.5px] font-bold text-sky-200 uppercase tracking-wider block">
-                      Work Location
-                    </span>
-                  </div>
-                </div>
-                <div className="hidden sm:flex h-8 w-8 items-center justify-center text-sky-100/70">
-                  <Building2 className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Slogan Watermark */}
-              <p className="hidden lg:block text-right text-xs font-serif italic text-blue-100/90 pt-1 tracking-wide">
-                Build your future, with purpose 🇮🇳
+          {/* Right: Compensation & Deadline Highlight Boxes */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
+            {/* Package Card */}
+            <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/90 space-y-0.5 min-w-[160px] flex-1 sm:flex-initial">
+              <span className="text-[10.5px] font-extrabold uppercase text-emerald-800 tracking-wider block">
+                Compensation Package
+              </span>
+              <p className="text-lg sm:text-xl font-black text-emerald-700 font-mono font-heading">
+                {job.salaryPackage || 'Competitive Package'}
               </p>
-
+              <span className="text-[10px] text-emerald-600 font-medium block">
+                Full CTC / Stipend
+              </span>
             </div>
 
+            {/* Timeline / Days Left Card */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-0.5 min-w-[150px] flex-1 sm:flex-initial">
+              <span className="text-[10.5px] font-extrabold uppercase text-slate-400 tracking-wider block">
+                Recruitment Window
+              </span>
+              <p className="text-sm sm:text-base font-black text-slate-800 font-heading">
+                {daysLeftText}
+              </p>
+              <span className="text-[10px] text-slate-500 font-medium block">
+                {formattedDeadline}
+              </span>
+            </div>
           </div>
 
         </div>
 
       </div>
 
-      {/* 3. Real-Time Application Overview & Candidate Pipeline Funnel */}
-      <div className="space-y-3.5">
-        
-        {/* Overview Header Strip */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
+      {/* 3. Interactive Candidate Pipeline Funnel (6 Clickable Stages) */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-extrabold text-[#0A2540] font-heading tracking-tight">
-                Application Overview
-              </h2>
+              <h3 className="text-base font-black text-slate-900 font-heading">
+                Candidate Pipeline Funnel
+              </h3>
               <p className="text-xs text-slate-500 font-medium">
-                Track the progress of candidates through the recruitment pipeline
+                Click any stage to filter applicants in the recruitment stream
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 self-start sm:self-auto">
-            <span className="text-xs font-bold text-slate-600">
-              Total Submissions: <strong className="text-slate-900 font-black">{totalApplications}</strong>
-            </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200 shadow-2xs">
-              <TrendingUp className="w-3 h-3 text-emerald-600" />
-              <span>+12% from last week</span>
-            </span>
-          </div>
+          <Link
+            href={`/recruiter/applications?jobId=${job.id}`}
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <span>View Full Applicant Stream</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
-        {/* 6 Responsive Pipeline Funnel Cards (Horizontal Swipe on Mobile/Tablet) */}
-        <div className="flex lg:grid lg:grid-cols-6 gap-3 overflow-x-auto pb-2 lg:pb-0 scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-0.5">
+        {/* 6 Responsive Funnel Cards - Smooth horizontal scroll on mobile/tablet, full grid on desktop */}
+        <div className="flex lg:grid lg:grid-cols-6 gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {pipelineStages.map((stage) => {
             const Icon = stage.Icon;
             return (
-              <div
+              <Link
                 key={stage.key}
-                className={`min-w-[150px] sm:min-w-[170px] lg:min-w-0 flex-1 shrink-0 snap-start p-4 rounded-2xl border flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all ${stage.cardBg}`}
+                href={`/recruiter/applications?jobId=${job.id}&status=${stage.key}`}
+                className={`min-w-[160px] sm:min-w-[185px] lg:min-w-0 flex-1 shrink-0 snap-start p-4 rounded-2xl border transition-all duration-200 flex flex-col justify-between space-y-2 shadow-2xs hover:shadow-sm hover:-translate-y-0.5 cursor-pointer ${stage.cardBg}`}
               >
-                {/* Top Row: Icon + Chevron */}
                 <div className="flex items-center justify-between">
-                  <div className={`h-8 w-8 rounded-xl flex items-center justify-center shadow-2xs ${stage.iconBg}`}>
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${stage.iconBg}`}>
                     <Icon className="w-4 h-4" />
                   </div>
-                  <ChevronRight className={`w-4 h-4 ${stage.chevronColor}`} />
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 </div>
 
-                {/* Center: Stage Label */}
-                <span className="text-xs font-bold text-slate-700 mt-3 truncate">
-                  {stage.label}
-                </span>
-
-                {/* Bottom: Big Count + Trend */}
-                <div className="mt-1">
-                  <p className={`text-2xl font-black font-heading tracking-tight ${stage.numColor}`}>
+                <div className="space-y-0.5 pt-1">
+                  <span className="text-xs font-bold text-slate-600 block truncate">
+                    {stage.label}
+                  </span>
+                  <p className={`text-xl sm:text-2xl font-black font-heading ${stage.numColor}`}>
                     {stage.count}
                   </p>
-                  <p className="text-[11px] font-bold text-emerald-600 mt-0.5">
-                    {stage.isPositive ? `↑ ${stage.trend}` : `— ${stage.trend}`}
-                  </p>
+                  <span className="text-[10px] text-slate-400 font-medium block">
+                    {stage.trend}
+                  </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
-
-        {/* Swipe Hint on smaller screens */}
-        <div className="flex lg:hidden items-center justify-center gap-1 text-[10.5px] text-slate-400 font-medium">
-          <span>← Swipe horizontally to explore all candidate pipeline stages →</span>
-        </div>
       </div>
 
-      {/* 4. Main Content: Clean Overview vs Inline Edit Form Component */}
+      {/* 4. Main Body: Overview vs Inline Edit Form */}
       {isEditing ? (
         <RecruiterJobEditForm
           job={job}
@@ -677,61 +596,68 @@ export default function RecruiterJobDetailPage({
           showToast={showToast}
         />
       ) : (
-        /* CLEAN HIGH-GRADE VIEW MODE */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           
-          {/* Left 8 cols: Detailed Overview */}
-          <div className="lg:col-span-8 space-y-6">
+          {/* Left Column (2/3 width on Desktop): Parameters, Description, Skills, Eligibility */}
+          <div className="lg:col-span-2 space-y-6">
             
-            {/* Key Parameters Matrix Strip (Horizontally Swipeable on Mobile/Tablet) */}
-            <div className="flex sm:grid sm:grid-cols-4 gap-3 bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/90 shadow-xs overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="min-w-[130px] sm:min-w-0 flex-1 shrink-0 snap-start space-y-1 p-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Banknote className="w-3.5 h-3.5 text-emerald-600" />
-                  Package / CTC
-                </span>
-                <p className="text-sm sm:text-base font-black text-[#0A2540] truncate">{job.salaryPackage}</p>
-              </div>
+            {/* 4.1 Key Parameters Matrix Card */}
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-blue-600" />
+                <span>Core Requisition Parameters</span>
+              </h3>
 
-              <div className="min-w-[130px] sm:min-w-0 flex-1 shrink-0 snap-start space-y-1 p-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                  Location
-                </span>
-                <p className="text-sm sm:text-base font-bold text-[#0A2540] truncate">{job.location}</p>
-              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-0.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Package</span>
+                  <span className="font-extrabold text-sm text-emerald-700 font-mono block truncate">{job.salaryPackage}</span>
+                </div>
 
-              <div className="min-w-[130px] sm:min-w-0 flex-1 shrink-0 snap-start space-y-1 p-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <GraduationCap className="w-3.5 h-3.5 text-purple-600" />
-                  Min CGPA
-                </span>
-                <p className="text-sm sm:text-base font-bold text-[#0A2540]">{job.minCgpa > 0 ? `${job.minCgpa} CGPA` : 'No Cutoff'}</p>
-              </div>
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-0.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Location</span>
+                  <span className="font-bold text-slate-800 text-xs block truncate">{job.location || 'On-Campus'}</span>
+                </div>
 
-              <div className="min-w-[130px] sm:min-w-0 flex-1 shrink-0 snap-start space-y-1 p-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-amber-600" />
-                  Deadline
-                </span>
-                <p className={`text-xs sm:text-sm font-bold truncate ${isDeadlineExpired ? 'text-red-600' : 'text-[#0A2540]'}`}>
-                  {formattedDeadline}
-                </p>
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-0.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Min Cutoff</span>
+                  <span className="font-bold text-slate-800 text-xs block truncate">{job.minCgpa && job.minCgpa > 0 ? `${job.minCgpa} CGPA` : 'Open GPA'}</span>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-0.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Status</span>
+                  <span className={`font-bold text-xs block truncate ${isLive ? 'text-emerald-700' : 'text-slate-600'}`}>
+                    {isLive ? 'Active Drive' : 'Closed'}
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Required Skills Matrix */}
-            <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs space-y-3">
-              <h3 className="text-xs sm:text-sm font-extrabold text-[#0A2540] uppercase tracking-wider flex items-center gap-2">
-                <Tag className="w-4 h-4 text-blue-600" />
-                Required Skills & Tech Competencies
+            {/* 4.2 Job Description & Scope */}
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-3">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span>Job Description & Selection Process</span>
               </h3>
+
+              <div className="rounded-2xl bg-slate-50/70 p-4 sm:p-5 border border-slate-200/80 text-xs sm:text-sm text-slate-700 whitespace-pre-line leading-relaxed">
+                {job.description || `Drive campus recruitment campaign for ${job.title} with students of ${job.college?.name || 'the institution'}. Candidates will undergo online assessment and structured technical interview rounds.`}
+              </div>
+            </div>
+
+            {/* 4.3 Required Skills & Competencies */}
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-3">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <Tag className="w-4 h-4 text-blue-600" />
+                <span>Required Skills & Technical Competencies</span>
+              </h3>
+
               {job.skills && job.skills.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {job.skills.map((skill, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center rounded-xl bg-blue-50 px-3.5 py-1.5 text-xs sm:text-sm font-bold text-blue-800 border border-blue-200 shadow-2xs"
+                      className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200/70 text-xs font-bold shadow-2xs"
                     >
                       {skill}
                     </span>
@@ -742,11 +668,11 @@ export default function RecruiterJobDetailPage({
               )}
             </div>
 
-            {/* Academic Eligibility Matrix */}
-            <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
-              <h3 className="text-xs sm:text-sm font-extrabold text-[#0A2540] uppercase tracking-wider flex items-center gap-2">
+            {/* 4.4 University Placement Eligibility Matrix */}
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                University Placement Eligibility Matrix
+                <span>Campus Eligibility Matrix</span>
               </h3>
 
               <div className="space-y-3 text-xs sm:text-sm">
@@ -755,12 +681,12 @@ export default function RecruiterJobDetailPage({
                   <span className="text-slate-600 font-semibold">
                     {job.eligibleBatches && job.eligibleBatches.length > 0
                       ? job.eligibleBatches.join(', ')
-                      : 'Open to all graduating batches'}
+                      : '2025, 2026 Graduating Batches'}
                   </span>
                 </div>
 
                 <div>
-                  <span className="font-bold text-slate-700">Eligible Engineering & Academic Branches: </span>
+                  <span className="font-bold text-slate-700">Eligible Academic Branches: </span>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {job.allowedBranches && job.allowedBranches.length > 0 ? (
                       job.allowedBranches.map((branch, i) => (
@@ -769,77 +695,133 @@ export default function RecruiterJobDetailPage({
                         </span>
                       ))
                     ) : (
-                      <span className="text-slate-500">All engineering branches eligible</span>
+                      <span className="text-slate-500">All engineering & management branches eligible</span>
                     )}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Role Overview & Details */}
-            <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs space-y-3">
-              <h3 className="text-xs sm:text-sm font-extrabold text-[#0A2540] uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-600" />
-                Job Description & Hiring Process
-              </h3>
-              <div className="rounded-2xl bg-slate-50/80 p-4 sm:p-5 border border-slate-200/80 text-xs sm:text-sm text-slate-700 whitespace-pre-line leading-relaxed">
-                {job.description}
-              </div>
-            </div>
-
           </div>
 
-          {/* Right 4 cols: Placement Cell Actions & Danger Zone */}
-          <div className="lg:col-span-4 space-y-5">
+          {/* Right Column (1/3 width on Desktop): Controls, TPO Connection, Share & Danger Zone */}
+          <div className="space-y-6">
             
-            {/* Actions Card */}
-            <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
-              <h3 className="text-xs sm:text-sm font-extrabold text-[#0A2540] uppercase tracking-wider">
+            {/* 4.5 Drive Management & Controls Card */}
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400">
                 Drive Management
               </h3>
 
               <div className="space-y-2.5">
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-extrabold shadow-md shadow-blue-600/25 transition-all cursor-pointer"
-                >
-                  <Edit3 className="w-4 h-4" />
-                  <span>Edit Drive Parameters</span>
-                </button>
-
-                <button
-                  onClick={handleToggleStatus}
-                  className={`w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold border transition-all cursor-pointer shadow-2xs ${
-                    job.status === 'ACTIVE'
-                      ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                  }`}
-                >
-                  {job.status === 'ACTIVE' ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-                  <span>{job.status === 'ACTIVE' ? 'Close Drive Applications' : 'Reopen Placement Drive'}</span>
-                </button>
-
                 <Link
-                  href={`/recruiter/colleges/${job.collegeId}`}
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs sm:text-sm font-bold shadow-2xs transition-all"
+                  href={`/recruiter/applications?jobId=${job.id}`}
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-600/20 transition-all cursor-pointer"
                 >
-                  <Building2 className="w-4 h-4 text-blue-600" />
-                  <span>View University Placement Cell</span>
+                  <Users className="w-4 h-4" />
+                  <span>Manage Applicants ({totalApplications})</span>
                 </Link>
-              </div>
 
-              {/* Danger Zone: Delete / Purge */}
-              <div className="pt-4 border-t border-slate-100 space-y-2">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Drive Removal</p>
+                {isOwner && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(true)}
+                      className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                    >
+                      <Edit3 className="w-4 h-4 text-blue-600" />
+                      <span>Edit Drive Parameters</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleToggleStatus}
+                      className={`w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold border transition-colors cursor-pointer shadow-2xs ${
+                        isLive
+                          ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                      }`}
+                    >
+                      {isLive ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                      <span>{isLive ? 'Close Applications' : 'Reactivate Drive'}</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* 4.6 Target College Placement Cell Card */}
+            {job.college && (
+              <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-3.5">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400">
+                  Target Institution
+                </h3>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 p-1.5 shrink-0 flex items-center justify-center">
+                      {job.college.logoUrl ? (
+                        <img src={job.college.logoUrl} alt={job.college.name} className="max-h-full max-w-full object-contain" />
+                      ) : (
+                        <Building2 className="w-5 h-5 text-blue-600" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-extrabold text-xs text-slate-900 block truncate">{job.college.name}</span>
+                      <span className="text-[11px] text-slate-500 block truncate">
+                        {job.college.city || 'India'}{job.college.state ? `, ${job.college.state}` : ''}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    href={`/recruiter/colleges/${job.collegeId}`}
+                    className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-blue-600 text-xs font-bold border border-slate-200 transition-colors"
+                  >
+                    <span>View Institution Profile</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* 4.7 Share Student Portal Link */}
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-3">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400">
+                Shareable Student Drive Link
+              </h3>
+              <p className="text-xs text-slate-500">
+                Share this direct URL with campus students or the placement officer to accept online applications.
+              </p>
+              <button
+                type="button"
+                onClick={handleCopyShareLink}
+                className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition-colors cursor-pointer"
+              >
+                {copiedLink ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-slate-500" />}
+                <span>{copiedLink ? 'Link Copied!' : 'Copy Student Portal Link'}</span>
+              </button>
+            </div>
+
+            {/* 4.8 Danger Zone (Delete Drive) */}
+            {isOwner && (
+              <div className="rounded-3xl bg-rose-50/50 border border-rose-200/80 p-5 space-y-2.5">
+                <span className="text-[10.5px] font-extrabold uppercase text-rose-800 tracking-wider block">
+                  Danger Zone
+                </span>
+                <p className="text-xs text-rose-700 leading-normal">
+                  Remove or permanently close this campus recruitment requisition.
+                </p>
                 <button
+                  type="button"
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-all cursor-pointer"
+                  className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold transition-colors cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
                   <span>Delete Placement Drive</span>
                 </button>
               </div>
-            </div>
+            )}
 
           </div>
 
@@ -848,19 +830,18 @@ export default function RecruiterJobDetailPage({
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div onClick={() => setShowDeleteConfirm(false)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
-          <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 space-y-4 z-10">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center border border-red-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-extrabold text-[#0A2540]">Delete Placement Drive?</h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Are you sure you want to remove <strong>{job.title}</strong> for {job.college.name}?
+              <h3 className="text-base font-extrabold text-slate-900 font-heading">Delete Placement Drive?</h3>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                Are you sure you want to remove <strong>{job.title}</strong> for {job.college?.name || 'this campus'}?
                 {job._count && job._count.applications > 0 && (
-                  <span className="block mt-2 font-bold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-                    Note: This drive has active candidate records. It will be safely marked as CLOSED to preserve candidate history.
+                  <span className="block mt-2 font-bold text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                    Note: This drive has active candidate submissions. It will be safely marked as CLOSED to preserve candidate history.
                   </span>
                 )}
               </p>
@@ -869,14 +850,14 @@ export default function RecruiterJobDetailPage({
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100"
+                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold shadow-md shadow-red-500/20"
+                className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-md shadow-rose-600/20 cursor-pointer"
               >
                 Confirm Removal
               </button>

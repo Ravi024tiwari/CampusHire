@@ -128,7 +128,7 @@ export function RecruiterJobsFilters() {
             placeholder="Search by job title, skills, or location..."
             value={filters.searchQuery}
             onChange={(e) => setFilter('searchQuery', e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2.5 pl-10 pr-16 text-xs sm:text-sm text-[#0A2540] placeholder-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/15 font-medium transition-all"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2.5 pl-10 pr-16 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/15 font-medium transition-all"
           />
           <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
             {filters.searchQuery ? (
@@ -188,7 +188,7 @@ export function RecruiterJobsFilters() {
             <select
               value={filters.sortBy}
               onChange={(e) => setFilter('sortBy', e.target.value as any)}
-              className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3 sm:pl-16 pr-8 text-xs sm:text-sm font-bold text-[#0A2540] focus:border-blue-600 focus:outline-none cursor-pointer shadow-2xs"
+              className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3 sm:pl-16 pr-8 text-xs sm:text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none cursor-pointer shadow-2xs"
             >
               <option value="latest">Newest First</option>
               <option value="deadline">Deadline</option>
@@ -255,11 +255,11 @@ export function RecruiterJobsFilters() {
           }}
           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer shrink-0 ${
             filters.sortBy === 'applications'
-              ? 'bg-purple-600 text-white border-purple-700 shadow-2xs'
+              ? 'bg-blue-600 text-white border-blue-700 shadow-2xs'
               : 'bg-slate-50 text-slate-700 border-slate-200/80 hover:bg-slate-100'
           }`}
         >
-          <Flame className="w-3 h-3 text-purple-600" />
+          <Flame className="w-3 h-3 text-blue-600" />
           <span>🔥 High Volume</span>
         </button>
 
@@ -310,7 +310,7 @@ export function RecruiterJobsFilters() {
                 <select
                   value={filters.selectedStatus}
                   onChange={(e) => setFilter('selectedStatus', e.target.value)}
-                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs sm:text-sm font-bold text-[#0A2540] focus:border-blue-600 focus:outline-none cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs sm:text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">All Status</option>
                   <option value="ACTIVE">Live (Active)</option>
@@ -331,7 +331,7 @@ export function RecruiterJobsFilters() {
                 <select
                   value={filters.selectedType}
                   onChange={(e) => setFilter('selectedType', e.target.value)}
-                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs sm:text-sm font-bold text-[#0A2540] focus:border-blue-600 focus:outline-none cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs sm:text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">All Types</option>
                   <option value="FULL_TIME">Full Time</option>
@@ -351,7 +351,7 @@ export function RecruiterJobsFilters() {
                 <select
                   value={filters.selectedLocation}
                   onChange={(e) => setFilter('selectedLocation', e.target.value)}
-                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs sm:text-sm font-bold text-[#0A2540] focus:border-blue-600 focus:outline-none cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs sm:text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none cursor-pointer"
                 >
                   {POPULAR_LOCATIONS.map((loc) => (
                     <option key={loc} value={loc === 'All Locations' ? 'ALL' : loc}>
@@ -372,7 +372,7 @@ export function RecruiterJobsFilters() {
                 <select
                   value={filters.selectedTimeline}
                   onChange={(e) => setFilter('selectedTimeline', e.target.value as any)}
-                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-8 text-xs sm:text-sm font-bold text-[#0A2540] focus:border-blue-600 focus:outline-none cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-8 text-xs sm:text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">Select date range (All)</option>
                   <option value="UPCOMING">Upcoming & Live</option>
@@ -402,7 +402,7 @@ export function RecruiterJobsFilters() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleApplyFilters();
                 }}
-                className="w-full rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs sm:text-sm text-[#0A2540] placeholder-slate-400 focus:border-blue-600 focus:outline-none font-semibold"
+                className="w-full rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none font-semibold"
               />
             </div>
 
@@ -414,7 +414,7 @@ export function RecruiterJobsFilters() {
               <button
                 type="button"
                 onClick={() => setSkillDropdownOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs sm:text-sm font-bold text-[#0A2540] hover:bg-slate-50 transition-all text-left shadow-2xs"
+                className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs sm:text-sm font-bold text-slate-900 hover:bg-slate-50 transition-all text-left shadow-2xs"
               >
                 <span className="truncate">
                   {filters.selectedSkills.length === 0

@@ -340,12 +340,12 @@ export function RecruiterJobsList({
                   <div className="flex items-start gap-3 min-w-0">
                     <CompanyBrandLogo title={job.title} companyId={job.companyId} />
                     <div className="min-w-0">
-                      <h3
-                        onClick={() => onSelectJob(job)}
-                        className="font-black text-sm sm:text-base text-[#0A2540] group-hover:text-blue-600 transition-colors cursor-pointer truncate"
+                      <Link
+                        href={`/recruiter/jobs/${job.id}`}
+                        className="font-black text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors cursor-pointer truncate block"
                       >
                         {job.title}
-                      </h3>
+                      </Link>
                       <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                         <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black">
                           {job.type === 'FULL_TIME' ? 'Full Time' : job.type === 'INTERNSHIP' ? 'Internship' : 'Intern + FTE'}
@@ -390,15 +390,15 @@ export function RecruiterJobsList({
               {/* 4 Mini Metrics Row */}
               <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-4 gap-1 text-center bg-slate-50/70 p-2.5 rounded-2xl">
                 <div>
-                  <p className="text-xs sm:text-sm font-black text-[#0A2540] tabular-nums">{applicationsCount}</p>
+                  <p className="text-xs sm:text-sm font-black text-slate-900 tabular-nums">{applicationsCount}</p>
                   <p className="text-[9.5px] font-bold text-slate-400">Applied</p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm font-black text-[#0A2540] tabular-nums">{shortlistedCount}</p>
+                  <p className="text-xs sm:text-sm font-black text-slate-900 tabular-nums">{shortlistedCount}</p>
                   <p className="text-[9.5px] font-bold text-slate-400">Shortlist</p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm font-black text-[#0A2540] tabular-nums">{interviewsCount}</p>
+                  <p className="text-xs sm:text-sm font-black text-slate-900 tabular-nums">{interviewsCount}</p>
                   <p className="text-[9.5px] font-bold text-slate-400">Interview</p>
                 </div>
                 <div>
@@ -421,13 +421,13 @@ export function RecruiterJobsList({
                   >
                     {copiedId === job.id ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => onSelectJob(job)}
+                  <Link
+                    href={`/recruiter/jobs/${job.id}`}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                    title="View Details"
                   >
                     <Eye className="w-4 h-4" />
-                  </button>
+                  </Link>
                   <button
                     type="button"
                     onClick={() => onEditJob(job)}
@@ -488,12 +488,12 @@ export function RecruiterJobsList({
                   
                   {/* Title & Type pills */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2
-                      onClick={() => onSelectJob(job)}
-                      className="text-sm sm:text-base font-black text-[#0A2540] hover:text-blue-600 transition-colors cursor-pointer"
+                    <Link
+                      href={`/recruiter/jobs/${job.id}`}
+                      className="text-sm sm:text-base font-black text-slate-900 hover:text-blue-600 transition-colors cursor-pointer"
                     >
                       {job.title}
-                    </h2>
+                    </Link>
 
                     <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10.5px] font-black">
                       {job.type === 'FULL_TIME' ? 'Full Time' : job.type === 'INTERNSHIP' ? 'Internship' : 'Intern + FTE'}
@@ -542,15 +542,15 @@ export function RecruiterJobsList({
                 {/* 4 Telemetry Columns: Applications, Shortlisted, Interviews, Offers */}
                 <div className="grid grid-cols-4 gap-2 sm:gap-5 text-center sm:text-right pr-2 sm:pr-4 border-r border-slate-100">
                   <div>
-                    <p className="text-xs sm:text-sm font-black text-[#0A2540] tabular-nums">{applicationsCount}</p>
+                    <p className="text-xs sm:text-sm font-black text-slate-900 tabular-nums">{applicationsCount}</p>
                     <p className="text-[10px] font-bold text-slate-400">Applications</p>
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm font-black text-[#0A2540] tabular-nums">{shortlistedCount}</p>
+                    <p className="text-xs sm:text-sm font-black text-slate-900 tabular-nums">{shortlistedCount}</p>
                     <p className="text-[10px] font-bold text-slate-400">Shortlisted</p>
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm font-black text-[#0A2540] tabular-nums">{interviewsCount}</p>
+                    <p className="text-xs sm:text-sm font-black text-slate-900 tabular-nums">{interviewsCount}</p>
                     <p className="text-[10px] font-bold text-slate-400">Interviews</p>
                   </div>
                   <div>
@@ -592,17 +592,14 @@ export function RecruiterJobsList({
 
                     {isMenuOpen && (
                       <div className="absolute right-0 top-full mt-1 w-48 rounded-2xl bg-white border border-slate-200 shadow-xl py-1.5 z-40 animate-in fade-in-50 duration-150">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveMenuId(null);
-                            onSelectJob(job);
-                          }}
+                        <Link
+                          href={`/recruiter/jobs/${job.id}`}
+                          onClick={() => setActiveMenuId(null)}
                           className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors text-left"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>View Details</span>
-                        </button>
+                        </Link>
 
                         <button
                           type="button"
