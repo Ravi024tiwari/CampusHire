@@ -27,11 +27,27 @@ export async function GET(req: NextRequest) {
       return errorResponse('Student profile not found', 404);
     }
 
+    let resumeList = [...student.resumes];
+    if (resumeList.length === 0 && student.resumeUrl) {
+      resumeList.push({
+        id: 'profile-default',
+        studentId: student.id,
+        title: 'Primary Profile Resume.pdf',
+        fileUrl: student.resumeUrl,
+        publicId: null,
+        fileType: 'pdf',
+        fileSize: null,
+        isDefault: true,
+        createdAt: student.updatedAt,
+        updatedAt: student.updatedAt,
+      });
+    }
+
     return successResponse(
       {
-        resumes: student.resumes,
-        total: student.resumes.length,
-        defaultResumeId: student.resumes.find((r) => r.isDefault)?.id || null,
+        resumes: resumeList,
+        total: resumeList.length,
+        defaultResumeId: resumeList.find((r) => r.isDefault)?.id || resumeList[0]?.id || null,
       },
       'Resumes retrieved successfully'
     );

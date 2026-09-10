@@ -26,10 +26,14 @@ export function JobDetailMobileStickyBar({ job, onApplyClick }: JobDetailMobileS
 
         {/* Right: Apply Button */}
         {job.hasApplied ? (
-          <div className="px-4 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-black border border-emerald-200 flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            disabled
+            className="px-4 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-black border border-emerald-200 flex items-center gap-1.5 shrink-0 cursor-not-allowed select-none opacity-90 shadow-none"
+          >
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             <span>Applied</span>
-          </div>
+          </button>
         ) : (
           <button
             type="button"

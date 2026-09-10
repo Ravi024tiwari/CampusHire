@@ -14,7 +14,8 @@ import {
   Check, 
   Sparkles,
   ExternalLink,
-  Award
+  Award,
+  Loader2
 } from 'lucide-react';
 import { useStudentJobsStore } from '@/store/useStudentJobsStore';
 import { AtsScoreCard } from '@/components/ats/AtsScoreCard';
@@ -218,47 +219,68 @@ export function JobDetailAndApplyModal() {
               </span>
             </div>
 
-            <div className="space-y-2">
-              {studentResumes.map((resume) => {
-                const isSelected = selectedResumeId === resume.id;
+            {studentResumes.length > 0 ? (
+              <div className="space-y-2">
+                {studentResumes.map((resume) => {
+                  const isSelected = selectedResumeId === resume.id;
 
-                return (
-                  <label
-                    key={resume.id}
-                    onClick={() => setSelectedResumeId(resume.id)}
-                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${
-                      isSelected
-                        ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-600/15'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
-                    }`}
+                  return (
+                    <label
+                      key={resume.id}
+                      onClick={() => setSelectedResumeId(resume.id)}
+                      className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${
+                        isSelected
+                          ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-600/15'
+                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`p-2 rounded-xl shrink-0 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-[#0A2540] truncate">
+                            {resume.title}
+                          </p>
+                          <p className="text-[10px] font-medium text-slate-400">
+                            {resume.isDefault ? 'Default Profile Resume' : 'Specialized Version'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 pl-2">
+                        <input
+                          type="radio"
+                          name="selectedResume"
+                          checked={isSelected}
+                          onChange={() => setSelectedResumeId(resume.id)}
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        />
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-amber-900 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-extrabold text-amber-800">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>No Resume Found on Your Profile</span>
+                </div>
+                <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
+                  You haven&apos;t uploaded any resume yet. Please upload a resume before applying.
+                </p>
+                <div className="pt-1">
+                  <a
+                    href="/student/resume"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors shadow-xs"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className={`p-2 rounded-xl shrink-0 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                        <FileText className="w-4 h-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold text-[#0A2540] truncate">
-                          {resume.title}
-                        </p>
-                        <p className="text-[10px] font-medium text-slate-400">
-                          {resume.isDefault ? 'Default Profile Resume' : 'Specialized Version'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="shrink-0 pl-2">
-                      <input
-                        type="radio"
-                        name="selectedResume"
-                        checked={isSelected}
-                        onChange={() => setSelectedResumeId(resume.id)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                      />
-                    </div>
-                  </label>
-                );
-              })}
-            </div>
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Upload Resume Now</span>
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -288,22 +310,35 @@ export function JobDetailAndApplyModal() {
           </button>
 
           {job.hasApplied ? (
-            <span className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm">
-              <CheckCircle2 className="w-4 h-4" />
+            <button
+              type="button"
+              disabled
+              className="px-5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-extrabold flex items-center gap-1.5 shadow-none cursor-not-allowed select-none opacity-90"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               <span>Already Applied</span>
-            </span>
+            </button>
           ) : (
             <button
               type="button"
               onClick={handleApply}
-              disabled={!isEligible || isApplying}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md ${
-                isEligible
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/25 active:scale-95'
+              disabled={!isEligible || isApplying || studentResumes.length === 0}
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 ${
+                isApplying
+                  ? 'bg-blue-400 text-white cursor-wait opacity-80'
+                  : isEligible && studentResumes.length > 0
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/25 active:scale-95 cursor-pointer'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
               }`}
             >
-              {isApplying ? 'Submitting Application...' : 'Apply to Placement Drive'}
+              {isApplying && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>
+                {isApplying
+                  ? 'Submitting Application...'
+                  : studentResumes.length === 0
+                  ? 'Upload Resume to Apply'
+                  : 'Apply to Placement Drive'}
+              </span>
             </button>
           )}
         </div>

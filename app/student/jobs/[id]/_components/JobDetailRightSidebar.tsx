@@ -93,10 +93,14 @@ export function JobDetailRightSidebar({ job, onApplyClick }: JobDetailRightSideb
 
         {/* Primary Action Button: Apply Now */}
         {job.hasApplied ? (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center gap-2 text-emerald-700 text-sm font-extrabold">
+          <button
+            type="button"
+            disabled
+            className="w-full p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center gap-2 text-emerald-700 text-sm font-extrabold cursor-not-allowed select-none opacity-90 shadow-none"
+          >
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             <span>Already Applied for this Drive</span>
-          </div>
+          </button>
         ) : (
           <button
             type="button"

@@ -639,36 +639,6 @@ const defaultFacetCounts: FacetCounts = {
   ],
 };
 
-const defaultMockResumes: StudentResumeItem[] = [
-  {
-    id: 'res-primary-1',
-    title: 'Ravi_Tiwari_Software_Resume_2026.pdf',
-    fileUrl: 'https://res.cloudinary.com/campushire/resumes/ravi_primary.pdf',
-    fileType: 'pdf',
-    fileSize: 142000,
-    isDefault: true,
-    createdAt: '2026-08-20T10:00:00Z',
-  },
-  {
-    id: 'res-frontend-2',
-    title: 'Ravi_Tiwari_Frontend_React_Specialized.pdf',
-    fileUrl: 'https://res.cloudinary.com/campushire/resumes/ravi_frontend.pdf',
-    fileType: 'pdf',
-    fileSize: 135000,
-    isDefault: false,
-    createdAt: '2026-08-25T14:30:00Z',
-  },
-  {
-    id: 'res-data-3',
-    title: 'Ravi_Tiwari_Product_Analytics_CV.pdf',
-    fileUrl: 'https://res.cloudinary.com/campushire/resumes/ravi_analytics.pdf',
-    fileType: 'pdf',
-    fileSize: 151000,
-    isDefault: false,
-    createdAt: '2026-09-01T09:15:00Z',
-  },
-];
-
 export const useStudentJobsStore = create<StudentJobsStoreState>((set, get) => ({
   jobs: defaultMockJobs,
   savedJobIds: ['job-google-1', 'job-amazon-3'],
@@ -699,8 +669,8 @@ export const useStudentJobsStore = create<StudentJobsStoreState>((set, get) => (
   isDetailLoading: false,
   isDetailModalOpen: false,
   isMobileFilterOpen: false,
-  studentResumes: defaultMockResumes,
-  selectedResumeId: 'res-primary-1',
+  studentResumes: [],
+  selectedResumeId: null,
   isApplying: false,
   applySuccessMessage: null,
   applyErrorMessage: null,
@@ -884,18 +854,18 @@ export const useStudentJobsStore = create<StudentJobsStoreState>((set, get) => (
       const res = await apiClient.get<ApiResponse<{ resumes: StudentResumeItem[]; defaultResumeId: string | null }>>(
         '/api/student/resumes'
       );
-      if (res.data.success && res.data.data && Array.isArray(res.data.data.resumes) && res.data.data.resumes.length > 0) {
+      if (res.data.success && res.data.data && Array.isArray(res.data.data.resumes)) {
         const resumes = res.data.data.resumes;
-        const defaultId = res.data.data.defaultResumeId || resumes[0]?.id || null;
+        const defaultId = res.data.data.defaultResumeId || resumes.find((r) => r.isDefault)?.id || resumes[0]?.id || null;
         set({ studentResumes: resumes, selectedResumeId: defaultId });
         return;
       }
-    } catch {
-      // Fallback to default mock resumes
+    } catch (err) {
+      console.error('[FETCH_STUDENT_RESUMES_ERROR]', err);
     }
     set({
-      studentResumes: defaultMockResumes,
-      selectedResumeId: defaultMockResumes[0].id,
+      studentResumes: [],
+      selectedResumeId: null,
     });
   },
 
@@ -1043,22 +1013,40 @@ export const useStudentJobsStore = create<StudentJobsStoreState>((set, get) => (
       });
 
       if (res.data.success) {
+        const newApp = {
+          id: res.data.data?.application?.id || 'app-new',
+          status: res.data.data?.application?.status || 'APPLIED',
+          appliedAt: res.data.data?.application?.createdAt || new Date().toISOString(),
+        };
+
         set((state) => ({
           jobs: state.jobs.map((j) =>
             j.id === jobId
               ? {
                   ...j,
                   hasApplied: true,
-                  application: {
-                    id: 'app-new',
-                    status: 'APPLIED',
-                    appliedAt: new Date().toISOString(),
-                  },
+                  application: newApp,
                 }
               : j
           ),
+          selectedJob:
+            state.selectedJob?.id === jobId
+              ? {
+                  ...state.selectedJob,
+                  hasApplied: true,
+                  application: newApp,
+                }
+              : state.selectedJob,
+          currentJobDetail:
+            state.currentJobDetail?.id === jobId
+              ? {
+                  ...state.currentJobDetail,
+                  hasApplied: true,
+                  application: newApp,
+                }
+              : state.currentJobDetail,
           isApplying: false,
-          applySuccessMessage: `Successfully applied to ${res.data.data?.job?.title || 'the placement drive'}!`,
+          applySuccessMessage: `Application submitted successfully for ${res.data.data?.job?.title || 'this placement drive'}!`,
         }));
         return true;
       }
@@ -1072,20 +1060,38 @@ export const useStudentJobsStore = create<StudentJobsStoreState>((set, get) => (
     }
 
     // Optimistic fallback for demo mode
+    const fallbackApp = {
+      id: 'app-new',
+      status: 'APPLIED',
+      appliedAt: new Date().toISOString(),
+    };
+
     set((state) => ({
       jobs: state.jobs.map((j) =>
         j.id === jobId
           ? {
               ...j,
               hasApplied: true,
-              application: {
-                id: 'app-new',
-                status: 'APPLIED',
-                appliedAt: new Date().toISOString(),
-              },
+              application: fallbackApp,
             }
           : j
       ),
+      selectedJob:
+        state.selectedJob?.id === jobId
+          ? {
+              ...state.selectedJob,
+              hasApplied: true,
+              application: fallbackApp,
+            }
+          : state.selectedJob,
+      currentJobDetail:
+        state.currentJobDetail?.id === jobId
+          ? {
+              ...state.currentJobDetail,
+              hasApplied: true,
+              application: fallbackApp,
+            }
+          : state.currentJobDetail,
       isApplying: false,
       applySuccessMessage: 'Application submitted successfully to the campus drive!',
     }));
