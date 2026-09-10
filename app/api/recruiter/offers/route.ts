@@ -384,6 +384,7 @@ export async function POST(req: NextRequest) {
       jobTitle: offerTitle,
       salaryPackage: offerPackage,
       location: offerLocation,
+      employmentType: application.job.type,
       joiningDate: parsedData.joiningDate || null,
       offerLetterUrl: parsedData.letterUrl || null,
       notes: parsedData.notes || null,
