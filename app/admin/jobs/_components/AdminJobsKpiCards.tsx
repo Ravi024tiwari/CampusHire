@@ -58,7 +58,7 @@ export function AdminJobsKpiCards({ kpis, isLoading = false }: AdminJobsKpiCards
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="flex lg:grid lg:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {cards.map((card) => {
         const Icon = card.icon;
         const isUp = card.trend === 'up';
@@ -66,7 +66,7 @@ export function AdminJobsKpiCards({ kpis, isLoading = false }: AdminJobsKpiCards
         return (
           <div
             key={card.id}
-            className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
+            className="min-w-[170px] sm:min-w-[210px] lg:min-w-0 flex-1 shrink-0 snap-start bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
           >
             {/* Top row: Icon + Value & Label */}
             <div className="flex items-center gap-3.5">
@@ -80,7 +80,7 @@ export function AdminJobsKpiCards({ kpis, isLoading = false }: AdminJobsKpiCards
                 {isLoading ? (
                   <div className="h-7 w-16 bg-slate-200 animate-pulse rounded-md" />
                 ) : (
-                  <div className="text-xl sm:text-2xl font-black text-[#0A2540] tracking-tight font-heading">
+                  <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-heading">
                     {card.value.toLocaleString()}
                   </div>
                 )}

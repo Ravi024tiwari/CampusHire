@@ -55,7 +55,7 @@ export function AdminHeroBanner({ adminName = 'Admin' }: AdminHeroBannerProps) {
         </div>
 
         {/* Main Title Heading */}
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-[#0A2540] font-heading tracking-tight leading-snug sm:leading-tight">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 font-heading tracking-tight leading-snug sm:leading-tight">
           A Stronger Tomorrow Through Campus Hiring
         </h1>
 

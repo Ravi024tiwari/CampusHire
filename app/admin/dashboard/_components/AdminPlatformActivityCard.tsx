@@ -7,6 +7,7 @@ import {
   GraduationCap, 
   Briefcase, 
   Award, 
+  FileText,
   Settings, 
   ChevronRight,
   Activity
@@ -18,58 +19,7 @@ interface AdminPlatformActivityCardProps {
 }
 
 export function AdminPlatformActivityCard({ activity }: AdminPlatformActivityCardProps) {
-  const items = activity && activity.length > 0 ? activity : [
-    {
-      id: 'act-1',
-      type: 'RECRUITER_REGISTERED',
-      title: 'New recruiter registered',
-      description: 'Tech Mahindra',
-      timeAgo: '10 minutes ago',
-      timestamp: new Date().toISOString(),
-      icon: 'Building2',
-      color: 'text-rose-500 bg-rose-50 border-rose-200',
-    },
-    {
-      id: 'act-2',
-      type: 'COLLEGE_VERIFICATION',
-      title: 'New college verification request',
-      description: 'ABC Engineering College',
-      timeAgo: '2 hours ago',
-      timestamp: new Date().toISOString(),
-      icon: 'GraduationCap',
-      color: 'text-teal-600 bg-teal-50 border-teal-200',
-    },
-    {
-      id: 'act-3',
-      type: 'JOB_POSTED',
-      title: 'New job posted',
-      description: 'Google - Software Engineer',
-      timeAgo: '3 hours ago',
-      timestamp: new Date().toISOString(),
-      icon: 'Briefcase',
-      color: 'text-purple-600 bg-purple-50 border-purple-200',
-    },
-    {
-      id: 'act-4',
-      type: 'OFFER_ACCEPTED',
-      title: 'Offer accepted',
-      description: 'Sneha Patel (NIT Trichy)',
-      timeAgo: '5 hours ago',
-      timestamp: new Date().toISOString(),
-      icon: 'Award',
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
-    },
-    {
-      id: 'act-5',
-      type: 'SYSTEM_UPDATE',
-      title: 'System update',
-      description: 'New features deployed',
-      timeAgo: '1 day ago',
-      timestamp: new Date().toISOString(),
-      icon: 'Settings',
-      color: 'text-blue-600 bg-blue-50 border-blue-200',
-    },
-  ];
+  const items = activity || [];
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -81,8 +31,10 @@ export function AdminPlatformActivityCard({ activity }: AdminPlatformActivityCar
         return Briefcase;
       case 'OFFER_ACCEPTED':
         return Award;
+      case 'APPLICATION_SUBMITTED':
+        return FileText;
       default:
-        return Settings;
+        return Activity;
     }
   };
 
@@ -91,12 +43,12 @@ export function AdminPlatformActivityCard({ activity }: AdminPlatformActivityCar
       
       {/* Header */}
       <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-        <h2 className="text-base font-extrabold text-[#0A2540] font-heading tracking-tight flex items-center gap-1.5">
+        <h2 className="text-base font-extrabold text-slate-900 font-heading tracking-tight flex items-center gap-1.5">
           <Activity className="w-4 h-4 text-teal-600" />
           <span>Platform Activity</span>
         </h2>
         <Link
-          href="/admin/audit"
+          href="/admin/colleges"
           className="text-xs font-bold text-teal-700 hover:text-teal-900 transition-colors flex items-center gap-0.5 group"
         >
           <span>View All</span>
@@ -104,37 +56,48 @@ export function AdminPlatformActivityCard({ activity }: AdminPlatformActivityCar
         </Link>
       </div>
 
-      {/* Activity Timeline List */}
+      {/* Activity Timeline List or Empty State */}
       <div className="space-y-3 flex-1">
-        {items.slice(0, 5).map((ev) => {
-          const IconComponent = getEventIcon(ev.type);
-
-          return (
-            <div key={ev.id} className="flex items-start gap-3 group">
-              <div
-                className={`w-7 h-7 rounded-xl border flex items-center justify-center shrink-0 mt-0.5 shadow-2xs group-hover:scale-110 transition-transform ${ev.color}`}
-              >
-                <IconComponent className="w-3.5 h-3.5" />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-2">
-                  <p className="text-xs font-extrabold text-slate-800 truncate leading-tight">
-                    {ev.title}
-                  </p>
-                </div>
-                <p className="text-[11px] font-medium text-slate-500 truncate mt-0.5">
-                  {ev.description}
-                </p>
-                <span className="text-[10px] font-mono text-slate-400 font-semibold block mt-0.5">
-                  {ev.timeAgo}
-                </span>
-              </div>
+        {items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center text-center p-6 space-y-2 h-full min-h-[140px]">
+            <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-600 flex items-center justify-center">
+              <Activity className="w-5 h-5" />
             </div>
-          );
-        })}
+            <p className="text-xs font-bold text-slate-700">No platform activity yet</p>
+            <p className="text-[11px] text-slate-400">System events and user actions will appear here live</p>
+          </div>
+        ) : (
+          items.slice(0, 5).map((ev) => {
+            const IconComponent = getEventIcon(ev.type);
+
+            return (
+              <div key={ev.id} className="flex items-start gap-3 group">
+                <div
+                  className={`w-7 h-7 rounded-xl border flex items-center justify-center shrink-0 mt-0.5 shadow-2xs group-hover:scale-110 transition-transform ${ev.color || 'text-teal-700 bg-teal-50 border-teal-200'}`}
+                >
+                  <IconComponent className="w-3.5 h-3.5" />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="text-xs font-extrabold text-slate-800 truncate leading-tight">
+                      {ev.title}
+                    </p>
+                  </div>
+                  <p className="text-[11px] font-medium text-slate-500 truncate mt-0.5">
+                    {ev.description}
+                  </p>
+                  <span className="text-[10px] font-mono text-slate-400 font-semibold block mt-0.5">
+                    {ev.timeAgo}
+                  </span>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
     </div>
   );
 }
+

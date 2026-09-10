@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Building2, ChevronRight } from 'lucide-react';
+import { Building2, ChevronRight, Users } from 'lucide-react';
 import type { TopRecruiterItem } from '@/store/useAdminStore';
 
 interface AdminTopRecruitersCardProps {
@@ -10,23 +10,17 @@ interface AdminTopRecruitersCardProps {
 }
 
 export function AdminTopRecruitersCard({ recruiters }: AdminTopRecruitersCardProps) {
-  const items = recruiters && recruiters.length > 0 ? recruiters : [
-    { id: 'c-google', companyName: 'Google', logoUrl: '/images/company/google.svg', jobsCount: 120, applicationsCount: 2840 },
-    { id: 'c-msft', companyName: 'Microsoft', logoUrl: '/images/company/microsoft.svg', jobsCount: 98, applicationsCount: 2120 },
-    { id: 'c-amzn', companyName: 'Amazon', logoUrl: '/images/company/amazon.svg', jobsCount: 76, applicationsCount: 1980 },
-    { id: 'c-adobe', companyName: 'Adobe', logoUrl: '/images/company/adobe.svg', jobsCount: 64, applicationsCount: 1450 },
-    { id: 'c-tcs', companyName: 'TCS', logoUrl: '/images/company/tcs.svg', jobsCount: 58, applicationsCount: 1320 },
-  ];
+  const items = recruiters || [];
 
   const getCompanyInitial = (name: string) => name.trim().charAt(0).toUpperCase();
 
   const getCompanyColor = (idx: number) => {
     const colors = [
-      'bg-blue-50 text-blue-600 border-blue-200',
-      'bg-emerald-50 text-emerald-600 border-emerald-200',
+      'bg-teal-50 text-teal-700 border-teal-200',
       'bg-amber-50 text-amber-700 border-amber-200',
-      'bg-rose-50 text-rose-600 border-rose-200',
-      'bg-purple-50 text-purple-600 border-purple-200',
+      'bg-emerald-50 text-emerald-700 border-emerald-200',
+      'bg-purple-50 text-purple-700 border-purple-200',
+      'bg-rose-50 text-rose-700 border-rose-200',
     ];
     return colors[idx % colors.length];
   };
@@ -36,7 +30,7 @@ export function AdminTopRecruitersCard({ recruiters }: AdminTopRecruitersCardPro
       
       {/* Header */}
       <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-        <h2 className="text-base font-extrabold text-[#0A2540] font-heading tracking-tight">
+        <h2 className="text-base font-extrabold text-slate-900 font-heading tracking-tight">
           Top Recruiters
         </h2>
         <Link
@@ -48,37 +42,48 @@ export function AdminTopRecruitersCard({ recruiters }: AdminTopRecruitersCardPro
         </Link>
       </div>
 
-      {/* Recruiters List */}
-      <div className="space-y-2.5 flex-1">
-        {items.slice(0, 5).map((rec, idx) => (
-          <Link
-            key={rec.id}
-            href={`/admin/recruiters?search=${encodeURIComponent(rec.companyName)}`}
-            className="flex items-center justify-between gap-3 p-2 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200/80 transition-all duration-200 group"
-          >
-            {/* Logo / Emblem & Name */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`w-9 h-9 rounded-xl border flex items-center justify-center font-black text-xs shrink-0 shadow-2xs group-hover:scale-105 transition-transform ${getCompanyColor(idx)}`}
-              >
-                {getCompanyInitial(rec.companyName)}
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-xs font-extrabold text-[#0A2540] truncate leading-tight group-hover:text-teal-700 transition-colors">
-                  {rec.companyName}
-                </p>
-                <p className="text-[11px] font-medium text-slate-400 truncate mt-0.5">
-                  {rec.jobsCount} Jobs • {rec.applicationsCount.toLocaleString()} Applications
-                </p>
-              </div>
+      {/* Recruiters List or Empty State */}
+      <div className="space-y-2 flex-1">
+        {items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center text-center p-6 space-y-2 h-full min-h-[140px]">
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center">
+              <Building2 className="w-5 h-5" />
             </div>
+            <p className="text-xs font-bold text-slate-700">No recruiters registered yet</p>
+            <p className="text-[11px] text-slate-400">Recruiters will appear as companies post jobs</p>
+          </div>
+        ) : (
+          items.slice(0, 5).map((rec, idx) => (
+            <Link
+              key={rec.id}
+              href={`/admin/recruiters?search=${encodeURIComponent(rec.companyName)}`}
+              className="flex items-center justify-between gap-3 p-2 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-200/80 transition-all duration-200 group"
+            >
+              {/* Logo / Emblem & Name */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center font-black text-xs shrink-0 shadow-2xs group-hover:scale-105 transition-transform ${getCompanyColor(idx)}`}
+                >
+                  {getCompanyInitial(rec.companyName)}
+                </div>
 
-            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 transition-colors shrink-0" />
-          </Link>
-        ))}
+                <div className="min-w-0">
+                  <p className="text-xs font-extrabold text-slate-900 truncate leading-tight group-hover:text-teal-700 transition-colors">
+                    {rec.companyName}
+                  </p>
+                  <p className="text-[11px] font-medium text-slate-400 truncate mt-0.5">
+                    {rec.jobsCount} Jobs • {(rec.applicationsCount || 0).toLocaleString()} Applications
+                  </p>
+                </div>
+              </div>
+
+              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 transition-colors shrink-0" />
+            </Link>
+          ))
+        )}
       </div>
 
     </div>
   );
 }
+

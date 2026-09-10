@@ -17,19 +17,26 @@ export function AdminUserGrowthChart({
 }: AdminUserGrowthChartProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
-  // If data is empty, provide fallback points
+  // If data is empty, provide dynamic default month points with 0s
   const points = data && data.length > 0 ? data : [
-    { month: 'Jan', students: 6200, recruiters: 140, colleges: 85 },
-    { month: 'Feb', students: 7800, recruiters: 180, colleges: 105 },
-    { month: 'Mar', students: 9100, recruiters: 210, colleges: 125 },
-    { month: 'Apr', students: 10400, recruiters: 240, colleges: 140 },
-    { month: 'May', students: 11200, recruiters: 265, colleges: 155 },
-    { month: 'Jun', students: 11900, recruiters: 285, colleges: 168 },
-    { month: 'Jul', students: 12400, recruiters: 305, colleges: 178 },
-    { month: 'Aug', students: 12842, recruiters: 320, colleges: 186 },
+    { month: 'Jan', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'Feb', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'Mar', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'Apr', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'May', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'Jun', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'Jul', students: 0, recruiters: 0, colleges: 0 },
+    { month: 'Aug', students: 0, recruiters: 0, colleges: 0 },
   ];
 
-  const maxVal = 20000;
+  // Dynamic max value calculation for responsive scaling
+  const calculatedMax = Math.max(
+    10,
+    ...points.map((p) => Math.max(p.students || 0, (p.recruiters || 0) * 10, (p.colleges || 0) * 20))
+  );
+  // Round up to nice visual interval
+  const maxVal = Math.ceil(calculatedMax / 10) * 10 || 50;
+
   const svgWidth = 600;
   const svgHeight = 220;
   const paddingX = 40;
@@ -38,22 +45,24 @@ export function AdminUserGrowthChart({
   const chartH = svgHeight - paddingY * 2;
 
   // Calculate coordinates
-  const getX = (index: number) => paddingX + (index / (points.length - 1)) * chartW;
-  const getY = (val: number) => paddingY + chartH - (val / maxVal) * chartH;
+  const getX = (index: number) => paddingX + (index / Math.max(points.length - 1, 1)) * chartW;
+  const getY = (val: number) => paddingY + chartH - (Math.min(val, maxVal) / maxVal) * chartH;
 
-  // Build SVG Path Strings with smooth lines
+  // Build SVG Path Strings
   const studentsPath = points
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(p.students)}`)
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(p.students || 0)}`)
     .join(' ');
 
-  // For recruiters and colleges, normalize to visible scale on secondary coordinate
   const recruitersPath = points
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(p.recruiters * 35)}`)
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY((p.recruiters || 0) * 10)}`)
     .join(' ');
 
   const collegesPath = points
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(p.colleges * 50)}`)
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY((p.colleges || 0) * 20)}`)
     .join(' ');
+
+  const yStep = maxVal / 4;
+  const yLabels = [0, Math.round(yStep), Math.round(yStep * 2), Math.round(yStep * 3), Math.round(maxVal)];
 
   return (
     <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/90 shadow-2xs space-y-4 flex flex-col justify-between h-full">
@@ -63,10 +72,10 @@ export function AdminUserGrowthChart({
         
         {/* Title & Legend */}
         <div className="space-y-1.5">
-          <h2 className="text-base font-extrabold text-[#0A2540] font-heading tracking-tight flex items-center gap-2">
+          <h2 className="text-base font-extrabold text-slate-900 font-heading tracking-tight flex items-center gap-2">
             <span>User Growth</span>
             <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full">
-              Live
+              Live DB
             </span>
           </h2>
 
@@ -76,11 +85,11 @@ export function AdminUserGrowthChart({
               <span>Students</span>
             </span>
             <span className="flex items-center gap-1.5 text-slate-600">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#F97316]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FBAB23]" />
               <span>Recruiters</span>
             </span>
             <span className="flex items-center gap-1.5 text-slate-600">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3B82F6]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" />
               <span>Colleges</span>
             </span>
           </div>
@@ -109,7 +118,7 @@ export function AdminUserGrowthChart({
           className="w-full h-full overflow-visible select-none"
         >
           {/* Y-Axis Grid Lines and Labels */}
-          {[0, 5000, 10000, 15000, 20000].map((val) => {
+          {yLabels.map((val) => {
             const y = getY(val);
             return (
               <g key={val}>
@@ -128,7 +137,7 @@ export function AdminUserGrowthChart({
                   textAnchor="end"
                   className="text-[9px] font-mono font-bold fill-slate-400"
                 >
-                  {val === 0 ? '0' : `${val / 1000}K`}
+                  {val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val}
                 </text>
               </g>
             );
@@ -144,21 +153,21 @@ export function AdminUserGrowthChart({
             strokeLinejoin="round"
           />
 
-          {/* Line 2: Recruiters (Coral #F97316) */}
+          {/* Line 2: Recruiters (Amber #FBAB23) */}
           <path
             d={recruitersPath}
             fill="none"
-            stroke="#F97316"
+            stroke="#FBAB23"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
 
-          {/* Line 3: Colleges (Blue #3B82F6) */}
+          {/* Line 3: Colleges (Purple #8B5CF6) */}
           <path
             d={collegesPath}
             fill="none"
-            stroke="#3B82F6"
+            stroke="#8B5CF6"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -167,7 +176,7 @@ export function AdminUserGrowthChart({
           {/* Data Points and Interaction Circles */}
           {points.map((p, i) => {
             const x = getX(i);
-            const yStudents = getY(p.students);
+            const yStudents = getY(p.students || 0);
             const isHovered = hoveredIdx === i;
 
             return (
@@ -204,10 +213,10 @@ export function AdminUserGrowthChart({
                 {/* Point: Recruiters */}
                 <circle
                   cx={x}
-                  cy={getY(p.recruiters * 35)}
+                  cy={getY((p.recruiters || 0) * 10)}
                   r={isHovered ? 4.5 : 3}
                   fill="#FFFFFF"
-                  stroke="#F97316"
+                  stroke="#FBAB23"
                   strokeWidth="2"
                   className="transition-all duration-150"
                 />
@@ -215,10 +224,10 @@ export function AdminUserGrowthChart({
                 {/* Point: Colleges */}
                 <circle
                   cx={x}
-                  cy={getY(p.colleges * 50)}
+                  cy={getY((p.colleges || 0) * 20)}
                   r={isHovered ? 4.5 : 3}
                   fill="#FFFFFF"
-                  stroke="#3B82F6"
+                  stroke="#8B5CF6"
                   strokeWidth="2"
                   className="transition-all duration-150"
                 />
@@ -242,7 +251,7 @@ export function AdminUserGrowthChart({
         {/* Hover Tooltip Overlay */}
         {hoveredIdx !== null && points[hoveredIdx] && (
           <div
-            className="absolute top-2 z-20 pointer-events-none -translate-x-1/2 p-2.5 rounded-xl bg-[#0A2540] text-white shadow-xl text-xs space-y-1 border border-slate-700 animate-in fade-in duration-150"
+            className="absolute top-2 z-20 pointer-events-none -translate-x-1/2 p-2.5 rounded-xl bg-slate-900 text-white shadow-xl text-xs space-y-1 border border-slate-700 animate-in fade-in duration-150"
             style={{
               left: `${(getX(hoveredIdx) / svgWidth) * 100}%`,
             }}
@@ -253,15 +262,15 @@ export function AdminUserGrowthChart({
             <div className="space-y-0.5 text-[10.5px]">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-teal-400 font-bold">Students:</span>
-                <span className="font-mono">{points[hoveredIdx].students.toLocaleString()}</span>
+                <span className="font-mono">{(points[hoveredIdx].students || 0).toLocaleString()}</span>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-orange-400 font-bold">Recruiters:</span>
-                <span className="font-mono">{points[hoveredIdx].recruiters.toLocaleString()}</span>
+                <span className="text-amber-400 font-bold">Recruiters:</span>
+                <span className="font-mono">{(points[hoveredIdx].recruiters || 0).toLocaleString()}</span>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-blue-400 font-bold">Colleges:</span>
-                <span className="font-mono">{points[hoveredIdx].colleges.toLocaleString()}</span>
+                <span className="text-purple-400 font-bold">Colleges:</span>
+                <span className="font-mono">{(points[hoveredIdx].colleges || 0).toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -271,3 +280,4 @@ export function AdminUserGrowthChart({
     </div>
   );
 }
+

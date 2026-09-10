@@ -10,16 +10,16 @@ interface AdminApplicationsStatusChartProps {
 
 export function AdminApplicationsStatusChart({
   distribution,
-  totalApplications = 18520,
+  totalApplications = 0,
 }: AdminApplicationsStatusChartProps) {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   const items = distribution && distribution.length > 0 ? distribution : [
-    { key: 'UNDER_REVIEW', label: 'Under Review', count: 7778, percentage: 42, color: '#0D8B8A' },
-    { key: 'SHORTLISTED', label: 'Shortlisted', count: 5185, percentage: 28, color: '#FBAB23' },
-    { key: 'INTERVIEWED', label: 'Interviewed', count: 2963, percentage: 16, color: '#3B82F6' },
-    { key: 'OFFERED', label: 'Offered', count: 1852, percentage: 10, color: '#10B981' },
-    { key: 'REJECTED', label: 'Rejected', count: 1111, percentage: 6, color: '#EF4444' },
+    { key: 'UNDER_REVIEW', label: 'Under Review', count: 0, percentage: 0, color: '#0D8B8A' },
+    { key: 'SHORTLISTED', label: 'Shortlisted', count: 0, percentage: 0, color: '#FBAB23' },
+    { key: 'INTERVIEW_SCHEDULED', label: 'Interviewed', count: 0, percentage: 0, color: '#8B5CF6' },
+    { key: 'OFFERED', label: 'Offered', count: 0, percentage: 0, color: '#10B981' },
+    { key: 'REJECTED', label: 'Rejected', count: 0, percentage: 0, color: '#EF4444' },
   ];
 
   // SVG Donut calculation
@@ -32,11 +32,11 @@ export function AdminApplicationsStatusChart({
       
       {/* Header */}
       <div className="pb-1 border-b border-slate-100 flex items-center justify-between">
-        <h2 className="text-base font-extrabold text-[#0A2540] font-heading tracking-tight">
+        <h2 className="text-base font-extrabold text-slate-900 font-heading tracking-tight">
           Applications by Status
         </h2>
         <span className="text-[11px] font-mono font-bold text-slate-400">
-          {(totalApplications || 18520).toLocaleString()} Submissions
+          {(totalApplications ?? 0).toLocaleString()} Submissions
         </span>
       </div>
 
@@ -56,8 +56,9 @@ export function AdminApplicationsStatusChart({
               strokeWidth="20"
             />
 
-            {/* Segments */}
-            {items.map((item) => {
+            {/* Segments (Only rendered when totalApplications > 0) */}
+            {totalApplications > 0 && items.map((item) => {
+              if (item.percentage <= 0) return null;
               const strokeDasharray = `${(item.percentage / 100) * circumference} ${circumference}`;
               const strokeDashoffset = -((accumulatedPercent / 100) * circumference);
               accumulatedPercent += item.percentage;
@@ -84,8 +85,8 @@ export function AdminApplicationsStatusChart({
 
           {/* Center Metric Label */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-lg font-black text-[#0A2540] font-heading tracking-tight leading-tight">
-              {(totalApplications || 18520).toLocaleString()}
+            <span className="text-lg font-black text-slate-900 font-heading tracking-tight leading-tight">
+              {(totalApplications ?? 0).toLocaleString()}
             </span>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
               Total
@@ -94,7 +95,7 @@ export function AdminApplicationsStatusChart({
         </div>
 
         {/* Right: Legend Breakdown with Percentage */}
-        <div className="w-full sm:w-auto flex-1 space-y-2 text-xs">
+        <div className="w-full sm:w-auto flex-1 space-y-1.5 text-xs">
           {items.map((item) => {
             const isHovered = hoveredKey === item.key;
 
@@ -117,9 +118,14 @@ export function AdminApplicationsStatusChart({
                   </span>
                 </div>
                 
-                <span className="font-mono font-black text-slate-900 shrink-0">
-                  {item.percentage}%
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-slate-400 font-medium">
+                    ({item.count})
+                  </span>
+                  <span className="font-mono font-black text-slate-900 min-w-[30px] text-right">
+                    {item.percentage}%
+                  </span>
+                </div>
               </div>
             );
           })}
@@ -130,3 +136,4 @@ export function AdminApplicationsStatusChart({
     </div>
   );
 }
+

@@ -30,20 +30,20 @@ export function CollegeDossierModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-3xl max-h-[92vh] sm:max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-slate-200 bg-white p-4 sm:p-8 shadow-2xl text-[#0A2540]"
+        className="relative w-full max-w-3xl max-h-[92vh] sm:max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-slate-200 bg-white p-4 sm:p-8 shadow-2xl text-slate-900"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={() => setSelectedCollegeForDossier(null)}
-          className="absolute right-3.5 top-3.5 sm:right-5 sm:top-5 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-[#0A2540] transition-colors cursor-pointer border border-slate-200"
+          className="absolute right-3.5 top-3.5 sm:right-5 sm:top-5 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer border border-slate-200"
         >
           <X className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
         {/* Modal Header */}
         <div className="flex items-start gap-3 sm:gap-4 pb-4 sm:pb-5 border-b border-slate-100 pr-8 sm:pr-0">
-          <div className="h-12 w-12 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-center text-lg sm:text-xl font-extrabold text-[#2563EB] shadow-2xs">
+          <div className="h-12 w-12 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-center text-lg sm:text-xl font-extrabold text-teal-700 shadow-2xs">
             {college.logoUrl ? (
               <img src={college.logoUrl} alt={college.name} className="h-full w-full object-cover" />
             ) : (
@@ -53,7 +53,7 @@ export function CollegeDossierModal() {
 
           <div className="space-y-1 sm:space-y-1.5 min-w-0">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
-              <h3 className="text-base sm:text-xl font-bold text-[#0A2540] tracking-tight font-heading leading-tight">{college.name}</h3>
+              <h3 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight font-heading leading-tight">{college.name}</h3>
               {college.code && (
                 <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] sm:text-xs font-mono font-extrabold text-slate-700 border border-slate-200">
                   {college.code}
@@ -77,7 +77,7 @@ export function CollegeDossierModal() {
         {college.images && college.images.length > 0 && (
           <div className="mt-4 sm:mt-5 space-y-2 sm:space-y-2.5">
             <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#2563EB]" />
+              <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-teal-600" />
               Campus Infrastructure & Labs ({college.images.length} photos)
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
@@ -97,11 +97,11 @@ export function CollegeDossierModal() {
         {/* Info Grid */}
         <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div className="rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50 p-3.5 sm:p-5 space-y-2.5 sm:space-y-3">
-            <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2563EB]">Institutional Accreditation Details</h4>
-            <div className="space-y-2 text-xs text-[#0A2540]">
+            <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-teal-700">Institutional Accreditation Details</h4>
+            <div className="space-y-2 text-xs text-slate-900">
               <p className="flex items-center gap-2">
-                <Globe className="h-3.5 w-3.5 text-[#2563EB] shrink-0" />
-                <span className="font-mono text-[#2563EB] font-bold truncate">
+                <Globe className="h-3.5 w-3.5 text-teal-600 shrink-0" />
+                <span className="font-mono text-teal-700 font-bold truncate">
                   {college.domain ? `@${college.domain}` : 'Domain not configured'}
                 </span>
               </p>
@@ -121,19 +121,19 @@ export function CollegeDossierModal() {
           </div>
 
           <div className="rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50 p-3.5 sm:p-5 space-y-2.5 sm:space-y-3">
-            <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2563EB]">TPC Cell & Placement Roster</h4>
+            <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-teal-700">TPC Cell & Placement Roster</h4>
             <div className="space-y-2 sm:space-y-2.5 text-xs text-slate-600">
               <div className="flex justify-between items-center py-1 border-b border-slate-200">
                 <span className="font-medium">Enrolled Students:</span>
-                <span className="font-extrabold text-[#0A2540] font-mono text-xs sm:text-sm">{college._count?.students || 0}</span>
+                <span className="font-extrabold text-slate-900 font-mono text-xs sm:text-sm">{college._count?.students || 0}</span>
               </div>
               <div className="flex justify-between items-center py-1 border-b border-slate-200">
                 <span className="font-medium">Campus Drives Scheduled:</span>
-                <span className="font-extrabold text-[#2563EB] font-mono text-xs sm:text-sm">{college._count?.jobs || 0}</span>
+                <span className="font-extrabold text-teal-700 font-mono text-xs sm:text-sm">{college._count?.jobs || 0}</span>
               </div>
               <div className="flex justify-between items-center py-1">
                 <span className="font-medium">TPC Officers Assigned:</span>
-                <span className="font-extrabold text-[#0A2540] font-mono text-xs sm:text-sm">{college.tpos?.length || 0} officers</span>
+                <span className="font-extrabold text-slate-900 font-mono text-xs sm:text-sm">{college.tpos?.length || 0} officers</span>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ export function CollegeDossierModal() {
           <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 order-1 sm:order-2">
             <button
               onClick={() => setSelectedCollegeForDossier(null)}
-              className="rounded-xl border border-slate-200 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold text-[#0A2540] hover:bg-slate-50 transition-colors cursor-pointer text-center"
+              className="rounded-xl border border-slate-200 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer text-center"
             >
               Close
             </button>

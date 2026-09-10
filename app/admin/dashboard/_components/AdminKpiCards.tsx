@@ -8,7 +8,9 @@ import {
   Briefcase, 
   FileText, 
   Award, 
-  TrendingUp 
+  TrendingUp,
+  TrendingDown,
+  Minus
 } from 'lucide-react';
 import type { AdminDashboardKpis } from '@/store/useAdminStore';
 
@@ -17,60 +19,67 @@ interface AdminKpiCardsProps {
 }
 
 export function AdminKpiCards({ kpis }: AdminKpiCardsProps) {
+  const formatGrowth = (growth?: number) => {
+    const val = growth ?? 0;
+    if (val > 0) return { text: `+${val}% MoM`, icon: TrendingUp, color: 'text-emerald-600' };
+    if (val < 0) return { text: `${val}% MoM`, icon: TrendingDown, color: 'text-rose-600' };
+    return { text: `0% MoM`, icon: Minus, color: 'text-slate-400' };
+  };
+
   const cards = [
     {
       id: 'students',
-      label: 'Students',
-      value: (kpis.totalStudents || 12842).toLocaleString(),
-      growth: `+${kpis.studentsMoMGrowth || 12}% from last month`,
+      label: 'Total Students',
+      value: (kpis.totalStudents ?? 0).toLocaleString(),
+      growthInfo: formatGrowth(kpis.studentsMoMGrowth),
       icon: Users,
-      iconBg: 'bg-emerald-50 text-emerald-600',
+      iconBg: 'bg-emerald-50 text-emerald-700',
       borderHover: 'hover:border-emerald-300 hover:shadow-emerald-500/10',
     },
     {
       id: 'recruiters',
-      label: 'Recruiters',
-      value: (kpis.totalRecruiters || 320).toLocaleString(),
-      growth: `+${kpis.recruitersMoMGrowth || 8}% from last month`,
+      label: 'Active Recruiters',
+      value: (kpis.totalRecruiters ?? 0).toLocaleString(),
+      growthInfo: formatGrowth(kpis.recruitersMoMGrowth),
       icon: Building2,
-      iconBg: 'bg-blue-50 text-blue-600',
-      borderHover: 'hover:border-blue-300 hover:shadow-blue-500/10',
+      iconBg: 'bg-amber-50 text-amber-700',
+      borderHover: 'hover:border-amber-300 hover:shadow-amber-500/10',
     },
     {
       id: 'colleges',
       label: 'Verified Colleges',
-      value: (kpis.verifiedColleges || 186).toLocaleString(),
-      growth: `+${kpis.collegesMoMGrowth || 6}% from last month`,
+      value: (kpis.verifiedColleges ?? 0).toLocaleString(),
+      growthInfo: formatGrowth(kpis.collegesMoMGrowth),
       icon: Landmark,
-      iconBg: 'bg-rose-50 text-rose-600',
+      iconBg: 'bg-rose-50 text-rose-700',
       borderHover: 'hover:border-rose-300 hover:shadow-rose-500/10',
     },
     {
       id: 'jobs',
       label: 'Active Jobs',
-      value: (kpis.activeJobs || 642).toLocaleString(),
-      growth: `+${kpis.jobsMoMGrowth || 14}% from last month`,
+      value: (kpis.activeJobs ?? 0).toLocaleString(),
+      growthInfo: formatGrowth(kpis.jobsMoMGrowth),
       icon: Briefcase,
-      iconBg: 'bg-teal-50 text-teal-600',
+      iconBg: 'bg-teal-50 text-teal-700',
       borderHover: 'hover:border-teal-300 hover:shadow-teal-500/10',
     },
     {
       id: 'applications',
       label: 'Applications',
-      value: (kpis.totalApplications || 18520).toLocaleString(),
-      growth: `+${kpis.applicationsMoMGrowth || 20}% from last month`,
+      value: (kpis.totalApplications ?? 0).toLocaleString(),
+      growthInfo: formatGrowth(kpis.applicationsMoMGrowth),
       icon: FileText,
-      iconBg: 'bg-purple-50 text-purple-600',
+      iconBg: 'bg-purple-50 text-purple-700',
       borderHover: 'hover:border-purple-300 hover:shadow-purple-500/10',
     },
     {
       id: 'offers',
       label: 'Offers Made',
-      value: (kpis.offersMade || 3215).toLocaleString(),
-      growth: `+${kpis.offersMoMGrowth || 18}% from last month`,
+      value: (kpis.offersMade ?? 0).toLocaleString(),
+      growthInfo: formatGrowth(kpis.offersMoMGrowth),
       icon: Award,
-      iconBg: 'bg-emerald-50 text-emerald-600',
-      borderHover: 'hover:border-emerald-300 hover:shadow-emerald-500/10',
+      iconBg: 'bg-teal-50 text-teal-800',
+      borderHover: 'hover:border-teal-300 hover:shadow-teal-500/10',
     },
   ];
 
@@ -80,6 +89,7 @@ export function AdminKpiCards({ kpis }: AdminKpiCardsProps) {
       <div className="flex md:grid md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-0.5 md:px-0">
         {cards.map((card) => {
           const Icon = card.icon;
+          const GrowthIcon = card.growthInfo.icon;
 
           return (
             <div
@@ -93,15 +103,15 @@ export function AdminKpiCards({ kpis }: AdminKpiCardsProps) {
               </div>
 
               <div className="min-w-0 flex-1">
-                <span className="text-xl sm:text-2xl font-black text-[#0A2540] font-heading tracking-tight block truncate">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 font-heading tracking-tight block truncate">
                   {card.value}
                 </span>
                 <p className="text-xs font-bold text-slate-700 truncate mt-0.5">
                   {card.label}
                 </p>
-                <div className="flex items-center gap-1 mt-0.5 text-[10.5px] font-semibold text-emerald-600 truncate">
-                  <TrendingUp className="w-3 h-3 shrink-0" />
-                  <span className="truncate">{card.growth}</span>
+                <div className={`flex items-center gap-1 mt-0.5 text-[10.5px] font-semibold truncate ${card.growthInfo.color}`}>
+                  <GrowthIcon className="w-3 h-3 shrink-0" />
+                  <span className="truncate">{card.growthInfo.text}</span>
                 </div>
               </div>
             </div>
@@ -116,3 +126,4 @@ export function AdminKpiCards({ kpis }: AdminKpiCardsProps) {
     </div>
   );
 }
+

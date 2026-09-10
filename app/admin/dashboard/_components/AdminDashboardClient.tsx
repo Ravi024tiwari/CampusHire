@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAdminStore } from '@/store/useAdminStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { AdminHeroBanner } from './AdminHeroBanner';
@@ -19,7 +19,7 @@ import {
   Info, 
   X, 
   RefreshCw,
-  Loader2
+  Radio
 } from 'lucide-react';
 
 export function AdminDashboardClient() {
@@ -34,10 +34,17 @@ export function AdminDashboardClient() {
   } = useAdminStore();
 
   const { user } = useAuthStore();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchDashboardData(timeframe);
   }, []);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchDashboardData(timeframe);
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
 
   // Auto-dismiss toast notification
   useEffect(() => {
@@ -69,18 +76,18 @@ export function AdminDashboardClient() {
   }
 
   const kpis = dashboardData?.kpis || {
-    totalStudents: 12842,
-    studentsMoMGrowth: 12,
-    totalRecruiters: 320,
-    recruitersMoMGrowth: 8,
-    verifiedColleges: 186,
-    collegesMoMGrowth: 6,
-    activeJobs: 642,
-    jobsMoMGrowth: 14,
-    totalApplications: 18520,
-    applicationsMoMGrowth: 20,
-    offersMade: 3215,
-    offersMoMGrowth: 18,
+    totalStudents: 0,
+    studentsMoMGrowth: 0,
+    totalRecruiters: 0,
+    recruitersMoMGrowth: 0,
+    verifiedColleges: 0,
+    collegesMoMGrowth: 0,
+    activeJobs: 0,
+    jobsMoMGrowth: 0,
+    totalApplications: 0,
+    applicationsMoMGrowth: 0,
+    offersMade: 0,
+    offersMoMGrowth: 0,
   };
 
   const userGrowth = dashboardData?.userGrowth || [];
@@ -99,18 +106,41 @@ export function AdminDashboardClient() {
           {toast.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />}
           {toast.type === 'error' && <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />}
           {toast.type === 'info' && <Info className="h-5 w-5 text-[#0D8B8A] shrink-0" />}
-          <span className="text-xs sm:text-sm font-bold text-[#0A2540]">{toast.message}</span>
+          <span className="text-xs sm:text-sm font-bold text-slate-900">{toast.message}</span>
           <button 
             onClick={() => dismissToast()}
-            className="ml-auto text-slate-400 hover:text-[#0A2540] cursor-pointer"
+            className="ml-auto text-slate-400 hover:text-slate-700 cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
       )}
 
-      {/* 1. Hero Vision Banner & Inspirational Quote */}
-      <AdminHeroBanner adminName={user?.name ? user.name.split(' ')[0] : 'Admin'} />
+      {/* 1. Hero Vision Banner & Quick Refresh Toolbar */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between gap-3 px-1">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span className="text-[11px] sm:text-xs font-bold text-slate-600 font-mono">
+              Live Database Connected
+            </span>
+          </div>
+
+          <button
+            onClick={handleManualRefresh}
+            disabled={isLoading || isRefreshing}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-300 active:scale-95 transition-all cursor-pointer disabled:opacity-60"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-[#0D8B8A] ${isRefreshing || isLoading ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Refresh Data</span>
+          </button>
+        </div>
+
+        <AdminHeroBanner adminName={user?.name ? user.name.split(' ')[0] : 'Admin'} />
+      </div>
 
       {/* 2. Top 6 KPI Metric Cards */}
       <AdminKpiCards kpis={kpis} />
@@ -171,3 +201,4 @@ export function AdminDashboardClient() {
     </div>
   );
 }
+

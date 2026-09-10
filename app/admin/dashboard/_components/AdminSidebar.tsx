@@ -20,7 +20,6 @@ import {
   ScrollText, 
   UserCog, 
   Settings, 
-  Headphones, 
   Sparkles, 
   PanelLeftClose, 
   PanelLeftOpen, 
@@ -105,14 +104,9 @@ export function AdminSidebar() {
       icon: Briefcase,
     },
     {
-      href: '/admin/analytics',
-      label: 'National Analytics',
-      icon: BarChart2,
-    },
-    {
-      href: '/admin/audit',
-      label: 'Security & Audit Trail',
-      icon: ScrollText,
+      href: '/admin/profile',
+      label: 'Profile & Settings',
+      icon: UserCog,
     },
   ];
 
@@ -133,7 +127,7 @@ export function AdminSidebar() {
               />
             </div>
             <span className="font-extrabold text-sm font-heading tracking-tight">
-              <span className="text-[#0A2540]">Campus</span>
+              <span className="text-slate-900">Campus</span>
               <span className="text-[#FBAB23]">Hire</span>
             </span>
             <span className="rounded bg-teal-50 px-1.5 py-0.2 text-[8.5px] font-black text-teal-800 border border-teal-200">
@@ -147,7 +141,7 @@ export function AdminSidebar() {
               e.preventDefault();
               setIsMobileMenuOpen(false);
             }}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-[#0A2540] hover:bg-slate-100 cursor-pointer border border-slate-200/70 shadow-2xs"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 cursor-pointer border border-slate-200/70 shadow-2xs"
             aria-label="Close menu"
           >
             <X className="h-4 w-4" />
@@ -168,7 +162,7 @@ export function AdminSidebar() {
               e.preventDefault();
               toggleSidebar();
             }}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-[#0A2540] hover:bg-slate-100 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
             title={isSidebarCollapsed ? "Expand Sidebar (Ctrl+B)" : "Collapse Sidebar (Ctrl+B)"}
           >
             {isSidebarCollapsed ? (
@@ -203,7 +197,7 @@ export function AdminSidebar() {
                 } ${
                   isActive
                     ? 'bg-[#0D8B8A] text-white font-black shadow-sm shadow-teal-700/20'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-[#0A2540] font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold'
                 }`}
               >
                 <div className={`flex items-center gap-3 ${isSidebarCollapsed ? 'justify-center relative' : ''}`}>
@@ -220,7 +214,7 @@ export function AdminSidebar() {
 
                 {/* Floating Tooltip in Collapsed Mode */}
                 {isSidebarCollapsed && (
-                  <div className="absolute left-full ml-3 px-3 py-1.5 rounded-xl bg-[#0A2540] text-white text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 shadow-xl z-50">
+                  <div className="absolute left-full ml-3 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 shadow-xl z-50">
                     {item.label}
                   </div>
                 )}
@@ -230,35 +224,12 @@ export function AdminSidebar() {
         </nav>
       </div>
 
-      {/* Bottom Widgets & Support */}
+      {/* Bottom Widgets & Branding */}
       <div className="shrink-0 pt-2 border-t border-slate-100 space-y-2">
         
-        {/* Support Box (Expanded Mode) */}
-        {!isSidebarCollapsed && (
-          <div className="p-3 rounded-2xl bg-gradient-to-br from-teal-50/90 via-emerald-50/40 to-sky-50 border border-teal-100/90 space-y-2 text-center">
-            <div className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center mx-auto shadow-xs">
-              <Headphones className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-xs font-black text-slate-900 leading-tight font-heading">
-                Need Help?
-              </p>
-              <p className="text-[10px] font-medium text-slate-500 mt-0.5 leading-tight">
-                Our team is here to assist you.
-              </p>
-            </div>
-            <Link
-              href="mailto:support@campushire.com"
-              className="block w-full py-1.5 px-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-[11px] font-bold shadow-xs hover:shadow-md transition-all text-center"
-            >
-              Contact Support
-            </Link>
-          </div>
-        )}
-
         {/* Branding Tagline (Expanded Mode) */}
         {!isSidebarCollapsed && (
-          <div className="px-1 text-center">
+          <div className="px-1 text-center py-1">
             <p className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest flex items-center justify-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-500" />
               <span>Empowering Talent</span>

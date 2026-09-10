@@ -11,18 +11,41 @@ const dashboardQuerySchema = z.object({
 });
 
 /**
+ * Format relative time for real-time telemetry events
+ */
+function formatTimeAgo(date: Date): string {
+  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (seconds < 60) return 'Just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} day${days > 1 ? 's' : ''} ago`;
+}
+
+/**
+ * Compute Month-over-Month Growth Percentage between two 30-day windows
+ */
+function computeMoMGrowth(currentWindow: number, previousWindow: number): number {
+  if (previousWindow === 0) {
+    return currentWindow > 0 ? 100 : 0;
+  }
+  return Math.round(((currentWindow - previousWindow) / previousWindow) * 100);
+}
+
+/**
  * GET /api/admin/dashboard
  * Production-Grade Super Admin Dashboard Aggregator.
  * 
- * Delivers unified metrics matching the executive dashboard UI:
- * 1. 6 Primary KPIs with Month-over-Month (MoM) growth rates
- * 2. User Growth Timeline (Students, Recruiters, Colleges) over configurable months
- * 3. Applications by Status Distribution (Percentages & Counts for Donut Chart)
- * 4. Top Recruiters with Job & Application volumes
- * 5. Recent Students Feed with College, Branch, & Placement Status
- * 6. Recent Recruiters Feed with Job Counts & Onboarding Dates
- * 7. Real-Time Platform Activity & System Telemetry Feed
- * 8. Backward-compatible Institutional & Accreditation Queues
+ * Delivers 100% genuine database metrics:
+ * 1. 6 Primary KPIs with authentic Month-over-Month (MoM) growth rates
+ * 2. Real User Growth Timeline (Students, Recruiters, Colleges) over configurable months
+ * 3. Authentic Applications by Status Distribution (Percentages & Counts for Donut Chart)
+ * 4. Actual Top Recruiters ranked by job & application volumes
+ * 5. Recent Students Feed with real College, Branch, & Placement Status
+ * 6. Recent Recruiters Feed with actual Job Counts & Onboarding Dates
+ * 7. Real-Time Platform Activity Stream aggregated from real DB events
  */
 export async function GET(req: NextRequest) {
   try {
@@ -47,51 +70,60 @@ export async function GET(req: NextRequest) {
       studentsPreviousMonthCountRes,
       recruitersCountRes,
       recruitersPastMonthCountRes,
+      recruitersPreviousMonthCountRes,
       collegesCountRes,
       verifiedCollegesCountRes,
-      collegesPastMonthCountRes,
+      verifiedCollegesPastMonthCountRes,
+      verifiedCollegesPreviousMonthCountRes,
       jobsCountRes,
       activeJobsCountRes,
-      jobsPastMonthCountRes,
+      activeJobsPastMonthCountRes,
+      activeJobsPreviousMonthCountRes,
       applicationsCountRes,
       applicationsPastMonthCountRes,
+      applicationsPreviousMonthCountRes,
       applicationsByStatusRes,
       offersCountRes,
-      offersAcceptedCountRes,
       offersPastMonthCountRes,
+      offersPreviousMonthCountRes,
+      offersAcceptedCountRes,
       topCompaniesRes,
       recentStudentsRes,
       recentRecruitersRes,
-      recentCollegesRes,
-      recentJobsRes,
-      recentOffersRes,
+      activityCollegesRes,
+      activityJobsRes,
+      activityOffersRes,
+      activityApplicationsRes,
+      activityRecruitersRes,
       pendingCollegesRes,
       verifiedCollegesRes,
     ] = await Promise.allSettled([
-      // 1. Students Total
+      // 1. Students Total & MoM Windows
       prisma.studentProfile.count(),
-      // Students registered in current month window
       prisma.studentProfile.count({ where: { createdAt: { gte: oneMonthAgo } } }),
-      // Students registered in previous month window
       prisma.studentProfile.count({ where: { createdAt: { gte: twoMonthsAgo, lt: oneMonthAgo } } }),
 
-      // 2. Recruiters Total & Past Month
+      // 2. Recruiters Total & MoM Windows
       prisma.recruiterProfile.count(),
       prisma.recruiterProfile.count({ where: { createdAt: { gte: oneMonthAgo } } }),
+      prisma.recruiterProfile.count({ where: { createdAt: { gte: twoMonthsAgo, lt: oneMonthAgo } } }),
 
-      // 3. Colleges Total & Verified
+      // 3. Colleges Total & Verified MoM Windows
       prisma.college.count(),
       prisma.college.count({ where: { isVerified: true } }),
-      prisma.college.count({ where: { createdAt: { gte: oneMonthAgo } } }),
+      prisma.college.count({ where: { isVerified: true, createdAt: { gte: oneMonthAgo } } }),
+      prisma.college.count({ where: { isVerified: true, createdAt: { gte: twoMonthsAgo, lt: oneMonthAgo } } }),
 
-      // 4. Jobs Total & Active
+      // 4. Jobs Total & Active MoM Windows
       prisma.job.count(),
       prisma.job.count({ where: { status: 'ACTIVE' } }),
-      prisma.job.count({ where: { createdAt: { gte: oneMonthAgo } } }),
+      prisma.job.count({ where: { status: 'ACTIVE', createdAt: { gte: oneMonthAgo } } }),
+      prisma.job.count({ where: { status: 'ACTIVE', createdAt: { gte: twoMonthsAgo, lt: oneMonthAgo } } }),
 
-      // 5. Applications Total & Past Month
+      // 5. Applications Total & MoM Windows
       prisma.application.count(),
       prisma.application.count({ where: { createdAt: { gte: oneMonthAgo } } }),
+      prisma.application.count({ where: { createdAt: { gte: twoMonthsAgo, lt: oneMonthAgo } } }),
 
       // 6. Applications Grouped by Status
       prisma.application.groupBy({
@@ -99,10 +131,11 @@ export async function GET(req: NextRequest) {
         _count: { id: true },
       }),
 
-      // 7. Offers Total, Accepted, & Past Month
+      // 7. Offers Total, Accepted, & MoM Windows
       prisma.offer.count(),
-      prisma.offer.count({ where: { status: 'ACCEPTED' } }),
       prisma.offer.count({ where: { createdAt: { gte: oneMonthAgo } } }),
+      prisma.offer.count({ where: { createdAt: { gte: twoMonthsAgo, lt: oneMonthAgo } } }),
+      prisma.offer.count({ where: { status: 'ACCEPTED' } }),
 
       // 8. Top Companies with Job & Application counts
       prisma.company.findMany({
@@ -190,7 +223,7 @@ export async function GET(req: NextRequest) {
         },
       }),
 
-      // 11. Platform Activity Feed Sources (Colleges, Jobs, Offers)
+      // 11. Activity Stream Sources (Colleges, Jobs, Offers, Applications, Recruiters)
       prisma.college.findMany({
         take: 3,
         orderBy: { createdAt: 'desc' },
@@ -209,11 +242,11 @@ export async function GET(req: NextRequest) {
       }),
       prisma.offer.findMany({
         take: 3,
-        where: { status: 'ACCEPTED' },
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           designation: true,
+          status: true,
           createdAt: true,
           student: {
             select: {
@@ -221,6 +254,28 @@ export async function GET(req: NextRequest) {
               college: { select: { name: true } },
             },
           },
+          company: { select: { name: true } },
+        },
+      }),
+      prisma.application.findMany({
+        take: 3,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          status: true,
+          createdAt: true,
+          job: { select: { title: true, company: { select: { name: true } } } },
+          student: { select: { user: { select: { name: true } } } },
+        },
+      }),
+      prisma.recruiterProfile.findMany({
+        take: 3,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          createdAt: true,
+          user: { select: { name: true } },
+          company: { select: { name: true } },
         },
       }),
 
@@ -255,254 +310,261 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // Extract Base KPI Counts with realistic fallback numbers for sparse staging DBs
-    const rawTotalStudents = studentsCountRes.status === 'fulfilled' ? studentsCountRes.value : 0;
-    const rawTotalRecruiters = recruitersCountRes.status === 'fulfilled' ? recruitersCountRes.value : 0;
-    const rawVerifiedColleges = verifiedCollegesCountRes.status === 'fulfilled' ? verifiedCollegesCountRes.value : 0;
-    const rawActiveJobs = activeJobsCountRes.status === 'fulfilled' ? activeJobsCountRes.value : 0;
-    const rawTotalApplications = applicationsCountRes.status === 'fulfilled' ? applicationsCountRes.value : 0;
-    const rawTotalOffers = offersCountRes.status === 'fulfilled' ? offersCountRes.value : 0;
+    // Extract Base KPI Counts directly from Database
+    const totalStudents = studentsCountRes.status === 'fulfilled' ? studentsCountRes.value : 0;
+    const studentsPastMonth = studentsPastMonthCountRes.status === 'fulfilled' ? studentsPastMonthCountRes.value : 0;
+    const studentsPrevMonth = studentsPreviousMonthCountRes.status === 'fulfilled' ? studentsPreviousMonthCountRes.value : 0;
 
-    const totalStudents = Math.max(rawTotalStudents, 12842);
-    const totalRecruiters = Math.max(rawTotalRecruiters, 320);
-    const verifiedCollegesCount = Math.max(rawVerifiedColleges, 186);
-    const activeJobsCount = Math.max(rawActiveJobs, 642);
-    const totalApplicationsCount = Math.max(rawTotalApplications, 18520);
-    const totalOffersCount = Math.max(rawTotalOffers, 3215);
+    const totalRecruiters = recruitersCountRes.status === 'fulfilled' ? recruitersCountRes.value : 0;
+    const recruitersPastMonth = recruitersPastMonthCountRes.status === 'fulfilled' ? recruitersPastMonthCountRes.value : 0;
+    const recruitersPrevMonth = recruitersPreviousMonthCountRes.status === 'fulfilled' ? recruitersPreviousMonthCountRes.value : 0;
 
-    // Month-over-Month Growth Calculation Helper
-    const computeMoMGrowth = (currentCount: number, pastMonthNew: number, defaultMoM: number) => {
-      if (currentCount > 0 && pastMonthNew > 0) {
-        return Math.max(Math.round((pastMonthNew / currentCount) * 100), 1);
-      }
-      return defaultMoM;
-    };
+    const verifiedCollegesCount = verifiedCollegesCountRes.status === 'fulfilled' ? verifiedCollegesCountRes.value : 0;
+    const collegesPastMonth = verifiedCollegesPastMonthCountRes.status === 'fulfilled' ? verifiedCollegesPastMonthCountRes.value : 0;
+    const collegesPrevMonth = verifiedCollegesPreviousMonthCountRes.status === 'fulfilled' ? verifiedCollegesPreviousMonthCountRes.value : 0;
 
-    const studentsMoMGrowth = computeMoMGrowth(
-      rawTotalStudents, 
-      studentsPastMonthCountRes.status === 'fulfilled' ? studentsPastMonthCountRes.value : 0, 
-      12
-    );
-    const recruitersMoMGrowth = computeMoMGrowth(
-      rawTotalRecruiters, 
-      recruitersPastMonthCountRes.status === 'fulfilled' ? recruitersPastMonthCountRes.value : 0, 
-      8
-    );
-    const collegesMoMGrowth = computeMoMGrowth(
-      rawVerifiedColleges, 
-      collegesPastMonthCountRes.status === 'fulfilled' ? collegesPastMonthCountRes.value : 0, 
-      6
-    );
-    const jobsMoMGrowth = computeMoMGrowth(
-      rawActiveJobs, 
-      jobsPastMonthCountRes.status === 'fulfilled' ? jobsPastMonthCountRes.value : 0, 
-      14
-    );
-    const applicationsMoMGrowth = computeMoMGrowth(
-      rawTotalApplications, 
-      applicationsPastMonthCountRes.status === 'fulfilled' ? applicationsPastMonthCountRes.value : 0, 
-      20
-    );
-    const offersMoMGrowth = computeMoMGrowth(
-      rawTotalOffers, 
-      offersPastMonthCountRes.status === 'fulfilled' ? offersPastMonthCountRes.value : 0, 
-      18
-    );
+    const activeJobsCount = activeJobsCountRes.status === 'fulfilled' ? activeJobsCountRes.value : 0;
+    const jobsPastMonth = activeJobsPastMonthCountRes.status === 'fulfilled' ? activeJobsPastMonthCountRes.value : 0;
+    const jobsPrevMonth = activeJobsPreviousMonthCountRes.status === 'fulfilled' ? activeJobsPreviousMonthCountRes.value : 0;
 
-    // --- 2. USER GROWTH MULTI-TIMELINE DATA ---
+    const totalApplicationsCount = applicationsCountRes.status === 'fulfilled' ? applicationsCountRes.value : 0;
+    const applicationsPastMonth = applicationsPastMonthCountRes.status === 'fulfilled' ? applicationsPastMonthCountRes.value : 0;
+    const applicationsPrevMonth = applicationsPreviousMonthCountRes.status === 'fulfilled' ? applicationsPreviousMonthCountRes.value : 0;
+
+    const totalOffersCount = offersCountRes.status === 'fulfilled' ? offersCountRes.value : 0;
+    const offersPastMonth = offersPastMonthCountRes.status === 'fulfilled' ? offersPastMonthCountRes.value : 0;
+    const offersPrevMonth = offersPreviousMonthCountRes.status === 'fulfilled' ? offersPreviousMonthCountRes.value : 0;
+
+    const totalOffersAccepted = offersAcceptedCountRes.status === 'fulfilled' ? offersAcceptedCountRes.value : 0;
+    const totalCollegesCount = collegesCountRes.status === 'fulfilled' ? collegesCountRes.value : 0;
+
+    // Real MoM Growth Percentages
+    const studentsMoMGrowth = computeMoMGrowth(studentsPastMonth, studentsPrevMonth);
+    const recruitersMoMGrowth = computeMoMGrowth(recruitersPastMonth, recruitersPrevMonth);
+    const collegesMoMGrowth = computeMoMGrowth(collegesPastMonth, collegesPrevMonth);
+    const jobsMoMGrowth = computeMoMGrowth(jobsPastMonth, jobsPrevMonth);
+    const applicationsMoMGrowth = computeMoMGrowth(applicationsPastMonth, applicationsPrevMonth);
+    const offersMoMGrowth = computeMoMGrowth(offersPastMonth, offersPrevMonth);
+
+    // --- 2. USER GROWTH DYNAMIC TIMELINE DATA ---
     const monthsCount = query.timeframe === '6m' ? 6 : query.timeframe === '12m' || query.timeframe === '1y' ? 12 : 8;
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthBuckets: { monthLabel: string; endOfM: Date }[] = [];
     
-    // Preset realistic baseline curve matching UI mockup trajectory
-    const baselineTimeline = [
-      { month: 'Jan', students: 6200, recruiters: 140, colleges: 85 },
-      { month: 'Feb', students: 7800, recruiters: 180, colleges: 105 },
-      { month: 'Mar', students: 9100, recruiters: 210, colleges: 125 },
-      { month: 'Apr', students: 10400, recruiters: 240, colleges: 140 },
-      { month: 'May', students: 11200, recruiters: 265, colleges: 155 },
-      { month: 'Jun', students: 11900, recruiters: 285, colleges: 168 },
-      { month: 'Jul', students: 12400, recruiters: 305, colleges: 178 },
-      { month: 'Aug', students: 12842, recruiters: 320, colleges: 186 },
-    ];
+    for (let i = monthsCount - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const endOfM = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59, 999);
+      const monthLabel = d.toLocaleString('en-US', { month: 'short' });
+      monthBuckets.push({ monthLabel, endOfM });
+    }
 
-    const userGrowth = baselineTimeline.slice(Math.max(baselineTimeline.length - monthsCount, 0));
+    // Query cumulative count per monthly checkpoint
+    const userGrowth = await Promise.all(
+      monthBuckets.map(async ({ monthLabel, endOfM }) => {
+        try {
+          const [stCount, recCount, colCount] = await Promise.all([
+            prisma.studentProfile.count({ where: { createdAt: { lte: endOfM } } }),
+            prisma.recruiterProfile.count({ where: { createdAt: { lte: endOfM } } }),
+            prisma.college.count({ where: { isVerified: true, createdAt: { lte: endOfM } } }),
+          ]);
+          return {
+            month: monthLabel,
+            students: stCount,
+            recruiters: recCount,
+            colleges: colCount,
+          };
+        } catch {
+          return {
+            month: monthLabel,
+            students: 0,
+            recruiters: 0,
+            colleges: 0,
+          };
+        }
+      })
+    );
 
-    // --- 3. APPLICATIONS BY STATUS BREAKDOWN ---
+    // --- 3. APPLICATIONS BY STATUS BREAKDOWN (Live from DB) ---
     const statusGroups = applicationsByStatusRes.status === 'fulfilled' ? applicationsByStatusRes.value : [];
     
-    // Compute or provide calibrated distribution matching the UI Donut chart
-    const applicationsByStatus = [
-      {
-        key: 'UNDER_REVIEW',
-        label: 'Under Review',
-        count: Math.round(totalApplicationsCount * 0.42),
-        percentage: 42,
-        color: '#0D8B8A', // Teal Primary
-      },
-      {
-        key: 'SHORTLISTED',
-        label: 'Shortlisted',
-        count: Math.round(totalApplicationsCount * 0.28),
-        percentage: 28,
-        color: '#FBAB23', // Amber Yellow
-      },
-      {
-        key: 'INTERVIEWED',
-        label: 'Interviewed',
-        count: Math.round(totalApplicationsCount * 0.16),
-        percentage: 16,
-        color: '#3B82F6', // Blue
-      },
-      {
-        key: 'OFFERED',
-        label: 'Offered',
-        count: Math.round(totalApplicationsCount * 0.10),
-        percentage: 10,
-        color: '#10B981', // Emerald Green
-      },
-      {
-        key: 'REJECTED',
-        label: 'Rejected',
-        count: Math.round(totalApplicationsCount * 0.06),
-        percentage: 6,
-        color: '#EF4444', // Rose Red
-      },
-    ];
+    const statusConfigMap: Record<string, { label: string; color: string }> = {
+      UNDER_REVIEW: { label: 'Under Review', color: '#0D8B8A' },
+      SHORTLISTED: { label: 'Shortlisted', color: '#FBAB23' },
+      INTERVIEW_SCHEDULED: { label: 'Interviewed', color: '#8B5CF6' },
+      OFFERED: { label: 'Offered', color: '#10B981' },
+      ACCEPTED: { label: 'Accepted', color: '#059669' },
+      REJECTED: { label: 'Rejected', color: '#EF4444' },
+      APPLIED: { label: 'Applied', color: '#06B6D4' },
+      DECLINED: { label: 'Declined', color: '#94A3B8' },
+    };
 
-    // --- 4. TOP RECRUITERS RANKED ---
+    // Calculate dynamic distribution
+    const applicationsByStatus = Object.entries(statusConfigMap).map(([statusKey, config]) => {
+      const found = statusGroups.find((g) => g.status === statusKey);
+      const count = found?._count?.id || 0;
+      const percentage = totalApplicationsCount > 0 ? Math.round((count / totalApplicationsCount) * 100) : 0;
+      return {
+        key: statusKey,
+        label: config.label,
+        count,
+        percentage,
+        color: config.color,
+      };
+    }).filter((item) => {
+      if (totalApplicationsCount === 0) {
+        return ['UNDER_REVIEW', 'SHORTLISTED', 'INTERVIEW_SCHEDULED', 'OFFERED', 'REJECTED'].includes(item.key);
+      }
+      return item.count > 0 || ['UNDER_REVIEW', 'SHORTLISTED', 'OFFERED'].includes(item.key);
+    });
+
+    // --- 4. TOP RECRUITERS RANKED (Live from DB) ---
     const dbCompanies = topCompaniesRes.status === 'fulfilled' ? topCompaniesRes.value : [];
-    const fallbackCompanies = [
-      { id: 'c-google', companyName: 'Google', logoUrl: '/images/company/google.svg', jobsCount: 120, applicationsCount: 2840 },
-      { id: 'c-msft', companyName: 'Microsoft', logoUrl: '/images/company/microsoft.svg', jobsCount: 98, applicationsCount: 2120 },
-      { id: 'c-amzn', companyName: 'Amazon', logoUrl: '/images/company/amazon.svg', jobsCount: 76, applicationsCount: 1980 },
-      { id: 'c-adobe', companyName: 'Adobe', logoUrl: '/images/company/adobe.svg', jobsCount: 64, applicationsCount: 1450 },
-      { id: 'c-tcs', companyName: 'TCS', logoUrl: '/images/company/tcs.svg', jobsCount: 58, applicationsCount: 1320 },
-    ];
+    const topRecruiters = dbCompanies.map((c) => {
+      const totalApps = c.jobs.reduce((acc, j) => acc + (j._count?.applications || 0), 0);
+      return {
+        id: c.id,
+        companyName: c.name,
+        logoUrl: c.logoUrl || '/images/company/generic.svg',
+        jobsCount: c._count?.jobs || 0,
+        applicationsCount: totalApps,
+      };
+    });
 
-    const topRecruiters = dbCompanies.length > 0
-      ? dbCompanies.map((c) => {
-          const totalApps = c.jobs.reduce((acc, j) => acc + (j._count?.applications || 0), 0);
-          return {
-            id: c.id,
-            companyName: c.name,
-            logoUrl: c.logoUrl || '/images/company/generic.svg',
-            jobsCount: Math.max(c._count?.jobs || 0, 12),
-            applicationsCount: Math.max(totalApps, 180),
-          };
-        })
-      : fallbackCompanies;
-
-    // --- 5. RECENT STUDENTS FEED ---
+    // --- 5. RECENT STUDENTS FEED (Live from DB) ---
     const dbStudents = recentStudentsRes.status === 'fulfilled' ? recentStudentsRes.value : [];
-    const fallbackStudents = [
-      { id: 's1', name: 'Aarav Sharma', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80', collegeName: 'IIT Bombay', branch: 'CSE', status: 'Placed', joinedAt: 'Aug 20, 2025' },
-      { id: 's2', name: 'Sneha Patel', avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80', collegeName: 'NIT Trichy', branch: 'ECE', status: 'Interview', joinedAt: 'Aug 20, 2025' },
-      { id: 's3', name: 'Rohan Mehta', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80', collegeName: 'VIT Vellore', branch: 'IT', status: 'Applied', joinedAt: 'Aug 19, 2025' },
-      { id: 's4', name: 'Priya Singh', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80', collegeName: 'BITS Pilani', branch: 'CSE', status: 'Shortlisted', joinedAt: 'Aug 19, 2025' },
-      { id: 's5', name: 'Karan Verma', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80', collegeName: 'DTU', branch: 'ME', status: 'Offered', joinedAt: 'Aug 18, 2025' },
-    ];
+    const recentStudents = dbStudents.map((st) => {
+      let statusText = 'Applied';
+      if (st.offers?.length && st.offers[0].status === 'ACCEPTED') statusText = 'Placed';
+      else if (st.offers?.length) statusText = 'Offered';
+      else if (st.applications?.length && st.applications[0].status === 'SHORTLISTED') statusText = 'Shortlisted';
+      else if (st.applications?.length && st.applications[0].status === 'INTERVIEW_SCHEDULED') statusText = 'Interview';
 
-    const recentStudents = dbStudents.length > 0
-      ? dbStudents.map((st) => {
-          let statusText = 'Applied';
-          if (st.offers?.length && st.offers[0].status === 'ACCEPTED') statusText = 'Placed';
-          else if (st.offers?.length) statusText = 'Offered';
-          else if (st.applications?.length && st.applications[0].status === 'SHORTLISTED') statusText = 'Shortlisted';
-          else if (st.applications?.length && st.applications[0].status === 'INTERVIEW_SCHEDULED') statusText = 'Interview';
+      return {
+        id: st.id,
+        name: st.user?.name || 'Student Candidate',
+        avatarUrl: st.user?.avatarUrl || null,
+        collegeName: st.college?.name || 'Partner Institute',
+        branch: st.branch || 'Engineering',
+        status: statusText,
+        joinedAt: new Date(st.createdAt).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }),
+      };
+    });
 
-          return {
-            id: st.id,
-            name: st.user?.name || 'Student Candidate',
-            avatarUrl: st.user?.avatarUrl || null,
-            collegeName: st.college?.name || 'Partner Institute',
-            branch: st.branch || 'Engineering',
-            status: statusText,
-            joinedAt: new Date(st.createdAt).toLocaleDateString(undefined, {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            }),
-          };
-        })
-      : fallbackStudents;
-
-    // --- 6. RECENT RECRUITERS FEED ---
+    // --- 6. RECENT RECRUITERS FEED (Live from DB) ---
     const dbRecruiters = recentRecruitersRes.status === 'fulfilled' ? recentRecruitersRes.value : [];
-    const fallbackRecruiters = [
-      { id: 'r1', companyName: 'Google', logoUrl: '/images/company/google.svg', jobsCount: 12, joinedAt: 'Aug 20, 2025' },
-      { id: 'r2', companyName: 'Microsoft', logoUrl: '/images/company/microsoft.svg', jobsCount: 10, joinedAt: 'Aug 19, 2025' },
-      { id: 'r3', companyName: 'Amazon', logoUrl: '/images/company/amazon.svg', jobsCount: 8, joinedAt: 'Aug 19, 2025' },
-      { id: 'r4', companyName: 'Adobe', logoUrl: '/images/company/adobe.svg', jobsCount: 6, joinedAt: 'Aug 18, 2025' },
-      { id: 'r5', companyName: 'Infosys', logoUrl: '/images/company/infosys.svg', jobsCount: 5, joinedAt: 'Aug 18, 2025' },
-    ];
+    const recentRecruiters = dbRecruiters.map((rec) => ({
+      id: rec.id,
+      companyName: rec.company?.name || rec.user?.name || 'Hiring Enterprise',
+      logoUrl: rec.company?.logoUrl || '/images/company/generic.svg',
+      jobsCount: rec.company?._count?.jobs || 0,
+      joinedAt: new Date(rec.createdAt).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+    }));
 
-    const recentRecruiters = dbRecruiters.length > 0
-      ? dbRecruiters.map((rec) => ({
-          id: rec.id,
-          companyName: rec.company?.name || rec.user?.name || 'Hiring Enterprise',
-          logoUrl: rec.company?.logoUrl || '/images/company/generic.svg',
-          jobsCount: rec.company?._count?.jobs || 4,
-          joinedAt: new Date(rec.createdAt).toLocaleDateString(undefined, {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          }),
-        }))
-      : fallbackRecruiters;
+    // --- 7. REAL-TIME PLATFORM ACTIVITY FEED (Live from DB) ---
+    const rawEvents: Array<{
+      id: string;
+      type: string;
+      title: string;
+      description: string;
+      date: Date;
+      icon: string;
+      color: string;
+    }> = [];
 
-    // --- 7. REAL-TIME PLATFORM ACTIVITY FEED ---
-    const platformActivity = [
-      {
-        id: 'act-1',
-        type: 'RECRUITER_REGISTERED',
-        title: 'New recruiter registered',
-        description: 'Tech Mahindra',
-        timeAgo: '10 minutes ago',
-        timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-        icon: 'Building2',
-        color: 'text-rose-500 bg-rose-50',
-      },
-      {
-        id: 'act-2',
-        type: 'COLLEGE_VERIFICATION',
-        title: 'New college verification request',
-        description: 'ABC Engineering College',
-        timeAgo: '2 hours ago',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        icon: 'GraduationCap',
-        color: 'text-teal-600 bg-teal-50',
-      },
-      {
-        id: 'act-3',
-        type: 'JOB_POSTED',
-        title: 'New job posted',
-        description: 'Google - Software Engineer',
-        timeAgo: '3 hours ago',
-        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        icon: 'Briefcase',
-        color: 'text-purple-600 bg-purple-50',
-      },
-      {
-        id: 'act-4',
-        type: 'OFFER_ACCEPTED',
-        title: 'Offer accepted',
-        description: 'Sneha Patel (NIT Trichy)',
-        timeAgo: '5 hours ago',
-        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        icon: 'Award',
-        color: 'text-emerald-600 bg-emerald-50',
-      },
-      {
-        id: 'act-5',
-        type: 'SYSTEM_UPDATE',
-        title: 'System update',
-        description: 'New features deployed',
-        timeAgo: '1 day ago',
-        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        icon: 'Settings',
-        color: 'text-blue-600 bg-blue-50',
-      },
-    ];
+    // Recruiter registrations
+    if (activityRecruitersRes.status === 'fulfilled') {
+      activityRecruitersRes.value.forEach((rec) => {
+        rawEvents.push({
+          id: `rec-${rec.id}`,
+          type: 'RECRUITER_REGISTERED',
+          title: 'Recruiter onboarded',
+          description: `${rec.user?.name || 'Corporate'} from ${rec.company?.name || 'Enterprise'}`,
+          date: new Date(rec.createdAt),
+          icon: 'Building2',
+          color: 'text-rose-600 bg-rose-50 border-rose-200',
+        });
+      });
+    }
+
+    // College verification/registration
+    if (activityCollegesRes.status === 'fulfilled') {
+      activityCollegesRes.value.forEach((col) => {
+        rawEvents.push({
+          id: `col-${col.id}`,
+          type: 'COLLEGE_VERIFICATION',
+          title: col.isVerified ? 'College accredited' : 'New institution registration',
+          description: col.name,
+          date: new Date(col.createdAt),
+          icon: 'GraduationCap',
+          color: 'text-teal-700 bg-teal-50 border-teal-200',
+        });
+      });
+    }
+
+    // Job postings
+    if (activityJobsRes.status === 'fulfilled') {
+      activityJobsRes.value.forEach((jb) => {
+        rawEvents.push({
+          id: `jb-${jb.id}`,
+          type: 'JOB_POSTED',
+          title: 'New campus drive posted',
+          description: `${jb.title} • ${jb.company?.name || 'Enterprise'}`,
+          date: new Date(jb.createdAt),
+          icon: 'Briefcase',
+          color: 'text-purple-700 bg-purple-50 border-purple-200',
+        });
+      });
+    }
+
+    // Offers
+    if (activityOffersRes.status === 'fulfilled') {
+      activityOffersRes.value.forEach((off) => {
+        rawEvents.push({
+          id: `off-${off.id}`,
+          type: 'OFFER_ACCEPTED',
+          title: off.status === 'ACCEPTED' ? 'Offer accepted' : 'Offer released',
+          description: `${off.student?.user?.name || 'Candidate'} (${off.designation})`,
+          date: new Date(off.createdAt),
+          icon: 'Award',
+          color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+        });
+      });
+    }
+
+    // Applications
+    if (activityApplicationsRes.status === 'fulfilled') {
+      activityApplicationsRes.value.forEach((app) => {
+        rawEvents.push({
+          id: `app-${app.id}`,
+          type: 'APPLICATION_SUBMITTED',
+          title: 'Application received',
+          description: `${app.student?.user?.name || 'Student'} applied for ${app.job?.title || 'Position'}`,
+          date: new Date(app.createdAt),
+          icon: 'FileText',
+          color: 'text-amber-700 bg-amber-50 border-amber-200',
+        });
+      });
+    }
+
+    // Sort by timestamp desc and take top 5
+    rawEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
+    const platformActivity = rawEvents.slice(0, 5).map((ev) => ({
+      id: ev.id,
+      type: ev.type,
+      title: ev.title,
+      description: ev.description,
+      timeAgo: formatTimeAgo(ev.date),
+      timestamp: ev.date.toISOString(),
+      icon: ev.icon,
+      color: ev.color,
+    }));
 
     // --- 8. COMPOSE UNIFIED DASHBOARD PAYLOAD ---
     const payload = {
@@ -521,15 +583,15 @@ export async function GET(req: NextRequest) {
         offersMoMGrowth,
         
         // Backward-compatibility keys
-        affiliatedCollegesCount: totalCollegesCountRes(collegesCountRes),
+        affiliatedCollegesCount: totalCollegesCount,
         verifiedCollegesCount,
         totalEnrolledStudents: totalStudents,
-        totalPlacedStudents: offersAcceptedCountRes.status === 'fulfilled' ? offersAcceptedCountRes.value : 1138,
+        totalPlacedStudents: totalOffersAccepted,
         totalPlacementDrives: activeJobsCount,
         activePlacementDrives: activeJobsCount,
         totalApplicationsSubmitted: totalApplicationsCount,
         totalOffersIssued: totalOffersCount,
-        totalOffersAccepted: offersAcceptedCountRes.status === 'fulfilled' ? offersAcceptedCountRes.value : 1138,
+        totalOffersAccepted,
       },
       userGrowth,
       applicationsByStatus,
@@ -554,6 +616,3 @@ export async function GET(req: NextRequest) {
   }
 }
 
-function totalCollegesCountRes(res: PromiseSettledResult<number>): number {
-  return res.status === 'fulfilled' ? res.value : 186;
-}

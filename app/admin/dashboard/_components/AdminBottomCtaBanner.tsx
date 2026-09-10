@@ -15,7 +15,7 @@ export function AdminBottomCtaBanner() {
         </div>
 
         <div>
-          <h3 className="text-base font-extrabold text-[#0A2540] font-heading tracking-tight leading-tight">
+          <h3 className="text-base font-extrabold text-slate-900 font-heading tracking-tight leading-tight">
             Together for a Brighter Future
           </h3>
           <p className="text-xs text-slate-500 font-medium mt-0.5 leading-tight">
