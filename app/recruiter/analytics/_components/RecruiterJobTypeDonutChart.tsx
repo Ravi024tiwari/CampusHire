@@ -11,18 +11,11 @@ interface RecruiterJobTypeDonutChartProps {
 
 export function RecruiterJobTypeDonutChart({
   distribution,
-  totalOffers = 1246,
+  totalOffers = 0,
 }: RecruiterJobTypeDonutChartProps) {
   const [activeHover, setActiveHover] = useState<string | null>(null);
 
-  const items = distribution && distribution.length > 0 ? distribution : [
-    { key: 'FULL_TIME', label: 'Full Time', count: 847, percentage: 68, color: '#2563EB' },
-    { key: 'INTERNSHIP', label: 'Internship', count: 224, percentage: 18, color: '#8B5CF6' },
-    { key: 'PART_TIME', label: 'Part Time', count: 100, percentage: 8, color: '#F59E0B' },
-    { key: 'CONTRACT', label: 'Contract', count: 50, percentage: 4, color: '#EF4444' },
-    { key: 'OTHER', label: 'Other', count: 25, percentage: 2, color: '#64748B' },
-  ];
-
+  const items = distribution || [];
   const total = items.reduce((acc, curr) => acc + curr.count, 0) || totalOffers;
 
   // Compute SVG circular strokes

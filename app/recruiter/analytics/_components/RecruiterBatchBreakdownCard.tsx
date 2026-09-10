@@ -10,12 +10,7 @@ interface RecruiterBatchBreakdownCardProps {
 }
 
 export function RecruiterBatchBreakdownCard({ batchYears }: RecruiterBatchBreakdownCardProps) {
-  const batchItems = batchYears && batchYears.length > 0 ? batchYears : [
-    { batchYear: 2025, offers: 320, placed: 280, placementRate: 87 },
-    { batchYear: 2026, offers: 280, placed: 240, placementRate: 86 },
-    { batchYear: 2027, offers: 210, placed: 160, placementRate: 76 },
-    { batchYear: 2028, offers: 120, placed: 80, placementRate: 67 },
-  ];
+  const batchItems = batchYears || [];
 
   return (
     <div className="rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 p-4 sm:p-5 lg:p-6 shadow-2xs flex flex-col justify-between space-y-3 sm:space-y-4">

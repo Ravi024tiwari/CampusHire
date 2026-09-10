@@ -12,15 +12,8 @@ export function RecruiterPlacementTrendChart({ trends }: RecruiterPlacementTrend
   const { granularity, setGranularity } = useRecruiterAnalyticsStore();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const maxVal = 400;
-
-  const data = trends && trends.length > 0 ? trends : [
-    { year: 2021, offersMade: 145, studentsPlaced: 110, placementRate: 76 },
-    { year: 2022, offersMade: 195, studentsPlaced: 160, placementRate: 82 },
-    { year: 2023, offersMade: 250, studentsPlaced: 215, placementRate: 86 },
-    { year: 2024, offersMade: 320, studentsPlaced: 280, placementRate: 87 },
-    { year: 2025, offersMade: 336, studentsPlaced: 290, placementRate: 86 },
-  ];
+  const data = trends || [];
+  const maxVal = Math.max(10, ...data.map((d) => Math.max(d.offersMade, d.studentsPlaced, 1)));
 
   const count = data.length;
 

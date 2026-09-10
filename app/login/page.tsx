@@ -16,7 +16,6 @@ import {
   ArrowRight, 
   CheckCircle2, 
   ShieldCheck, 
-  Zap, 
   FileText
 } from 'lucide-react';
 
@@ -36,13 +35,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // Quick Demo Auto-Fill Helpers
-  const fillDemo = (demoEmail: string, demoPass: string = 'Password@123') => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setError(null);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,53 +190,11 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Quick Demo Credentials Autofill Helper Chips */}
-          <div className="mb-6 p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 space-y-2">
-            <span className="text-[11px] font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-blue-600" />
-              Quick Test Autofill (Click to populate)
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => fillDemo('kanha@gmail.com', 'Password@123')}
-                className="p-2 rounded-xl bg-white border border-blue-200 text-left hover:border-blue-500 hover:bg-blue-50 transition-all text-xs cursor-pointer shadow-2xs"
-              >
-                <span className="font-bold text-[#0A2540] block">🏢 Recruiter Demo</span>
-                <span className="text-[10px] text-[#64748B] truncate block">kanha@gmail.com</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('microsoft@gmail.com', 'Password@123')}
-                className="p-2 rounded-xl bg-white border border-blue-200 text-left hover:border-blue-500 hover:bg-blue-50 transition-all text-xs cursor-pointer shadow-2xs"
-              >
-                <span className="font-bold text-[#0A2540] block">🏢 Company Lead</span>
-                <span className="text-[10px] text-[#64748B] truncate block">microsoft@gmail.com</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('ggu@gmail.com', 'Password@123')}
-                className="p-2 rounded-xl bg-white border border-blue-200 text-left hover:border-blue-500 hover:bg-blue-50 transition-all text-xs cursor-pointer shadow-2xs"
-              >
-                <span className="font-bold text-[#0A2540] block">🏛️ TPO Admin</span>
-                <span className="text-[10px] text-[#64748B] truncate block">ggu@gmail.com</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('ashok@gmail.com', 'Password@123')}
-                className="p-2 rounded-xl bg-white border border-blue-200 text-left hover:border-blue-500 hover:bg-blue-50 transition-all text-xs cursor-pointer shadow-2xs"
-              >
-                <span className="font-bold text-[#0A2540] block">🛡️ Super Admin</span>
-                <span className="text-[10px] text-[#64748B] truncate block">ashok@gmail.com</span>
-              </button>
-            </div>
-          </div>
-
           {/* Error Alert */}
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm flex items-start gap-2.5 animate-fadeIn">
+            <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm flex items-start gap-2.5 animate-in fade-in">
               <span className="text-sm flex-shrink-0">⚠️</span>
-              <span>{error}</span>
+              <span className="font-semibold">{error}</span>
             </div>
           )}
 

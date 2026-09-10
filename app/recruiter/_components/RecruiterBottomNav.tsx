@@ -23,8 +23,8 @@ export function RecruiterBottomNav() {
     if (href === '/recruiter/colleges') {
       return pathname.startsWith('/recruiter/colleges');
     }
-    if (href === '/recruiter/drives') {
-      return pathname.startsWith('/recruiter/drives');
+    if (href === '/recruiter/interviews' || href === '/recruiter/drives') {
+      return pathname.startsWith('/recruiter/interviews') || pathname.startsWith('/recruiter/drives');
     }
     if (href === '/recruiter/jobs') {
       return pathname === '/recruiter/jobs' || pathname.startsWith('/recruiter/jobs/');
@@ -35,7 +35,7 @@ export function RecruiterBottomNav() {
   const navTabs = [
     { label: 'Home', href: '/recruiter/dashboard', icon: Home },
     { label: 'Colleges', href: '/recruiter/colleges', icon: GraduationCap },
-    { label: 'Drives', href: '/recruiter/drives', icon: Calendar },
+    { label: 'Interviews', href: '/recruiter/interviews', icon: Calendar },
     { label: 'Jobs', href: '/recruiter/jobs', icon: Briefcase },
   ];
 

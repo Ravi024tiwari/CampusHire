@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
-import { BrandLogo } from '@/components/BrandLogo';
 import { useAuthStore } from '@/store';
 import apiClient from '@/lib/axios';
 import type { ApiResponse } from '@/lib/api-response';
@@ -22,7 +21,19 @@ import {
   ShieldCheck, 
   Clock, 
   ArrowRight,
-  Building
+  Building,
+  User,
+  Eye,
+  EyeOff,
+  Phone,
+  Calendar,
+  FileText,
+  BarChart3,
+  Bell,
+  Sparkles,
+  Layers,
+  BookOpen,
+  Info
 } from 'lucide-react';
 
 interface CollegeOption {
@@ -64,9 +75,14 @@ function RegisterForm() {
   // Active Tab State (Student, Company Entity, College Institution)
   const [tab, setTab] = useState<RegistrationTab>('STUDENT');
 
+  // Password Visibility State
+  const [showPassword, setShowPassword] = useState(false);
+
   // Student Credentials & Data
   const [studentName, setStudentName] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
+  const [studentPhone, setStudentPhone] = useState('');
+  const [studentDob, setStudentDob] = useState('');
   const [studentPassword, setStudentPassword] = useState('');
   const [collegeId, setCollegeId] = useState('');
   const [enrollmentNumber, setEnrollmentNumber] = useState('');
@@ -74,7 +90,7 @@ function RegisterForm() {
   const [batchYear, setBatchYear] = useState(new Date().getFullYear());
   const [cgpa, setCgpa] = useState('');
 
-  // Company Direct Account Credentials & Profile
+  // Company Account Credentials & Profile (ALL fields preserved)
   const [companyName, setCompanyName] = useState('');
   const [companyEmail, setCompanyEmail] = useState('');
   const [companyPassword, setCompanyPassword] = useState('');
@@ -84,7 +100,7 @@ function RegisterForm() {
   const [companyDescription, setCompanyDescription] = useState('');
   const [companyLogoUrl, setCompanyLogoUrl] = useState('');
 
-  // College Institution Specific Fields
+  // College Institution Specific Fields (ALL fields preserved)
   const [collegeName, setCollegeName] = useState('');
   const [collegeCode, setCollegeCode] = useState('');
   const [collegeDomain, setCollegeDomain] = useState('');
@@ -136,24 +152,32 @@ function RegisterForm() {
   useEffect(() => {
     if (tab !== 'STUDENT') return;
 
+    let isMounted = true;
+
     async function fetchColleges() {
       try {
         setIsLoadingColleges(true);
         const response = await apiClient.get<ApiResponse<{ colleges: CollegeOption[] }>>('/api/colleges?isVerified=true&limit=50');
         const data = response.data;
-        if (data.success && data.data?.colleges) {
+        if (isMounted && data && data.success && Array.isArray(data.data?.colleges)) {
           setColleges(data.data.colleges);
           if (data.data.colleges.length > 0 && !collegeId) {
             setCollegeId(data.data.colleges[0].id);
           }
         }
       } catch (err) {
-        console.error('Failed to load colleges', err);
+        // Silently handle without throwing unhandled console errors
       } finally {
-        setIsLoadingColleges(false);
+        if (isMounted) {
+          setIsLoadingColleges(false);
+        }
       }
     }
     fetchColleges();
+
+    return () => {
+      isMounted = false;
+    };
   }, [tab]);
 
   // Handle image upload (Company Logo or College Campus Photo)
@@ -229,7 +253,7 @@ function RegisterForm() {
         return;
       }
 
-      // 2. DIRECT COMPANY REGISTRATION FLOW (Registers company with login email & password)
+      // 2. DIRECT COMPANY REGISTRATION FLOW
       if (tab === 'COMPANY') {
         if (!companyName.trim()) {
           throw new Error('Please enter your official company name');
@@ -273,8 +297,14 @@ function RegisterForm() {
 
       // 3. STUDENT REGISTRATION FLOW
       if (tab === 'STUDENT') {
+        if (!studentName.trim()) {
+          throw new Error('Please enter your full name');
+        }
+        if (!studentEmail.trim()) {
+          throw new Error('Please enter your student email address');
+        }
         if (!collegeId) {
-          throw new Error('Please select your verified college. If your college is not listed, your institution must register first.');
+          throw new Error('Please select your verified college');
         }
         if (!enrollmentNumber.trim()) {
           throw new Error('Please enter your enrollment or roll number');
@@ -282,6 +312,9 @@ function RegisterForm() {
         const parsedCgpa = parseFloat(cgpa);
         if (isNaN(parsedCgpa) || parsedCgpa < 0 || parsedCgpa > 10) {
           throw new Error('Please enter a valid CGPA between 0 and 10');
+        }
+        if (!studentPassword || studentPassword.length < 6) {
+          throw new Error('Password must be at least 6 characters long');
         }
 
         const payload = {
@@ -294,6 +327,7 @@ function RegisterForm() {
           branch,
           batchYear: Number(batchYear),
           cgpa: parsedCgpa,
+          phone: studentPhone.trim() || undefined,
         };
 
         const response = await apiClient.post<ApiResponse<{ user: any }>>('/api/auth/register', payload);
@@ -329,82 +363,172 @@ function RegisterForm() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+      {/* Top Standard Navigation Bar */}
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-
-          {/* Left Column: Platform Architecture Showcase */}
-          <div className="hidden md:flex md:col-span-5 flex-col justify-between p-6 lg:p-8 rounded-3xl bg-gradient-to-br from-slate-50 via-white to-blue-50/40 border border-[#E2E8F0] shadow-lg shadow-slate-200/50 min-h-[580px]">
-            <div>
-              <div className="mb-4 lg:mb-6">
-                <BrandLogo size="md" variant="light" />
-              </div>
+      {/* Main Form & Showcase Layout */}
+      <main className="flex-1 max-w-[1520px] w-full mx-auto p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          
+          {/* =========================================================================
+              LEFT SHOWCASE CARD (Matches Mockup with 100% Fidelity)
+             ========================================================================= */}
+          <div className="lg:col-span-5 xl:col-span-5 rounded-3xl bg-gradient-to-br from-[#EEF6FF] via-[#F4F9FF] to-[#FAF5FF] border border-blue-100/90 p-6 sm:p-8 flex flex-col justify-between shadow-xs relative overflow-hidden">
             
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/70 text-blue-700 text-[11px] font-semibold mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FBAB23] animate-pulse"></span>
-                <span>Tier-1 Placement Architecture</span>
+            {/* Ambient Lighting Flares */}
+            <div className="absolute -top-16 -right-16 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="space-y-5 relative z-10">
+              
+              {/* Top Track Badge */}
+              <div className="inline-block">
+                <span className="text-[11px] font-black tracking-widest text-slate-500 uppercase">
+                  {tab === 'STUDENT' ? 'FOR STUDENTS' : tab === 'COMPANY' ? 'FOR RECRUITERS' : 'FOR UNIVERSITIES'}
+                </span>
               </div>
-              
-              <h2 className="text-xl lg:text-2xl font-extrabold text-[#0A2540] font-heading tracking-tight leading-tight">
-                Enterprise Corporate Hiring & University Automation
-              </h2>
-              
-              <p className="text-xs text-[#64748B] mt-2.5 leading-relaxed">
-                Connect verified universities with verified companies. Post campus drives, automate applicant screening, and issue placement offers.
+
+              {/* Main Headline */}
+              <div className="space-y-1">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-heading text-[#0A2540] leading-tight">
+                  Your Career
+                </h2>
+                <div className="relative inline-block">
+                  <h3 className="text-3xl sm:text-4xl font-black tracking-tight font-heading text-blue-600 leading-tight">
+                    Starts Here
+                  </h3>
+                  {/* Handwritten Blue Brush Doodle Underline */}
+                  <svg className="w-36 h-2 text-blue-500/70" viewBox="0 0 150 10" fill="none">
+                    <path d="M2 7C40 2 110 3 148 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Subheadline */}
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                {tab === 'STUDENT'
+                  ? 'Join your college placement cell, apply to verified drives, and get placed with top companies.'
+                  : tab === 'COMPANY'
+                  ? 'Connect with premier college campuses, post placement drives, and hire exceptional student talent.'
+                  : 'Automate university placement operations, verify candidate rosters, and engage corporate recruiters.'}
               </p>
 
-              {/* Architecture Highlights */}
-              <div className="mt-6 space-y-3">
-                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                    🏢
+              {/* 4 Feature Badges with Circular Icons */}
+              <div className="space-y-3.5 pt-2">
+                
+                {/* 1. Apply to Verified Placement Drives */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
+                    <FileText className="w-4.5 h-4.5" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#0A2540] block">Unified Company Accounts</span>
-                    <span className="text-[11px] text-slate-500">Register directly with your company credentials to manage placement drives and candidate hiring.</span>
+                    <h4 className="text-xs font-black text-[#0A2540]">
+                      Apply to Verified Placement Drives
+                    </h4>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Get access to opportunities from top companies.
+                    </p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                    🛡️
+                {/* 2. Track Your Progress */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 shadow-2xs">
+                    <BarChart3 className="w-4.5 h-4.5" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#0A2540] block">Super Admin Verification Guard</span>
-                    <span className="text-[11px] text-slate-500">Every company is verified by Super Admin before jobs and drives go live.</span>
+                    <h4 className="text-xs font-black text-[#0A2540]">
+                      Track Your Progress
+                    </h4>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Stay updated at every stage of the process.
+                    </p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                    🎓
+                {/* 3. Get Notified */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Bell className="w-4.5 h-4.5" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#0A2540] block">Seamless Student Hiring</span>
-                    <span className="text-[11px] text-slate-500">Enrolled students apply directly to verified company placement drives.</span>
+                    <h4 className="text-xs font-black text-[#0A2540]">
+                      Get Notified
+                    </h4>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Receive important updates and reminders.
+                    </p>
                   </div>
+                </div>
+
+                {/* 4. One Unified Platform */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Building className="w-4.5 h-4.5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-[#0A2540]">
+                      One Unified Platform
+                    </h4>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Connect with your college placement cell seamlessly.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Bottom Visual Scene: Slogan & Quotes */}
+            <div className="pt-6 relative z-10 flex flex-col justify-end space-y-3">
+              
+              {/* Floating Slogan with Arrow */}
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="font-serif italic font-black text-blue-900 text-xs sm:text-sm transform -rotate-3 leading-tight">
+                    Better Opportunities<br />
+                    <span className="text-blue-600">Brighter Future</span>
+                  </span>
+                  <svg className="w-6 h-6 text-blue-500 transform rotate-12 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </div>
+
+                {/* Quote Box Pill */}
+                <div className="p-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-xs max-w-[200px]">
+                  <p className="text-[10.5px] font-serif italic text-slate-600 font-bold leading-snug text-center">
+                    &ldquo;Discipline today leads to a brighter tomorrow.&rdquo;
+                  </p>
                 </div>
               </div>
+
+              {/* Book Stacks Desk Accent */}
+              <div className="flex items-center gap-2 pt-1">
+                <div className="px-3 py-1 rounded-xl bg-blue-600 text-white text-[10px] font-black shadow-xs">
+                  Learn
+                </div>
+                <div className="px-3 py-1 rounded-xl bg-indigo-600 text-white text-[10px] font-black shadow-xs">
+                  Apply
+                </div>
+                <div className="px-3 py-1 rounded-xl bg-[#0A2540] text-white text-[10px] font-black shadow-xs">
+                  Grow
+                </div>
+              </div>
+
             </div>
 
-            {/* Bottom Trust Badge */}
-            <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-              <span className="flex items-center gap-1.5 font-medium">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                Enterprise RBAC & Security
-              </span>
-              <span>CampusHire v2.4</span>
-            </div>
           </div>
 
-          {/* Right Column: Registration Card */}
-          <div className="md:col-span-7 bg-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-[#E2E8F0] shadow-xl shadow-slate-200/60 flex flex-col justify-between">
+          {/* =========================================================================
+              RIGHT FORM CONTAINER (Interactive, Structured & All Fields Preserved)
+             ========================================================================= */}
+          <div className="lg:col-span-7 xl:col-span-7 rounded-3xl bg-white border border-slate-200/90 p-6 sm:p-8 lg:p-10 shadow-xs space-y-6 flex flex-col justify-between">
             
             {/* 1. CONFIRMATION STATE FOR SUBMITTED COMPANY */}
             {submittedCompany ? (
-              <div className="space-y-6 text-center py-4">
-                <div className="w-16 h-16 rounded-3xl bg-purple-50 border border-purple-200/80 text-purple-600 mx-auto flex items-center justify-center shadow-lg shadow-purple-500/10">
+              <div className="space-y-6 text-center py-6 animate-in fade-in">
+                <div className="w-16 h-16 rounded-3xl bg-purple-50 border border-purple-200 text-purple-600 mx-auto flex items-center justify-center shadow-lg shadow-purple-500/10">
                   <Building2 className="w-8 h-8" />
                 </div>
 
@@ -414,23 +538,23 @@ function RegisterForm() {
                     <span>Submitted — Super Admin Verification In Progress</span>
                   </div>
                   
-                  <h2 className="text-xl sm:text-2xl font-extrabold font-heading text-[#0A2540]">
+                  <h2 className="text-xl sm:text-2xl font-black font-heading text-[#0A2540]">
                     {submittedCompany.name}
                   </h2>
                   
-                  <p className="text-xs text-[#64748B] max-w-md mx-auto leading-relaxed">
-                    Your company account has been created and submitted successfully. Our platform Super Admin team will review and verify your account within 24 hours.
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    Your company account has been created and submitted successfully. Our platform Super Admin team will review and verify your account credentials within 24 hours.
                   </p>
                 </div>
 
-                {/* Submitted Company & Login Account Summary */}
+                {/* Submitted Details Summary */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-2.5 text-xs">
                   <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                     <span className="text-slate-500 font-medium">Company Name:</span>
                     <span className="font-bold text-[#0A2540]">{submittedCompany.name}</span>
                   </div>
                   <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <span className="text-slate-500 font-medium">Login Email:</span>
+                    <span className="text-slate-500 font-medium">Login Work Email:</span>
                     <span className="font-bold text-purple-700 font-mono">{submittedCompany.email}</span>
                   </div>
                   {submittedCompany.website && (
@@ -440,9 +564,21 @@ function RegisterForm() {
                     </div>
                   )}
                   {submittedCompany.industry && (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                       <span className="text-slate-500">Industry:</span>
                       <span className="font-medium text-[#0A2540]">{submittedCompany.industry}</span>
+                    </div>
+                  )}
+                  {submittedCompany.location && (
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                      <span className="text-slate-500">Location:</span>
+                      <span className="font-medium text-[#0A2540]">{submittedCompany.location}</span>
+                    </div>
+                  )}
+                  {submittedCompany.description && (
+                    <div className="flex items-start justify-between">
+                      <span className="text-slate-500">Description:</span>
+                      <span className="font-medium text-[#0A2540] text-right max-w-xs">{submittedCompany.description}</span>
                     </div>
                   )}
                 </div>
@@ -450,7 +586,7 @@ function RegisterForm() {
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <Link
                     href="/login"
-                    className="btn-primary w-full sm:w-auto px-6 py-3 text-xs font-bold flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 transition-all"
                   >
                     <span>Go to Sign In</span>
                     <ArrowRight className="w-4 h-4" />
@@ -458,7 +594,7 @@ function RegisterForm() {
 
                   <Link
                     href="/"
-                    className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0A2540] text-xs font-bold transition-all text-center"
+                    className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-[#0A2540] text-xs font-bold transition-all text-center"
                   >
                     Return to Home
                   </Link>
@@ -466,8 +602,8 @@ function RegisterForm() {
               </div>
             ) : submittedCollege ? (
               /* 2. CONFIRMATION STATE FOR SUBMITTED COLLEGE */
-              <div className="space-y-6 text-center py-4">
-                <div className="w-16 h-16 rounded-3xl bg-blue-50 border border-blue-200/80 text-blue-600 mx-auto flex items-center justify-center shadow-lg shadow-blue-500/10">
+              <div className="space-y-6 text-center py-6 animate-in fade-in">
+                <div className="w-16 h-16 rounded-3xl bg-blue-50 border border-blue-200 text-blue-600 mx-auto flex items-center justify-center shadow-lg shadow-blue-500/10">
                   <Building className="w-8 h-8" />
                 </div>
 
@@ -477,34 +613,34 @@ function RegisterForm() {
                     <span>Submitted — Super Admin Verification In Progress</span>
                   </div>
                   
-                  <h2 className="text-xl sm:text-2xl font-extrabold font-heading text-[#0A2540]">
+                  <h2 className="text-xl sm:text-2xl font-black font-heading text-[#0A2540]">
                     {submittedCollege.name}
                   </h2>
                   
-                  <p className="text-xs text-[#64748B] max-w-md mx-auto leading-relaxed">
-                    Your college institutional profile has been submitted successfully. Our platform Super Admin team will verify your accreditation and domain authority within 24 hours.
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    Your university institutional profile has been submitted successfully. Our Super Admin team will verify your college domain authority and accreditation within 24 hours.
                   </p>
                 </div>
 
                 {/* Submitted Institution Summary */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                     <span className="text-slate-500">Institution Code:</span>
                     <span className="font-bold text-[#0A2540]">{submittedCollege.code || 'N/A'}</span>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                     <span className="text-slate-500">Official Domain:</span>
                     <span className="font-bold text-blue-600 font-mono">{submittedCollege.domain || 'N/A'}</span>
                   </div>
                   {submittedCollege.city && (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                       <span className="text-slate-500">Location:</span>
                       <span className="font-medium text-[#0A2540]">{submittedCollege.city}, {submittedCollege.state}</span>
                     </div>
                   )}
                   {submittedCollege.contactEmail && (
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Official Contact:</span>
+                      <span className="text-slate-500">Contact Email:</span>
                       <span className="font-medium text-[#0A2540]">{submittedCollege.contactEmail}</span>
                     </div>
                   )}
@@ -513,7 +649,7 @@ function RegisterForm() {
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <Link
                     href="/"
-                    className="btn-primary w-full sm:w-auto px-6 py-3 text-xs font-bold flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 transition-all"
                   >
                     <span>Return to Home</span>
                     <ArrowRight className="w-4 h-4" />
@@ -525,179 +661,243 @@ function RegisterForm() {
                       setCollegeName('');
                       setCollegeCode('');
                     }}
-                    className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0A2540] text-xs font-bold transition-all"
+                    className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-[#0A2540] text-xs font-bold transition-all cursor-pointer"
                   >
                     Register Another Entity
                   </button>
                 </div>
               </div>
             ) : (
-              /* 3. ACTIVE ONBOARDING FORMS */
-              <div>
-                {/* Header */}
-                <div className="mb-5">
-                  <h1 className="text-xl sm:text-2xl font-extrabold text-[#0A2540] font-heading tracking-tight">
-                    {tab === 'STUDENT'
-                      ? 'Create Student Account'
-                      : tab === 'COMPANY'
-                      ? 'Register Company Account'
-                      : 'Register College / Institution'}
-                  </h1>
-                  <p className="text-xs sm:text-sm text-[#64748B] mt-1">
-                    {tab === 'STUDENT'
-                      ? 'Join your college placement cell and apply to verified placement drives.'
-                      : tab === 'COMPANY'
-                      ? 'Register your company account with email and password to post jobs and recruit talent.'
-                      : 'Register your university for Super Admin verification and campus placement automation.'}
-                  </p>
+              /* 3. ACTIVE ONBOARDING FORM WITH ALL FIELDS */
+              <div className="space-y-6">
+                
+                {/* Top Row: Title, Subtitle & Sign In Link */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                  <div className="space-y-0.5">
+                    <h1 className="text-2xl sm:text-3xl font-black text-[#0A2540] font-heading tracking-tight">
+                      {tab === 'STUDENT'
+                        ? 'Create Student Account'
+                        : tab === 'COMPANY'
+                        ? 'Register Company Account'
+                        : 'Register College / Institution'}
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                      {tab === 'STUDENT'
+                        ? 'Join your college placement cell and apply to verified placement drives.'
+                        : tab === 'COMPANY'
+                        ? 'Register company account with official credentials to post jobs.'
+                        : 'Register your university for Super Admin verification & automation.'}
+                    </p>
+                  </div>
+
+                  <div className="text-xs text-slate-500 font-medium self-start sm:self-auto shrink-0">
+                    <span>Already have an account? </span>
+                    <Link href="/login" className="font-extrabold text-blue-600 hover:text-blue-700 transition-colors">
+                      Sign In
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Role Switcher Tabs */}
-                <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] mb-5">
+                <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-100/80 rounded-2xl border border-slate-200/70">
                   <button
                     type="button"
                     onClick={() => handleTabChange('STUDENT')}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 cursor-pointer text-center ${
+                    className={`py-2 px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                       tab === 'STUDENT'
-                        ? 'bg-white text-blue-600 shadow-sm border border-blue-100 font-extrabold'
-                        : 'text-[#64748B] hover:text-[#0A2540]'
+                        ? 'bg-white text-blue-600 shadow-xs border border-blue-100 scale-[1.01]'
+                        : 'text-slate-600 hover:text-[#0A2540]'
                     }`}
                   >
-                    <GraduationCap className="w-4 h-4" />
+                    <GraduationCap className="w-4 h-4 shrink-0" />
                     <span>Student</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleTabChange('COMPANY')}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 cursor-pointer text-center ${
+                    className={`py-2 px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                       tab === 'COMPANY'
-                        ? 'bg-white text-purple-600 shadow-sm border border-purple-100 font-extrabold'
-                        : 'text-[#64748B] hover:text-[#0A2540]'
+                        ? 'bg-white text-purple-600 shadow-xs border border-purple-100 scale-[1.01]'
+                        : 'text-slate-600 hover:text-[#0A2540]'
                     }`}
                   >
-                    <Building2 className="w-4 h-4" />
+                    <Building2 className="w-4 h-4 shrink-0" />
                     <span>Company</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleTabChange('TPO_ADMIN')}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 cursor-pointer text-center ${
+                    className={`py-2 px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                       tab === 'TPO_ADMIN'
-                        ? 'bg-white text-blue-600 shadow-sm border border-blue-100 font-extrabold'
-                        : 'text-[#64748B] hover:text-[#0A2540]'
+                        ? 'bg-white text-blue-600 shadow-xs border border-blue-100 scale-[1.01]'
+                        : 'text-slate-600 hover:text-[#0A2540]'
                     }`}
                   >
-                    <Building className="w-4 h-4" />
+                    <Building className="w-4 h-4 shrink-0" />
                     <span>College</span>
                   </button>
                 </div>
 
                 {/* Error Banner */}
                 {error && (
-                  <div className="mb-5 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm flex items-start gap-3">
-                    <span className="text-base flex-shrink-0">⚠️</span>
-                    <span>{error}</span>
+                  <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm flex items-start gap-2.5 animate-in fade-in">
+                    <span className="text-sm shrink-0">⚠️</span>
+                    <span className="font-semibold">{error}</span>
                   </div>
                 )}
 
                 {/* Main Registration Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   
-                  {/* ================= 1. STUDENT REGISTRATION FIELDS ================= */}
+                  {/* =========================================================================
+                      1. STUDENT REGISTRATION FORM (Structured with All Fields Visible)
+                     ========================================================================= */}
                   {tab === 'STUDENT' && (
-                    <div className="space-y-4">
-                      <span className="text-xs font-bold text-[#0A2540] uppercase tracking-wider block border-b border-slate-100 pb-1.5">
-                        1. Account Credentials
-                      </span>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Student Full Name *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={studentName}
-                            onChange={(e) => setStudentName(e.target.value)}
-                            placeholder="e.g. Rahul Sharma"
-                            className="input-placecom"
-                          />
+                    <div className="space-y-6">
+                      
+                      {/* Section 1: Personal Details */}
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+                          <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <User className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-black text-[#0A2540]">
+                              1. Personal Details
+                            </h3>
+                            <p className="text-[10.5px] text-slate-400 font-medium">
+                              Tell us about yourself
+                            </p>
+                          </div>
                         </div>
 
-                        <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Student Email *
-                          </label>
-                          <input
-                            type="email"
-                            required
-                            value={studentEmail}
-                            onChange={(e) => setStudentEmail(e.target.value)}
-                            placeholder="student@college.edu"
-                            className="input-placecom"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Full Name <span className="text-rose-500">*</span>
+                            </label>
+                            <div className="relative group">
+                              <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                              <input
+                                type="text"
+                                required
+                                value={studentName}
+                                onChange={(e) => setStudentName(e.target.value)}
+                                placeholder="e.g. Rahul Sharma"
+                                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Email Address <span className="text-rose-500">*</span>
+                            </label>
+                            <div className="relative group">
+                              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                              <input
+                                type="email"
+                                required
+                                value={studentEmail}
+                                onChange={(e) => setStudentEmail(e.target.value)}
+                                placeholder="student@college.edu"
+                                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Phone Number
+                            </label>
+                            <div className="relative group">
+                              <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                              <input
+                                type="tel"
+                                value={studentPhone}
+                                onChange={(e) => setStudentPhone(e.target.value)}
+                                placeholder="+91 98765 43210"
+                                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Date of Birth
+                            </label>
+                            <div className="relative group">
+                              <Calendar className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                              <input
+                                type="date"
+                                value={studentDob}
+                                onChange={(e) => setStudentDob(e.target.value)}
+                                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 bg-white"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                          Password *
-                        </label>
-                        <input
-                          type="password"
-                          required
-                          minLength={6}
-                          value={studentPassword}
-                          onChange={(e) => setStudentPassword(e.target.value)}
-                          placeholder="Minimum 6 characters"
-                          className="input-placecom"
-                        />
-                      </div>
-
-                      <div className="space-y-4 pt-2 border-t border-[#F1F5F9]">
-                        <span className="text-xs font-bold text-[#0A2540] uppercase tracking-wider block border-b border-slate-100 pb-1.5">
-                          2. Academic & University Details
-                        </span>
+                      {/* Section 2: Academic Details */}
+                      <div className="space-y-3.5 pt-2">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+                          <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <GraduationCap className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-black text-[#0A2540]">
+                              2. Academic & University Details
+                            </h3>
+                            <p className="text-[10.5px] text-slate-400 font-medium">
+                              Provide your college and academic information
+                            </p>
+                          </div>
+                        </div>
 
                         <div>
-                          <div className="flex items-center justify-between mb-1.5">
-                            <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider">
-                              Select Your Verified College / University *
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="block text-xs font-bold text-slate-700">
+                              Select Your College / University <span className="text-rose-500">*</span>
                             </label>
                             <button
                               type="button"
                               onClick={() => handleTabChange('TPO_ADMIN')}
-                              className="text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors"
+                              className="text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
                             >
-                              College not listed? Register →
+                              College not listed? Request to add
                             </button>
                           </div>
-                          <select
-                            required
-                            value={collegeId}
-                            onChange={(e) => setCollegeId(e.target.value)}
-                            className="input-placecom"
-                          >
-                            {colleges.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                {c.name} {c.code ? `(${c.code})` : ''} {c.city ? `- ${c.city}` : ''}
-                              </option>
-                            ))}
-                            {colleges.length === 0 && (
-                              <option value="">
-                                {isLoadingColleges ? 'Loading verified colleges...' : 'No verified colleges available yet'}
-                              </option>
-                            )}
-                          </select>
+                          <div className="relative group">
+                            <Building className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                            <select
+                              required
+                              value={collegeId}
+                              onChange={(e) => setCollegeId(e.target.value)}
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-semibold text-slate-800 bg-white cursor-pointer"
+                            >
+                              {colleges.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                  {c.name} {c.code ? `(${c.code})` : ''} {c.city ? `- ${c.city}` : ''}
+                                </option>
+                              ))}
+                              {colleges.length === 0 && (
+                                <option value="">
+                                  {isLoadingColleges ? 'Loading verified colleges...' : 'No verified colleges available yet'}
+                                </option>
+                              )}
+                            </select>
+                          </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <div>
-                            <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                              Enrollment / Roll Number *
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Enrollment / Roll Number <span className="text-rose-500">*</span>
                             </label>
                             <input
                               type="text"
@@ -705,37 +905,18 @@ function RegisterForm() {
                               value={enrollmentNumber}
                               onChange={(e) => setEnrollmentNumber(e.target.value)}
                               placeholder="e.g. 2022CSB101"
-                              className="input-placecom font-mono uppercase"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono uppercase text-slate-800 placeholder:text-slate-400 bg-white"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                              Current CGPA (Out of 10) *
-                            </label>
-                            <input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              max="10"
-                              required
-                              value={cgpa}
-                              onChange={(e) => setCgpa(e.target.value)}
-                              placeholder="e.g. 8.75"
-                              className="input-placecom font-mono"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                              Branch / Major *
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Branch / Major <span className="text-rose-500">*</span>
                             </label>
                             <select
                               value={branch}
                               onChange={(e) => setBranch(e.target.value)}
-                              className="input-placecom"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-semibold text-slate-800 bg-white cursor-pointer"
                             >
                               <option value="Computer Science & Engineering">Computer Science & Engineering</option>
                               <option value="Information Technology">Information Technology</option>
@@ -747,15 +928,34 @@ function RegisterForm() {
                               <option value="Data Science & AI">Data Science & AI</option>
                             </select>
                           </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Current CGPA (out of 10) <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="10"
+                              required
+                              value={cgpa}
+                              onChange={(e) => setCgpa(e.target.value)}
+                              placeholder="e.g. 8.75"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
 
                           <div>
-                            <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                              Graduating Batch Year *
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Graduating Batch Year <span className="text-rose-500">*</span>
                             </label>
                             <select
                               value={batchYear}
                               onChange={(e) => setBatchYear(Number(e.target.value))}
-                              className="input-placecom font-mono"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono font-semibold text-slate-800 bg-white cursor-pointer"
                             >
                               {[2024, 2025, 2026, 2027, 2028].map((year) => (
                                 <option key={year} value={year}>
@@ -766,82 +966,164 @@ function RegisterForm() {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
 
-                  {/* ================= 2. DIRECT COMPANY REGISTRATION ================= */}
-                  {tab === 'COMPANY' && (
-                    <div className="space-y-4">
-                      
-                      {/* Account Credentials */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="sm:col-span-2">
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Company Name *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={companyName}
-                            onChange={(e) => setCompanyName(e.target.value)}
-                            placeholder="e.g. Microsoft India, Google, Infosys"
-                            className="input-placecom"
-                          />
+                      {/* Section 3: Account Password */}
+                      <div className="space-y-3.5 pt-2">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+                          <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <Lock className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-black text-[#0A2540]">
+                              3. Account Password
+                            </h3>
+                            <p className="text-[10.5px] text-slate-400 font-medium">
+                              Set up a password for portal login
+                            </p>
+                          </div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Company Official Email (Login ID) *
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Password <span className="text-rose-500">*</span>
                           </label>
-                          <input
-                            type="email"
-                            required
-                            value={companyEmail}
-                            onChange={(e) => setCompanyEmail(e.target.value)}
-                            placeholder="careers@company.com or hr@company.com"
-                            className="input-placecom"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Password (Login Password) *
-                          </label>
-                          <input
-                            type="password"
-                            required
-                            minLength={6}
-                            value={companyPassword}
-                            onChange={(e) => setCompanyPassword(e.target.value)}
-                            placeholder="Minimum 6 characters"
-                            className="input-placecom"
-                          />
+                          <div className="relative group">
+                            <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              required
+                              minLength={6}
+                              value={studentPassword}
+                              onChange={(e) => setStudentPassword(e.target.value)}
+                              placeholder="Minimum 6 characters"
+                              className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-slate-400 hover:text-blue-600 transition-colors cursor-pointer"
+                            >
+                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Company Profile Details */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-[#F1F5F9]">
-                        <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Official Website URL (Optional)
+                      <div className="pt-2">
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-extrabold shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 disabled:opacity-50"
+                        >
+                          {loading ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Creating Account...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Create Student Account</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                    </div>
+                  )}
+
+                  {/* =========================================================================
+                      2. COMPANY REGISTRATION FORM (All Fields & Logo Upload Preserved)
+                     ========================================================================= */}
+                  {tab === 'COMPANY' && (
+                    <div className="space-y-4">
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div className="sm:col-span-2">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Company Name <span className="text-rose-500">*</span>
                           </label>
-                          <input
-                            type="url"
-                            value={companyWebsite}
-                            onChange={(e) => setCompanyWebsite(e.target.value)}
-                            placeholder="https://company.com"
-                            className="input-placecom"
-                          />
+                          <div className="relative group">
+                            <Building2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-purple-600 transition-colors" />
+                            <input
+                              type="text"
+                              required
+                              value={companyName}
+                              onChange={(e) => setCompanyName(e.target.value)}
+                              placeholder="e.g. Microsoft India, Google, Infosys"
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Industry Sector *
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Official Work Email (Login ID) <span className="text-rose-500">*</span>
+                          </label>
+                          <div className="relative group">
+                            <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-purple-600 transition-colors" />
+                            <input
+                              type="email"
+                              required
+                              value={companyEmail}
+                              onChange={(e) => setCompanyEmail(e.target.value)}
+                              placeholder="careers@company.com"
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Login Password <span className="text-rose-500">*</span>
+                          </label>
+                          <div className="relative group">
+                            <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-purple-600 transition-colors" />
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              required
+                              minLength={6}
+                              value={companyPassword}
+                              onChange={(e) => setCompanyPassword(e.target.value)}
+                              placeholder="Minimum 6 characters"
+                              className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-slate-400 hover:text-purple-600 transition-colors cursor-pointer"
+                            >
+                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-slate-100">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Official Website URL
+                          </label>
+                          <div className="relative group">
+                            <Globe className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-purple-600 transition-colors" />
+                            <input
+                              type="url"
+                              value={companyWebsite}
+                              onChange={(e) => setCompanyWebsite(e.target.value)}
+                              placeholder="https://company.com"
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Industry Sector <span className="text-rose-500">*</span>
                           </label>
                           <select
                             value={companyIndustry}
                             onChange={(e) => setCompanyIndustry(e.target.value)}
-                            className="input-placecom"
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-semibold text-slate-800 bg-white cursor-pointer"
                           >
                             <option value="Information Technology & Services">Information Technology & Services</option>
                             <option value="Product Engineering & Software">Product Engineering & Software</option>
@@ -856,41 +1138,44 @@ function RegisterForm() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                          Headquarters / Office Location (Optional)
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Headquarters / Office Location
                         </label>
-                        <input
-                          type="text"
-                          value={companyLocation}
-                          onChange={(e) => setCompanyLocation(e.target.value)}
-                          placeholder="e.g. Bangalore, Mumbai, Gurgaon"
-                          className="input-placecom"
-                        />
+                        <div className="relative group">
+                          <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-purple-600 transition-colors" />
+                          <input
+                            type="text"
+                            value={companyLocation}
+                            onChange={(e) => setCompanyLocation(e.target.value)}
+                            placeholder="e.g. Bangalore, Mumbai, Gurgaon"
+                            className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                          />
+                        </div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                          Brief Company Overview / About (Optional)
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Brief Company Overview / About
                         </label>
                         <textarea
                           rows={2}
                           value={companyDescription}
                           onChange={(e) => setCompanyDescription(e.target.value)}
-                          placeholder="Brief summary of your company..."
-                          className="input-placecom resize-none text-xs"
+                          placeholder="Brief summary of your company and hiring domains..."
+                          className="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 resize-none bg-white"
                         />
                       </div>
 
                       {/* Company Logo Upload */}
                       <div>
-                        <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
                           Upload Company Logo (Optional)
                         </label>
 
                         {companyLogoUrl ? (
-                          <div className="p-3 rounded-2xl bg-purple-50/50 border border-purple-200 flex items-center justify-between gap-3">
+                          <div className="p-3 rounded-2xl bg-purple-50/70 border border-purple-200 flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-12 h-12 rounded-xl overflow-hidden bg-white border border-slate-200 relative flex-shrink-0">
+                              <div className="w-12 h-12 rounded-xl overflow-hidden bg-white border border-slate-200 relative shrink-0">
                                 <Image
                                   src={companyLogoUrl}
                                   alt="Company Logo Preview"
@@ -929,7 +1214,7 @@ function RegisterForm() {
                               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
                             />
                             <div className="flex flex-col items-center justify-center gap-1.5">
-                              <div className="w-9 h-9 rounded-xl bg-purple-100/70 text-purple-600 flex items-center justify-center">
+                              <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
                                 {isUploadingImage ? (
                                   <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
                                 ) : (
@@ -940,7 +1225,7 @@ function RegisterForm() {
                                 <span className="text-xs font-bold text-[#0A2540] block">
                                   {isUploadingImage ? 'Uploading Logo...' : 'Click or Drag to Upload Company Logo'}
                                 </span>
-                                <span className="text-[10px] text-slate-500 block">
+                                <span className="text-[10.5px] text-slate-400 block">
                                   Supports PNG, JPG, SVG, WEBP up to 10MB
                                 </span>
                               </div>
@@ -956,41 +1241,63 @@ function RegisterForm() {
                       </div>
 
                       {/* Verification Notice */}
-                      <div className="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 flex items-start gap-3 text-xs text-amber-900 leading-relaxed">
-                        <span className="text-amber-600 text-base flex-shrink-0 mt-0.5">🛡️</span>
+                      <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3 text-xs text-amber-900 leading-relaxed">
+                        <span className="text-amber-600 text-base shrink-0 mt-0.5">🛡️</span>
                         <div>
                           <span className="font-bold block">Super Admin Verification Process</span>
-                          Your company account (<span className="font-mono font-bold">{companyEmail || 'company email'}</span>) will be registered and submitted for Super Admin verification. Once verified, you can sign in to post campus placement drives.
+                          Your company account will be registered and submitted for Super Admin verification to maintain verified institutional hiring integrity.
                         </div>
                       </div>
+
+                      <div className="pt-2">
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className="w-full py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-extrabold shadow-md shadow-purple-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 disabled:opacity-50"
+                        >
+                          {loading ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Submitting Company...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Submit Company for Verification</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+
                     </div>
                   )}
 
-                  {/* ================= 3. COLLEGE INSTITUTIONAL REGISTRATION ================= */}
+                  {/* =========================================================================
+                      3. COLLEGE REGISTRATION FORM (All Fields & Campus Photo Preserved)
+                     ========================================================================= */}
                   {tab === 'TPO_ADMIN' && (
                     <div className="space-y-4">
-                      <span className="text-xs font-bold text-[#0A2540] uppercase tracking-wider block border-b border-slate-100 pb-1.5">
-                        1. Institutional Identity & University Details
-                      </span>
-
-                      {/* College Name & Code */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                         <div className="sm:col-span-2">
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Official College / University Name *
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Official College / University Name <span className="text-rose-500">*</span>
                           </label>
-                          <input
-                            type="text"
-                            required
-                            value={collegeName}
-                            onChange={(e) => setCollegeName(e.target.value)}
-                            placeholder="e.g. Delhi Technological University"
-                            className="input-placecom"
-                          />
+                          <div className="relative group">
+                            <Building className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                            <input
+                              type="text"
+                              required
+                              value={collegeName}
+                              onChange={(e) => setCollegeName(e.target.value)}
+                              placeholder="e.g. Delhi Technological University"
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
                             College Code
                           </label>
                           <input
@@ -998,92 +1305,96 @@ function RegisterForm() {
                             value={collegeCode}
                             onChange={(e) => setCollegeCode(e.target.value.toUpperCase())}
                             placeholder="e.g. DTU"
-                            className="input-placecom font-mono uppercase"
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono uppercase font-bold text-slate-800 placeholder:text-slate-400 bg-white"
                           />
                         </div>
                       </div>
 
-                      {/* Domain & Address */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
                             Official Domain
                           </label>
                           <input
                             type="text"
                             value={collegeDomain}
                             onChange={(e) => setCollegeDomain(e.target.value.toLowerCase())}
-                            placeholder="e.g. dtu.ac.in"
-                            className="input-placecom font-mono text-xs"
+                            placeholder="dtu.ac.in"
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono text-slate-800 placeholder:text-slate-400 bg-white"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
                             City
                           </label>
                           <input
                             type="text"
                             value={collegeCity}
                             onChange={(e) => setCollegeCity(e.target.value)}
-                            placeholder="e.g. New Delhi"
-                            className="input-placecom"
+                            placeholder="New Delhi"
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
                             State
                           </label>
                           <input
                             type="text"
                             value={collegeState}
                             onChange={(e) => setCollegeState(e.target.value)}
-                            placeholder="e.g. Delhi"
-                            className="input-placecom"
+                            placeholder="Delhi"
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
                           />
                         </div>
                       </div>
 
-                      {/* Official Contacts */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
                             Placement Cell Contact Email
                           </label>
-                          <input
-                            type="email"
-                            value={collegeContactEmail}
-                            onChange={(e) => setCollegeContactEmail(e.target.value)}
-                            placeholder="placement@university.ac.in"
-                            className="input-placecom"
-                          />
+                          <div className="relative group">
+                            <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                            <input
+                              type="email"
+                              value={collegeContactEmail}
+                              onChange={(e) => setCollegeContactEmail(e.target.value)}
+                              placeholder="placement@university.ac.in"
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                            Placement Cell Helpline Phone
+                          <label className="block text-xs font-bold text-slate-700 mb-1">
+                            Placement Helpline Phone
                           </label>
-                          <input
-                            type="tel"
-                            value={collegeContactPhone}
-                            onChange={(e) => setCollegeContactPhone(e.target.value)}
-                            placeholder="+91 11 27871018"
-                            className="input-placecom font-mono"
-                          />
+                          <div className="relative group">
+                            <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                            <input
+                              type="tel"
+                              value={collegeContactPhone}
+                              onChange={(e) => setCollegeContactPhone(e.target.value)}
+                              placeholder="+91 11 27871018"
+                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono text-slate-800 placeholder:text-slate-400 bg-white"
+                            />
+                          </div>
                         </div>
                       </div>
 
                       {/* Campus Image Upload */}
                       <div>
-                        <label className="block text-xs font-bold text-[#334155] uppercase tracking-wider mb-1.5">
-                          Upload College Campus Photo or Official Logo (Optional)
+                        <label className="block text-xs font-bold text-slate-700 mb-1">
+                          Upload College Campus Photo or Logo (Optional)
                         </label>
 
                         {collegeLogoUrl ? (
-                          <div className="p-3 rounded-2xl bg-blue-50/50 border border-blue-200 flex items-center justify-between gap-3">
+                          <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-200 flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-slate-200 relative flex-shrink-0">
+                              <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-slate-200 relative shrink-0">
                                 <Image
                                   src={collegeLogoUrl}
                                   alt="Campus Preview"
@@ -1113,7 +1424,7 @@ function RegisterForm() {
                             </button>
                           </div>
                         ) : (
-                          <div className="relative border-2 border-dashed border-slate-300 hover:border-blue-400 rounded-2xl p-4 sm:p-5 text-center transition-colors bg-slate-50/50">
+                          <div className="relative border-2 border-dashed border-slate-300 hover:border-blue-400 rounded-2xl p-4 text-center transition-colors bg-slate-50/50">
                             <input
                               type="file"
                               accept="image/png, image/jpeg, image/webp"
@@ -1121,20 +1432,20 @@ function RegisterForm() {
                               onChange={(e) => handleImageUpload(e, 'college_campus')}
                               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
                             />
-                            <div className="flex flex-col items-center justify-center gap-2">
-                              <div className="w-10 h-10 rounded-xl bg-blue-100/70 text-blue-600 flex items-center justify-center">
+                            <div className="flex flex-col items-center justify-center gap-1.5">
+                              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
                                 {isUploadingImage ? (
-                                  <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                                 ) : (
                                   <Upload className="w-4 h-4" />
                                 )}
                               </div>
                               <div>
                                 <span className="text-xs font-bold text-[#0A2540] block">
-                                  {isUploadingImage ? 'Uploading Campus Photo...' : 'Click or Drag to Upload Campus Image'}
+                                  {isUploadingImage ? 'Uploading Campus Photo...' : 'Click or Drag Campus Photo'}
                                 </span>
-                                <span className="text-[11px] text-slate-500 block mt-0.5">
-                                  Supports JPG, PNG, WEBP up to 10MB
+                                <span className="text-[10.5px] text-slate-400 block">
+                                  JPG, PNG, WEBP up to 10MB
                                 </span>
                               </div>
                             </div>
@@ -1148,52 +1459,46 @@ function RegisterForm() {
                         )}
                       </div>
 
-                      {/* Institutional Lifecycle Policy Notice */}
-                      <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-100 flex items-start gap-3 text-xs text-blue-900 leading-relaxed">
-                        <span className="text-blue-600 text-base flex-shrink-0 mt-0.5">🏛️</span>
+                      {/* Institutional Policy Alert */}
+                      <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-3 text-xs text-blue-900 leading-relaxed">
+                        <span className="text-blue-600 text-base shrink-0 mt-0.5">🏛️</span>
                         <div>
-                          <span className="font-bold block">Permanent Institutional Registration & Super Admin Verification</span>
-                          Your College entity is permanently registered on CampusHire. Once submitted, your profile enters Super Admin verification. After verification, your college platform unlocks to appoint departmental TPO officers and host recruitment drives.
+                          <span className="font-bold block">Permanent Institutional Registration</span>
+                          Your college entity is permanently registered on CampusHire. Once submitted, your profile enters Super Admin verification.
                         </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-extrabold shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 disabled:opacity-50"
+                        >
+                          {loading ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Submitting University...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Submit College for Verification</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
                       </div>
 
                     </div>
                   )}
 
-                  {/* Submit Button */}
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      disabled={loading || isUploadingImage}
-                      className="btn-primary w-full py-3.5 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-600/25 transition-all"
-                    >
-                      {loading ? (
-                        <>
-                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                          <span>Processing Registration...</span>
-                        </>
-                      ) : (
-                        <span>
-                          {tab === 'STUDENT'
-                            ? 'Register as Student'
-                            : tab === 'COMPANY'
-                            ? 'Register Company Account'
-                            : 'Submit College for Verification'}{' '}
-                          →
-                        </span>
-                      )}
-                    </button>
-                  </div>
-
                 </form>
 
-                {/* Footer Sign In Link */}
-                <div className="mt-6 pt-6 border-t border-[#F1F5F9] text-center text-xs text-[#64748B]">
-                  <span>Already have an account? </span>
-                  <Link href="/login" className="font-bold text-blue-600 hover:text-blue-800 transition-colors">
-                    Sign In to CampusHire →
-                  </Link>
+                {/* Bottom Security Note */}
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs text-slate-500 font-medium text-center">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Your information is secure and will only be used for placement purposes.</span>
                 </div>
+
               </div>
             )}
 
@@ -1201,13 +1506,18 @@ function RegisterForm() {
 
         </div>
       </main>
+
     </div>
   );
 }
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center"><div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+        <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
       <RegisterForm />
     </Suspense>
   );
