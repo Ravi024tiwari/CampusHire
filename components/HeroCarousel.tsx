@@ -111,7 +111,7 @@ export function HeroCarousel() {
                 fill
                 priority={true}
                 sizes="100vw"
-                quality={90}
+                quality={92}
                 className="object-cover object-center w-full h-full brightness-[0.92] contrast-[1.03]"
               />
             </div>
