@@ -116,7 +116,7 @@ export default function TpoCollegeProfilePage() {
               contactEmail: c.contactEmail || '',
               contactPhone: c.contactPhone || '',
               logoUrl: c.logoUrl || '',
-              images: Array.isArray(c.images) && c.images.length > 0 ? c.images : defaultCollegeData.images,
+              images: Array.isArray(c.images) ? c.images : [],
               isVerified: c.isVerified ?? true,
             };
 
@@ -147,7 +147,7 @@ export default function TpoCollegeProfilePage() {
           contactEmail: c.contactEmail || '',
           contactPhone: c.contactPhone || '',
           logoUrl: c.logoUrl || '',
-          images: Array.isArray(c.images) && c.images.length > 0 ? c.images : defaultCollegeData.images,
+          images: Array.isArray(c.images) ? c.images : [],
           isVerified: c.isVerified ?? true,
         };
         setOriginalData(parsedData);

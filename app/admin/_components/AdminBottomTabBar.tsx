@@ -28,7 +28,7 @@ export function AdminBottomTabBar() {
       label: 'Colleges',
       href: '/admin/colleges',
       icon: Building2,
-      isActive: pathname.startsWith('/admin/colleges') || pathname.startsWith('/admin/verify-colleges'),
+      isActive: pathname.startsWith('/admin/colleges') || pathname.startsWith('/admin/verification-queue') || pathname.startsWith('/admin/verify-colleges'),
     },
     {
       label: 'Recruiters',

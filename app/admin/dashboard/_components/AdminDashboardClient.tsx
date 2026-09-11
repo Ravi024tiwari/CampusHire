@@ -12,6 +12,8 @@ import { AdminRecentStudentsCard } from './AdminRecentStudentsCard';
 import { AdminRecentRecruitersCard } from './AdminRecentRecruitersCard';
 import { AdminPlatformActivityCard } from './AdminPlatformActivityCard';
 import { AdminBottomCtaBanner } from './AdminBottomCtaBanner';
+import { AdminDashboardPendingCollegesCard } from './AdminDashboardPendingCollegesCard';
+import { AdminDashboardPendingCompaniesCard } from './AdminDashboardPendingCompaniesCard';
 import { CollegeDossierModal } from './CollegeDossierModal';
 import { 
   CheckCircle2, 
@@ -118,24 +120,14 @@ export function AdminDashboardClient() {
 
       {/* 1. Hero Vision Banner & Quick Refresh Toolbar */}
       <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-3 px-1">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </span>
-            <span className="text-[11px] sm:text-xs font-bold text-slate-600 font-mono">
-              Live Database Connected
-            </span>
-          </div>
-
+        <div className="flex items-center justify-end px-1">
           <button
             onClick={handleManualRefresh}
             disabled={isLoading || isRefreshing}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-300 active:scale-95 transition-all cursor-pointer disabled:opacity-60"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[#0D8B8A] ${isRefreshing || isLoading ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">Refresh Data</span>
+            <span>Refresh Data</span>
           </button>
         </div>
 
@@ -145,7 +137,13 @@ export function AdminDashboardClient() {
       {/* 2. Top 6 KPI Metric Cards */}
       <AdminKpiCards kpis={kpis} />
 
-      {/* 3. Middle Visualizations Row (User Growth Multi-Line Chart, Applications Donut, Top Recruiters) */}
+      {/* 3. Pending Verifications Queue Action Row (Colleges & Companies) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-stretch">
+        <AdminDashboardPendingCollegesCard />
+        <AdminDashboardPendingCompaniesCard />
+      </div>
+
+      {/* 4. Middle Visualizations Row (User Growth Multi-Line Chart, Applications Donut, Top Recruiters) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-stretch">
         
         {/* Left: User Growth Chart (5 cols on Desktop, 6 cols on XL) */}

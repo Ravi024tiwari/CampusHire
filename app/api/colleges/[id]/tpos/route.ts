@@ -11,6 +11,8 @@ const createTpoSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters long'),
   designation: z.string().trim().min(2, 'Designation is required').default('Head, Training & Placement Cell'),
   department: z.string().trim().optional().or(z.literal('')),
+  avatarUrl: z.string().url().optional().or(z.literal('')).nullable(),
+  isActive: z.boolean().optional().default(true),
 });
 
 /**
@@ -111,13 +113,15 @@ export async function POST(
           name: parsedData.name.trim(),
           email,
           passwordHash,
+          avatarUrl: parsedData.avatarUrl || null,
           role: Role.TPO_ADMIN,
+          isActive: parsedData.isActive ?? true,
           tpo: {
             create: {
               collegeId: college.id,
               designation: parsedData.designation.trim() || 'Head, Training & Placement Cell',
               department: parsedData.department?.trim() || 'Central Placement Cell',
-              isActive: true,
+              isActive: parsedData.isActive ?? true,
             },
           },
         },

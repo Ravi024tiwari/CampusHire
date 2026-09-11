@@ -34,10 +34,16 @@ export function TpoSidebar() {
     setIsMobileMenuOpen, 
     dashboardData 
   } = useTpoStore();
+  const { user } = useAuthStore();
 
-  const collegeName = dashboardData?.college?.name || 'Delhi Technological University';
-  const collegeCode = dashboardData?.college?.code || 'DTU';
-  const campusImage = dashboardData?.college?.images?.[0] || 'https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80';
+  const [imageError, setImageError] = React.useState(false);
+  const [logoError, setLogoError] = React.useState(false);
+
+  const collegeName = dashboardData?.college?.name || user?.tpo?.college?.name || 'College Placement Cell';
+  const collegeCode = dashboardData?.college?.code || user?.tpo?.college?.code || 'CAMPUS';
+  const collegeLogo = dashboardData?.college?.logoUrl || user?.tpo?.college?.logoUrl;
+  const collegeImage = dashboardData?.college?.images?.[0] || user?.tpo?.college?.images?.[0] || collegeLogo;
+  const hasUploadedImage = Boolean(collegeImage) && !imageError;
 
   const navLinks = [
     {
@@ -218,22 +224,50 @@ export function TpoSidebar() {
       </div>
 
       {/* Bottom Campus Identity Card */}
-      {!isSidebarCollapsed && (
+      {!isSidebarCollapsed ? (
         <div className="shrink-0 pt-2 border-t border-slate-100">
           <div className="rounded-2xl border border-slate-200/90 bg-slate-50 overflow-hidden shadow-2xs space-y-2">
-            {/* Campus Photo */}
-            <div className="h-20 w-full relative overflow-hidden">
-              <img
-                src={campusImage}
-                alt={collegeName}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
-              <div className="absolute bottom-1.5 left-2 text-white">
-                <p className="text-[11px] font-extrabold truncate font-heading">{collegeName}</p>
-                <p className="text-[9.5px] font-bold text-blue-200">{collegeCode}</p>
+            {hasUploadedImage ? (
+              /* Uploaded College Campus Image */
+              <div className="h-20 w-full relative overflow-hidden bg-slate-100">
+                <img
+                  src={collegeImage!}
+                  alt={collegeName}
+                  onError={() => setImageError(true)}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent" />
+                <div className="absolute bottom-1.5 left-2 right-2 text-white">
+                  <p className="text-[11px] font-extrabold truncate font-heading">{collegeName}</p>
+                  <p className="text-[9.5px] font-bold text-blue-200 tracking-wide">{collegeCode}</p>
+                </div>
               </div>
-            </div>
+            ) : (
+              /* Fallback Institutional College Banner */
+              <div className="p-3 bg-linear-to-br from-[#0A2540] via-[#0d3153] to-[#154674] text-white rounded-xl mx-1 mt-1 shadow-inner relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl pointer-events-none" />
+                <div className="flex items-center gap-2.5 relative z-10">
+                  <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-2xs">
+                    {collegeLogo && !logoError ? (
+                      <img
+                        src={collegeLogo}
+                        alt={collegeName}
+                        onError={() => setLogoError(true)}
+                        className="w-6 h-6 object-contain rounded"
+                      />
+                    ) : (
+                      <School className="w-4 h-4 text-amber-400" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-black truncate font-heading leading-tight text-white">{collegeName}</p>
+                    <span className="inline-block mt-0.5 text-[9px] font-bold px-1.5 py-0.2 rounded bg-blue-500/30 text-blue-200 border border-blue-400/30">
+                      {collegeCode}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Quote Tagline */}
             <div className="p-2.5 pt-0 text-center">
@@ -246,6 +280,32 @@ export function TpoSidebar() {
                 <span className="w-1 h-0.5 rounded-full bg-emerald-500" />
               </div>
             </div>
+          </div>
+        </div>
+      ) : (
+        /* Collapsed Mode College Icon Indicator */
+        <div className="shrink-0 pt-2 border-t border-slate-100 flex justify-center">
+          <div
+            title={`${collegeName} (${collegeCode})`}
+            className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-blue-50 border border-slate-200 flex items-center justify-center text-[#0A2540] transition-colors cursor-pointer shadow-2xs"
+          >
+            {collegeLogo && !logoError ? (
+              <img
+                src={collegeLogo}
+                alt={collegeName}
+                onError={() => setLogoError(true)}
+                className="w-6 h-6 object-contain rounded-lg"
+              />
+            ) : hasUploadedImage ? (
+              <img
+                src={collegeImage!}
+                alt={collegeName}
+                onError={() => setImageError(true)}
+                className="w-full h-full object-cover rounded-xl"
+              />
+            ) : (
+              <School className="w-4 h-4 text-blue-600" />
+            )}
           </div>
         </div>
       )}

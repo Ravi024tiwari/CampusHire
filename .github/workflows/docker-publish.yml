@@ -32,3 +32,10 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/campushire:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Trigger Render Auto Deployment
+        if: success()
+        run: |
+          echo "Triggering Render redeployment..."
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+

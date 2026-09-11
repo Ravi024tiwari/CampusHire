@@ -109,7 +109,7 @@ export const useTpoStore = create<TpoStoreState>((set) => ({
   setSelectedYear: (year) =>
     set({ selectedYear: year }),
 
-  fetchDashboardData: async () => {
+  fetchDashboardData: async (retryCount = 0) => {
     try {
       set({ isLoading: true, error: null });
       const res = await fetch('/api/tpo/dashboard', {
@@ -119,11 +119,20 @@ export const useTpoStore = create<TpoStoreState>((set) => ({
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        // If first attempt fails (e.g. cold start), auto-retry once after 1.2s
+        if (retryCount < 1) {
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+          return useTpoStore.getState().fetchDashboardData(retryCount + 1);
+        }
         throw new Error(json.error || 'Failed to retrieve TPO dashboard data');
       }
 
       set({ dashboardData: json.data, isLoading: false });
     } catch (err: any) {
+      if (retryCount < 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+        return useTpoStore.getState().fetchDashboardData(retryCount + 1);
+      }
       console.error('[TPO_STORE_FETCH_ERROR]', err);
       set({ error: err.message || 'Error loading dashboard', isLoading: false });
     }

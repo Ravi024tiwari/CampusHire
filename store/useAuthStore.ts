@@ -10,6 +10,25 @@ export interface User {
   role: 'STUDENT' | 'RECRUITER' | 'TPO_ADMIN' | 'SUPER_ADMIN';
   avatarUrl?: string | null;
   isActive?: boolean;
+  tpo?: {
+    id: string;
+    designation?: string | null;
+    department?: string | null;
+    collegeId?: string | null;
+    college?: {
+      id: string;
+      name: string;
+      code?: string | null;
+      domain?: string | null;
+      city?: string | null;
+      state?: string | null;
+      logoUrl?: string | null;
+      images?: string[];
+      isVerified?: boolean;
+    } | null;
+  } | null;
+  student?: any;
+  recruiter?: any;
 }
 
 interface AuthState {

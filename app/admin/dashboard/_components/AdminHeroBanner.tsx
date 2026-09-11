@@ -51,7 +51,6 @@ export function AdminHeroBanner({ adminName = 'Admin' }: AdminHeroBannerProps) {
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-teal-200/90 text-teal-800 text-[10px] sm:text-[11px] font-black tracking-wider uppercase shadow-2xs">
           <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
           <span>WELCOME BACK, {adminName.toUpperCase()}</span>
-          <span className="text-xs sm:text-sm">👋</span>
         </div>
 
         {/* Main Title Heading */}

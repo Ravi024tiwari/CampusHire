@@ -84,7 +84,12 @@ export function AdminSidebar() {
       icon: Building2,
     },
     {
-      href: '/admin/verify-colleges',
+      href: '/admin/tpos',
+      label: 'TPO Officers',
+      icon: GraduationCap,
+    },
+    {
+      href: '/admin/verification-queue',
       label: 'Verification Queue',
       icon: ShieldCheck,
     },

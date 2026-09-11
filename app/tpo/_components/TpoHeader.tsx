@@ -6,17 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useTpoStore } from '@/store/useTpoStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
-  Search, 
   Bell, 
   ChevronDown, 
   Menu, 
-  GraduationCap, 
   LogOut, 
-  User, 
   Settings, 
   Building2,
-  Sparkles,
-  ExternalLink,
   ShieldCheck
 } from 'lucide-react';
 
@@ -26,17 +21,27 @@ export function TpoHeader() {
   const { user, logout } = useAuthStore();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [avatarError, setAvatarError] = useState(false);
 
-  const officerName = dashboardData?.tpoOfficer?.name || user?.name || 'Dr. Rakesh Kumar';
-  const collegeCode = dashboardData?.college?.code || 'DTU';
-  const collegeName = dashboardData?.college?.name || 'Delhi Technological University';
+  const officerName = dashboardData?.tpoOfficer?.name || user?.name || 'TPO Officer';
+  const officerAvatar = dashboardData?.tpoOfficer?.avatarUrl || user?.avatarUrl;
+  const officerEmail = dashboardData?.tpoOfficer?.email || user?.email || '';
+  const officerDesignation = dashboardData?.tpoOfficer?.designation || user?.tpo?.designation || 'Head, Training & Placement';
+  const collegeCode = dashboardData?.college?.code || user?.tpo?.college?.code || 'CAMPUS';
+  const collegeName = dashboardData?.college?.name || user?.tpo?.college?.name || 'College Placement Cell';
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    router.push(`/tpo/students?search=${encodeURIComponent(searchQuery)}`);
+  // Compute initials cleanly
+  const getInitials = (name: string) => {
+    if (!name) return 'TP';
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   };
+
+  const initials = getInitials(officerName);
+  const hasAvatar = Boolean(officerAvatar) && !avatarError;
 
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200/90 bg-white/95 px-3 sm:px-6 backdrop-blur-md shadow-2xs">
@@ -71,24 +76,7 @@ export function TpoHeader() {
         </Link>
       </div>
 
-      {/* 2. Middle: Global Search Bar */}
-      <div className="hidden md:flex flex-1 max-w-lg mx-6">
-        <form onSubmit={handleSearchSubmit} className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search students, jobs, recruiters, applications..."
-            className="w-full pl-10 pr-12 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-500/10 transition-all"
-          />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-semibold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">
-            ⌘K
-          </kbd>
-        </form>
-      </div>
-
-      {/* 3. Right: Notifications & User Profile */}
+      {/* 2. Right: Notifications & User Profile */}
       <div className="flex items-center gap-2 sm:gap-3">
         
         {/* Notification Bell */}
@@ -145,9 +133,22 @@ export function TpoHeader() {
             }}
             className="flex items-center gap-2.5 pl-1.5 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer border border-transparent hover:border-slate-200"
           >
-            <div className="h-8 w-8 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-2xs font-heading shrink-0">
-              {officerName.slice(0, 2).toUpperCase()}
+            {/* Officer Avatar / Initials Avatar */}
+            <div className="h-8 w-8 rounded-xl overflow-hidden shadow-2xs shrink-0 flex items-center justify-center border border-slate-200/80 bg-slate-100">
+              {hasAvatar ? (
+                <img
+                  src={officerAvatar!}
+                  alt={officerName}
+                  onError={() => setAvatarError(true)}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="h-full w-full bg-linear-to-br from-blue-600 to-indigo-700 text-white font-black flex items-center justify-center text-[11px] font-heading">
+                  {initials}
+                </div>
+              )}
             </div>
+
             <div className="hidden sm:flex flex-col text-left">
               <span className="text-xs font-bold text-[#0A2540] truncate max-w-[130px] font-heading">
                 {officerName}
@@ -161,18 +162,35 @@ export function TpoHeader() {
 
           {/* Profile Dropdown Menu */}
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 space-y-1">
-              <div className="p-3 border-b border-slate-100 bg-slate-50/70 rounded-xl mb-1">
-                <p className="text-xs font-bold text-[#0A2540] font-heading">{officerName}</p>
-                <p className="text-[11px] text-slate-500 font-medium truncate">{collegeName}</p>
-                <span className="inline-flex items-center gap-1 mt-1 text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                  <ShieldCheck className="w-3 h-3" />
-                  Authorized TPC Lead
-                </span>
+            <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 space-y-1.5">
+              <div className="p-3 border border-slate-100 bg-slate-50/80 rounded-xl flex items-start gap-3">
+                <div className="h-10 w-10 rounded-xl overflow-hidden shadow-2xs shrink-0 flex items-center justify-center border border-slate-200 bg-white">
+                  {hasAvatar ? (
+                    <img
+                      src={officerAvatar!}
+                      alt={officerName}
+                      onError={() => setAvatarError(true)}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-linear-to-br from-blue-600 to-indigo-700 text-white font-black flex items-center justify-center text-xs font-heading">
+                      {initials}
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-black text-[#0A2540] font-heading truncate">{officerName}</p>
+                  <p className="text-[10px] text-slate-500 truncate">{officerEmail || officerDesignation}</p>
+                  <p className="text-[10.5px] font-bold text-blue-700 truncate mt-0.5">{collegeName}</p>
+                  <span className="inline-flex items-center gap-1 mt-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                    Authorized TPC Lead
+                  </span>
+                </div>
               </div>
 
               <Link
-                href="/tpo/settings"
+                href="/tpo/college"
                 onClick={() => setShowProfileMenu(false)}
                 className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors"
               >

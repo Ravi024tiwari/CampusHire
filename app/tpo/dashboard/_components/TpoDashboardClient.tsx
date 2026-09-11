@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useTpoStore } from '@/store/useTpoStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { TpoKpiCards } from './TpoKpiCards';
 import { PlacementTrendChart } from './PlacementTrendChart';
 import { PlacementStatsDonut } from './PlacementStatsDonut';
@@ -12,6 +13,7 @@ import { TpoQuickActionBar } from './TpoQuickActionBar';
 import { Calendar, ChevronDown, Loader2, Sparkles, AlertCircle } from 'lucide-react';
 
 export function TpoDashboardClient() {
+  const { user } = useAuthStore();
   const { 
     dashboardData, 
     isLoading, 
@@ -59,10 +61,15 @@ export function TpoDashboardClient() {
     );
   }
 
-  const officerName = dashboardData?.tpoOfficer?.name || 'Dr. Rakesh Kumar';
-  const collegeName = dashboardData?.college?.name || 'Delhi Technological University';
-  const collegeCode = dashboardData?.college?.code || 'DTU';
-  const dateString = dashboardData?.dateString || 'Monday, Aug 25, 2025';
+  const officerName = dashboardData?.tpoOfficer?.name || user?.name || 'TPO Officer';
+  const collegeName = dashboardData?.college?.name || user?.tpo?.college?.name || 'College Placement Cell';
+  const collegeCode = dashboardData?.college?.code || user?.tpo?.college?.code || 'CAMPUS';
+  const dateString = dashboardData?.dateString || new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 
   return (
     <div className="p-3.5 sm:p-6 lg:p-8 xl:p-10 w-full max-w-[1700px] mx-auto space-y-6 sm:space-y-7 transition-all duration-300 ease-in-out">

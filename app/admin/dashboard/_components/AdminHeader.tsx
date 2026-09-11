@@ -82,8 +82,8 @@ export function AdminHeader() {
           {/* Notifications with Pending Count Badge */}
           <div className="relative shrink-0">
             <Link
-              href="/admin/verify-colleges"
-              title="Pending University Accreditations"
+              href="/admin/verification-queue"
+              title="Pending Accreditations & Verifications"
               className="flex h-8.5 w-8.5 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition-all hover:border-teal-400 hover:bg-teal-50 hover:text-teal-700 cursor-pointer shadow-2xs"
             >
               <Bell className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
