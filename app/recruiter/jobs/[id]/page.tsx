@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, use, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, use, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -56,7 +56,7 @@ interface JobDetailResponse {
   isOwner?: boolean;
 }
 
-export default function RecruiterJobDetailPage({
+function RecruiterJobDetailContent({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -867,5 +867,21 @@ export default function RecruiterJobDetailPage({
       )}
 
     </div>
+  );
+}
+
+export default function RecruiterJobDetailPage(props: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-96 w-full items-center justify-center">
+          <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <RecruiterJobDetailContent {...props} />
+    </Suspense>
   );
 }

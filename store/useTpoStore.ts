@@ -86,10 +86,10 @@ interface TpoStoreState {
   setIsSidebarCollapsed: (collapsed: boolean) => void;
   setIsMobileMenuOpen: (open: boolean) => void;
   setSelectedYear: (year: string) => void;
-  fetchDashboardData: () => Promise<void>;
+  fetchDashboardData: (retryCount?: number) => Promise<void>;
 }
 
-export const useTpoStore = create<TpoStoreState>((set) => ({
+export const useTpoStore = create<TpoStoreState>((set, get) => ({
   isSidebarCollapsed: false,
   isMobileMenuOpen: false,
   selectedYear: '2025–26',
@@ -109,7 +109,7 @@ export const useTpoStore = create<TpoStoreState>((set) => ({
   setSelectedYear: (year) =>
     set({ selectedYear: year }),
 
-  fetchDashboardData: async (retryCount = 0) => {
+  fetchDashboardData: async (retryCount: number = 0): Promise<void> => {
     try {
       set({ isLoading: true, error: null });
       const res = await fetch('/api/tpo/dashboard', {
@@ -122,7 +122,7 @@ export const useTpoStore = create<TpoStoreState>((set) => ({
         // If first attempt fails (e.g. cold start), auto-retry once after 1.2s
         if (retryCount < 1) {
           await new Promise((resolve) => setTimeout(resolve, 1200));
-          return useTpoStore.getState().fetchDashboardData(retryCount + 1);
+          return get().fetchDashboardData(retryCount + 1);
         }
         throw new Error(json.error || 'Failed to retrieve TPO dashboard data');
       }
@@ -131,7 +131,7 @@ export const useTpoStore = create<TpoStoreState>((set) => ({
     } catch (err: any) {
       if (retryCount < 1) {
         await new Promise((resolve) => setTimeout(resolve, 1200));
-        return useTpoStore.getState().fetchDashboardData(retryCount + 1);
+        return get().fetchDashboardData(retryCount + 1);
       }
       console.error('[TPO_STORE_FETCH_ERROR]', err);
       set({ error: err.message || 'Error loading dashboard', isLoading: false });

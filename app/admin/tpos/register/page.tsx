@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -31,6 +31,7 @@ import {
   Info,
   BadgeCheck,
   Compass,
+  Loader2
 } from 'lucide-react';
 
 interface VerifiedCollege {
@@ -71,7 +72,7 @@ const DEPARTMENT_PRESETS = [
 const DEFAULT_BANNER_IMAGE =
   'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80';
 
-export default function AdminRegisterTpoPage() {
+function AdminRegisterTpoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedCollegeId = searchParams.get('collegeId') || '';
@@ -1125,5 +1126,19 @@ export default function AdminRegisterTpoPage() {
       </form>
 
     </div>
+  );
+}
+
+export default function AdminRegisterTpoPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-96 w-full items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-[#2563EB]" />
+        </div>
+      }
+    >
+      <AdminRegisterTpoContent />
+    </Suspense>
   );
 }
