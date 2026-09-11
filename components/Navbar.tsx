@@ -226,31 +226,43 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile & Tablet Hamburger Toggle */}
-        <div className="flex items-center gap-2 lg:hidden">
+        {/* Mobile & Tablet Right Actions & Hamburger */}
+        <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
           {isAuthenticated && user ? (
             <Link
               href={getDashboardLink()}
-              className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-lg border border-blue-200"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all shadow-sm shadow-blue-500/30"
             >
-              Dashboard
+              <div className="w-4 h-4 rounded-full bg-white/20 text-[10px] font-extrabold flex items-center justify-center">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <span>Dashboard</span>
             </Link>
           ) : (
-            <Link
-              href="/login"
-              className="sm:hidden text-xs font-bold text-[#0A2540] px-2.5 py-1.5 rounded-lg border border-slate-200"
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 active:scale-95 transition-all"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="hidden xs:inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-sm shadow-blue-500/25"
+              >
+                Register
+              </Link>
+            </div>
           )}
+          
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-xl text-[#334155] hover:bg-[#F1F5F9] focus:outline-none transition-colors border border-transparent hover:border-[#E2E8F0] cursor-pointer"
+            className="p-2 sm:p-2.5 rounded-xl text-slate-700 bg-slate-100/80 hover:bg-slate-200 border border-slate-200 focus:outline-none transition-all active:scale-95 cursor-pointer"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               ) : (
