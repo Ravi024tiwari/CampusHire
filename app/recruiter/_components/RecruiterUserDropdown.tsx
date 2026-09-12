@@ -13,17 +13,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
-  Building2, 
   LogOut, 
-  ShieldCheck, 
-  ExternalLink,
   ChevronRight,
   Briefcase,
-  Users,
+  FileText,
   Copy,
   Check,
-  FileText,
-  Target
+  User,
+  Loader2
 } from 'lucide-react';
 
 interface RecruiterUserDropdownProps {
@@ -31,7 +28,10 @@ interface RecruiterUserDropdownProps {
   designation?: string;
 }
 
-export function RecruiterUserDropdown({ companyName = 'Corporate Partner', designation = 'Campus Recruiter' }: RecruiterUserDropdownProps) {
+export function RecruiterUserDropdown({ 
+  companyName = 'Corporate Partner', 
+  designation = 'Campus Recruiter' 
+}: RecruiterUserDropdownProps) {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -55,14 +55,14 @@ export function RecruiterUserDropdown({ companyName = 'Corporate Partner', desig
 
   return (
     <DropdownMenu>
-      {/* 1. Tactile Executive Avatar + Name Trigger */}
+      {/* 1. Adaptive Header Trigger Button (Mobile & Desktop Ergonomics) */}
       <DropdownMenuTrigger
-        className="group relative flex items-center gap-2.5 rounded-full md:rounded-2xl p-1 md:py-1.5 md:px-2.5 border border-transparent md:border-slate-200/90 bg-transparent md:bg-white hover:border-slate-300 hover:shadow-xs focus:ring-2 focus:ring-[#2563EB]/40 active:scale-98 transition-all duration-200 cursor-pointer outline-none select-none"
+        className="group relative flex items-center gap-2 rounded-full md:rounded-2xl p-0.5 sm:p-1 md:py-1.5 md:px-2.5 border border-transparent md:border-slate-200/90 bg-transparent md:bg-white hover:border-blue-300 hover:shadow-xs focus:ring-2 focus:ring-[#0070F3]/30 active:scale-95 transition-all duration-200 cursor-pointer outline-none select-none shrink-0 min-h-[36px] sm:min-h-[40px]"
         title={`Corporate Profile (${user?.name || 'Recruiter'})`}
         aria-label="User profile menu"
       >
-        <div className="relative">
-          <Avatar size="default" className="border border-slate-200 shadow-2xs h-8.5 w-8.5 sm:h-9 sm:w-9 transition-transform group-hover:scale-102">
+        <div className="relative shrink-0">
+          <Avatar size="default" className="border border-slate-200/90 shadow-2xs h-8 w-8 sm:h-9 sm:w-9 transition-transform group-hover:scale-105">
             {user?.avatarUrl && (
               <AvatarImage
                 src={user.avatarUrl}
@@ -70,130 +70,161 @@ export function RecruiterUserDropdown({ companyName = 'Corporate Partner', desig
                 className="object-cover"
               />
             )}
-            <AvatarFallback className="bg-gradient-to-tr from-[#2563EB] to-indigo-700 text-white font-black text-xs">
+            <AvatarFallback className="bg-gradient-to-tr from-[#0070F3] to-[#0A2540] text-white font-black text-xs">
               {initialChar}
             </AvatarFallback>
           </Avatar>
 
-          {/* Live Active Status Indicator with Micro-Ring */}
-          <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-xs" />
+          {/* Live Active Status Indicator Dot */}
+          <span className="absolute bottom-0 right-0 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-xs" />
         </div>
 
-        {/* User Name & Designation (Visible on Desktop / MD screens) */}
-        <div className="hidden md:flex flex-col text-left">
-          <span className="text-xs font-black text-[#0A2540] group-hover:text-blue-600 transition-colors leading-tight">
-            {user?.name || 'Rahul Sharma'}
+        {/* User Name & Designation (Hidden on small mobile, visible on MD+ screens) */}
+        <div className="hidden md:flex flex-col text-left pr-0.5">
+          <span className="text-xs font-black text-[#0A2540] group-hover:text-[#0070F3] transition-colors leading-tight font-heading truncate max-w-[130px]">
+            {user?.name || 'Corporate Recruiter'}
           </span>
-          <span className="text-[10px] font-bold text-slate-400 leading-tight truncate max-w-[120px]">
-            {designation} - {companyName}
+          <span className="text-[10px] font-bold text-slate-400 leading-tight truncate max-w-[125px]">
+            {designation} • {companyName}
           </span>
         </div>
 
-        <ChevronRight className="hidden md:block w-3.5 h-3.5 text-slate-400 rotate-90 group-hover:text-slate-700 transition-transform" />
+        <ChevronRight className="hidden md:block w-3.5 h-3.5 text-slate-400 rotate-90 group-hover:text-slate-700 transition-transform shrink-0" />
       </DropdownMenuTrigger>
 
-      {/* 2. Responsive Glassmorphic Dropdown Menu */}
+      {/* 2. Responsive Dropdown Container (Mobile Safe-Bounds & Glassmorphic Polish) */}
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-[calc(100vw-24px)] xs:w-80 max-w-[320px] rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white/98 backdrop-blur-xl p-2 sm:p-2.5 shadow-2xl z-50 text-[#0A2540] animate-in fade-in zoom-in-95 duration-150"
+        className="w-[calc(100vw-24px)] xs:w-[290px] sm:w-[315px] max-w-[320px] rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white/98 backdrop-blur-xl p-1.5 sm:p-2 shadow-2xl z-50 text-[#0A2540] animate-in fade-in zoom-in-95 duration-150 origin-top-right"
       >
-        {/* Executive Profile Card Header */}
-        <DropdownMenuLabel className="p-1 font-normal">
-          <div className="flex items-start gap-3 rounded-2xl bg-gradient-to-br from-blue-50/80 via-slate-50 to-indigo-50/40 p-3 sm:p-3.5 border border-blue-100 shadow-2xs">
-            <Avatar size="lg" className="border border-blue-200 shadow-xs shrink-0 mt-0.5">
-              {user?.avatarUrl && (
-                <AvatarImage
-                  src={user.avatarUrl}
-                  alt={user.name || 'Recruiter'}
-                  className="object-cover"
-                />
-              )}
-              <AvatarFallback className="bg-gradient-to-tr from-[#2563EB] to-indigo-600 text-white font-extrabold text-sm">
-                {initialChar}
-              </AvatarFallback>
-            </Avatar>
+        {/* Profile Card Header (Mobile-Optimized Layout) */}
+        <DropdownMenuLabel className="p-1.5 sm:p-2 font-normal">
+          <div className="flex items-center gap-2.5 sm:gap-3 rounded-xl bg-slate-50/80 p-2 sm:p-2.5 border border-slate-100/90">
+            <div className="relative shrink-0">
+              <Avatar size="lg" className="h-9 w-9 sm:h-10 sm:w-10 border border-slate-200 shadow-2xs">
+                {user?.avatarUrl && (
+                  <AvatarImage
+                    src={user.avatarUrl}
+                    alt={user.name || 'Recruiter'}
+                    className="object-cover"
+                  />
+                )}
+                <AvatarFallback className="bg-gradient-to-tr from-[#0070F3] to-[#0A2540] text-white font-extrabold text-xs sm:text-sm">
+                  {initialChar}
+                </AvatarFallback>
+              </Avatar>
 
-            <div className="min-w-0 flex-1 overflow-hidden">
-              <p className="text-xs sm:text-sm font-extrabold text-[#0A2540] truncate leading-tight font-heading">
-                {user?.name || 'Campus Recruiter'}
+              {/* Status Indicator Dot */}
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-2xs" />
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-bold text-slate-900 truncate leading-snug font-heading">
+                {user?.name || 'Corporate Recruiter'}
               </p>
               
               <div className="flex items-center gap-1.5 mt-0.5">
-                <p className="text-[11px] text-slate-500 font-mono truncate max-w-[140px]">
+                <p className="text-[11px] sm:text-xs text-slate-500 truncate max-w-[140px] xs:max-w-[155px] font-medium">
                   {user?.email || 'recruiter@company.com'}
                 </p>
                 <button
                   type="button"
                   onClick={handleCopyEmail}
-                  className="text-slate-400 hover:text-slate-700 p-0.5 rounded cursor-pointer shrink-0"
+                  className="text-slate-400 hover:text-slate-700 hover:bg-white active:scale-90 p-1 rounded-md transition-all cursor-pointer shrink-0"
                   title="Copy email address"
+                  aria-label="Copy email address"
                 >
-                  {isCopied ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
+                  {isCopied ? <Check className="h-3 w-3 text-emerald-600 stroke-[2.5]" /> : <Copy className="h-3 w-3" />}
                 </button>
-              </div>
-              
-              <div className="mt-2 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#2563EB]/10 px-2 py-0.5 text-[9.5px] font-black text-[#2563EB] border border-[#2563EB]/20">
-                  <ShieldCheck className="h-3 w-3 text-[#2563EB]" />
-                  {companyName}
-                </span>
               </div>
             </div>
           </div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator className="bg-slate-100 my-1.5" />
+        <DropdownMenuSeparator className="bg-slate-100 my-1" />
 
-        {/* Quick Navigation Items */}
-        <div className="space-y-0.5 px-0.5">
+        {/* Action Items with Touch-Friendly Hit Targets & Responsive Badges */}
+        <div className="space-y-0.5 py-0.5">
           
-          {/* 1. Company Hiring Command */}
+          {/* 1. View Profile */}
           <DropdownMenuItem
-            onClick={() => router.push('/recruiter/dashboard')}
-            className="flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-bold text-[#0A2540] hover:bg-blue-50/80 hover:text-[#2563EB] transition-colors cursor-pointer"
+            onClick={() => router.push('/recruiter/company')}
+            className="group flex items-center justify-between rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs font-semibold text-slate-700 hover:bg-blue-50/70 hover:text-[#0070F3] focus:bg-blue-50/70 focus:text-[#0070F3] transition-all cursor-pointer active:scale-[0.98]"
           >
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[#2563EB]">
-                <Briefcase className="h-3.5 w-3.5" />
+              <div className="flex h-7 w-7 sm:h-7.5 sm:w-7.5 items-center justify-center rounded-lg sm:rounded-xl bg-blue-50 text-[#0070F3] border border-blue-100/70 shrink-0 group-hover:scale-105 transition-transform">
+                <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
-              <span>Hiring Command</span>
+              <span className="font-bold text-slate-800 group-hover:text-[#0070F3] transition-colors text-xs sm:text-[13px]">
+                View Profile
+              </span>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold bg-blue-50 text-[#0070F3] border border-blue-200/80 shadow-2xs max-w-[90px] truncate">
+              {companyName}
+            </span>
           </DropdownMenuItem>
 
-          {/* 2. Campus Placement Portal */}
+          {/* 2. Job Postings */}
           <DropdownMenuItem
-            onClick={() => router.push('/')}
-            className="flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-bold text-[#0A2540] hover:bg-slate-100 transition-colors cursor-pointer"
+            onClick={() => router.push('/recruiter/jobs')}
+            className="group flex items-center justify-between rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50/70 hover:text-[#0D8B8A] focus:bg-emerald-50/70 focus:text-[#0D8B8A] transition-all cursor-pointer active:scale-[0.98]"
           >
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                <ExternalLink className="h-3.5 w-3.5" />
+              <div className="flex h-7 w-7 sm:h-7.5 sm:w-7.5 items-center justify-center rounded-lg sm:rounded-xl bg-emerald-50 text-[#0D8B8A] border border-emerald-100/70 shrink-0 group-hover:scale-105 transition-transform">
+                <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
-              <span>Placement Portal</span>
+              <span className="font-bold text-slate-800 group-hover:text-[#0D8B8A] transition-colors text-xs sm:text-[13px]">
+                Job Postings
+              </span>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
+              Drives
+            </span>
+          </DropdownMenuItem>
+
+          {/* 3. Applications */}
+          <DropdownMenuItem
+            onClick={() => router.push('/recruiter/applications')}
+            className="group flex items-center justify-between rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs font-semibold text-slate-700 hover:bg-purple-50/70 hover:text-purple-700 focus:bg-purple-50/70 focus:text-purple-700 transition-all cursor-pointer active:scale-[0.98]"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 sm:h-7.5 sm:w-7.5 items-center justify-center rounded-lg sm:rounded-xl bg-purple-50 text-purple-600 border border-purple-100/70 shrink-0 group-hover:scale-105 transition-transform">
+                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
+              <span className="font-bold text-slate-800 group-hover:text-purple-700 transition-colors text-xs sm:text-[13px]">
+                Applications
+              </span>
+            </div>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">
+              Pipeline
+            </span>
           </DropdownMenuItem>
 
         </div>
 
-        <DropdownMenuSeparator className="bg-slate-100 my-1.5" />
+        <DropdownMenuSeparator className="bg-slate-100 my-1" />
 
-        {/* Sign Out Action Button */}
-        <div className="p-1">
+        {/* 4. Logout Action */}
+        <div className="pt-0.5">
           <DropdownMenuItem
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+            className="group flex items-center justify-between rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50/80 hover:text-rose-700 focus:bg-rose-50/80 focus:text-rose-700 transition-all cursor-pointer active:scale-[0.98] disabled:opacity-50"
           >
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 text-red-600">
-                <LogOut className="h-3.5 w-3.5" />
+              <div className="flex h-7 w-7 sm:h-7.5 sm:w-7.5 items-center justify-center rounded-lg sm:rounded-xl bg-rose-50 text-rose-600 border border-rose-100/70 shrink-0">
+                {isLoggingOut ? (
+                  <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-rose-600" />
+                ) : (
+                  <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500 group-hover:text-rose-600 transition-colors" />
+                )}
               </div>
-              <span>{isLoggingOut ? 'Signing out...' : 'Sign Out Session'}</span>
+              <span className="font-bold text-rose-600 text-xs sm:text-[13px]">
+                {isLoggingOut ? 'Signing out...' : 'Log Out'}
+              </span>
             </div>
-            <span className="rounded bg-red-100/50 px-1.5 py-0.5 text-[9px] font-mono font-bold text-red-600 uppercase">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200/80 shadow-2xs">
               Exit
             </span>
           </DropdownMenuItem>

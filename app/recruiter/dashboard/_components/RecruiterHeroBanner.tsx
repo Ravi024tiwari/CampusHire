@@ -23,10 +23,10 @@ export function RecruiterHeroBanner({
   currentRecruiter,
   kpis,
 }: RecruiterHeroBannerProps) {
-  const recruiterName = currentRecruiter.name || 'Rahul Sharma';
-  const companyName = company.name || 'Google';
-  const totalJobs = kpis.totalJobs ?? kpis.activeDrives ?? 12;
-  const totalApps = kpis.totalApplications ?? kpis.totalApplicants ?? 1240;
+  const recruiterName = currentRecruiter.name || 'Recruiter';
+  const companyName = company.name || 'Partner Company';
+  const totalJobs = kpis.totalJobs ?? kpis.activeDrives ?? 0;
+  const totalApps = kpis.totalApplications ?? kpis.totalApplicants ?? 0;
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-50/95 via-indigo-50/70 to-sky-100/90 border border-blue-200/80 p-5 sm:p-7 lg:p-8 shadow-xs">
@@ -100,7 +100,7 @@ export function RecruiterHeroBanner({
             {/* Active Job Openings */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50/90 border border-blue-200/80 text-blue-800 text-xs font-bold">
               <Briefcase className="w-3.5 h-3.5 text-blue-600" />
-              <span>{totalJobs}+ Active Job Openings</span>
+              <span>{totalJobs} Active Job Openings</span>
             </div>
 
             {/* Total Applications Pill */}

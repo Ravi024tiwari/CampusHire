@@ -22,18 +22,18 @@ export function RecruiterKpiRow({ kpis }: RecruiterKpiRowProps) {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const totalJobs = kpis.totalJobs ?? kpis.activeDrives ?? 12;
-  const totalApps = kpis.totalApplications ?? kpis.totalApplicants ?? 1240;
-  const shortlisted = kpis.shortlisted ?? kpis.shortlistedCandidates ?? 320;
-  const interviews = kpis.interviews ?? 64;
-  const offers = kpis.offers ?? kpis.confirmedHires ?? 18;
+  const totalJobs = kpis.totalJobs ?? kpis.activeDrives ?? 0;
+  const totalApps = kpis.totalApplications ?? kpis.totalApplicants ?? 0;
+  const shortlisted = kpis.shortlisted ?? kpis.shortlistedCandidates ?? 0;
+  const interviews = kpis.interviews ?? 0;
+  const offers = kpis.offers ?? kpis.confirmedHires ?? 0;
 
   const cards = [
     {
       title: 'Total Jobs',
       value: totalJobs,
-      subtext: kpis.jobsGrowth || '+2 this month',
-      subtextColor: 'text-emerald-700 bg-emerald-50/90 border-emerald-200/80',
+      subtext: kpis.jobsGrowth || '0 this month',
+      subtextColor: 'text-blue-700 bg-blue-50/90 border-blue-200/80',
       icon: FileText,
       iconColor: 'text-blue-600',
       iconBg: 'bg-blue-50',
@@ -43,7 +43,7 @@ export function RecruiterKpiRow({ kpis }: RecruiterKpiRowProps) {
     {
       title: 'Total Applications',
       value: totalApps.toLocaleString(),
-      subtext: kpis.applicationsGrowth || '+18% vs last month',
+      subtext: kpis.applicationsGrowth || '0% vs last month',
       subtextColor: 'text-emerald-700 bg-emerald-50/90 border-emerald-200/80',
       icon: Users,
       iconColor: 'text-emerald-600',
@@ -54,7 +54,7 @@ export function RecruiterKpiRow({ kpis }: RecruiterKpiRowProps) {
     {
       title: 'Shortlisted',
       value: shortlisted,
-      subtext: kpis.shortlistedPercent || '26% of total',
+      subtext: kpis.shortlistedPercent || '0% of total',
       subtextColor: 'text-purple-700 bg-purple-50/90 border-purple-200/80',
       icon: Bookmark,
       iconColor: 'text-purple-600',
@@ -65,7 +65,7 @@ export function RecruiterKpiRow({ kpis }: RecruiterKpiRowProps) {
     {
       title: 'Interviews',
       value: interviews,
-      subtext: kpis.interviewsPercent || '5% of total',
+      subtext: kpis.interviewsPercent || '0% of total',
       subtextColor: 'text-amber-700 bg-amber-50/90 border-amber-200/80',
       icon: Calendar,
       iconColor: 'text-amber-600',
@@ -76,7 +76,7 @@ export function RecruiterKpiRow({ kpis }: RecruiterKpiRowProps) {
     {
       title: 'Offers',
       value: offers,
-      subtext: kpis.offersPercent || '1.5% of total',
+      subtext: kpis.offersPercent || '0% of total',
       subtextColor: 'text-teal-700 bg-teal-50/90 border-teal-200/80',
       icon: Award,
       iconColor: 'text-teal-600',

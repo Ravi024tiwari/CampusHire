@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PieChart, Info } from 'lucide-react';
+import { PieChart } from 'lucide-react';
 import { StatusBreakdownItem } from '../_types/recruiter-dashboard.types';
 
 interface ApplicationStatusDonutProps {
@@ -9,22 +9,24 @@ interface ApplicationStatusDonutProps {
   totalApplications?: number;
 }
 
+const DEFAULT_STATUS_ITEMS: StatusBreakdownItem[] = [
+  { key: 'APPLIED', label: 'Applied', count: 0, percentage: 0, color: '#3B82F6' },
+  { key: 'UNDER_REVIEW', label: 'Under Review', count: 0, percentage: 0, color: '#F59E0B' },
+  { key: 'SHORTLISTED', label: 'Shortlisted', count: 0, percentage: 0, color: '#8B5CF6' },
+  { key: 'INTERVIEWING', label: 'Interviewing', count: 0, percentage: 0, color: '#10B981' },
+  { key: 'OFFERS', label: 'Offers', count: 0, percentage: 0, color: '#EF4444' },
+  { key: 'REJECTED', label: 'Rejected', count: 0, percentage: 0, color: '#64748B' },
+];
+
 export function ApplicationStatusDonut({
   statusBreakdown,
-  totalApplications = 1240,
+  totalApplications,
 }: ApplicationStatusDonutProps) {
   const [activeHover, setActiveHover] = useState<string | null>(null);
 
-  const items = statusBreakdown && statusBreakdown.length > 0 ? statusBreakdown : [
-    { key: 'APPLIED', label: 'Applied', count: 620, percentage: 50, color: '#3B82F6' },
-    { key: 'UNDER_REVIEW', label: 'Under Review', count: 310, percentage: 25, color: '#F59E0B' },
-    { key: 'SHORTLISTED', label: 'Shortlisted', count: 200, percentage: 16, color: '#8B5CF6' },
-    { key: 'INTERVIEWING', label: 'Interviewing', count: 64, percentage: 5, color: '#10B981' },
-    { key: 'OFFERS', label: 'Offers', count: 18, percentage: 1, color: '#EF4444' },
-    { key: 'REJECTED', label: 'Rejected', count: 28, percentage: 3, color: '#64748B' },
-  ];
-
-  const total = items.reduce((acc, curr) => acc + curr.count, 0) || totalApplications;
+  const items = statusBreakdown && statusBreakdown.length > 0 ? statusBreakdown : DEFAULT_STATUS_ITEMS;
+  const calculatedTotal = items.reduce((acc, curr) => acc + (curr.count || 0), 0);
+  const total = totalApplications ?? calculatedTotal;
 
   // Compute SVG circular strokes
   const radius = 62;
@@ -62,30 +64,32 @@ export function ApplicationStatusDonut({
               strokeWidth="20"
             />
             
-            {/* Segments */}
-            {items.map((item) => {
-              const strokeDasharray = `${(item.percentage / 100) * circumference} ${circumference}`;
-              const strokeDashoffset = -((accumulatedPercent / 100) * circumference);
-              accumulatedPercent += item.percentage;
-              const isHovered = activeHover === item.key;
+            {/* Segments (rendered only when total > 0) */}
+            {total > 0 &&
+              items.map((item) => {
+                if (item.percentage <= 0) return null;
+                const strokeDasharray = `${(item.percentage / 100) * circumference} ${circumference}`;
+                const strokeDashoffset = -((accumulatedPercent / 100) * circumference);
+                accumulatedPercent += item.percentage;
+                const isHovered = activeHover === item.key;
 
-              return (
-                <circle
-                  key={item.key}
-                  cx="80"
-                  cy="80"
-                  r={radius}
-                  fill="transparent"
-                  stroke={item.color}
-                  strokeWidth={isHovered ? 24 : 20}
-                  strokeDasharray={strokeDasharray}
-                  strokeDashoffset={strokeDashoffset}
-                  className="transition-all duration-300 cursor-pointer"
-                  onMouseEnter={() => setActiveHover(item.key)}
-                  onMouseLeave={() => setActiveHover(null)}
-                />
-              );
-            })}
+                return (
+                  <circle
+                    key={item.key}
+                    cx="80"
+                    cy="80"
+                    r={radius}
+                    fill="transparent"
+                    stroke={item.color}
+                    strokeWidth={isHovered ? 24 : 20}
+                    strokeDasharray={strokeDasharray}
+                    strokeDashoffset={strokeDashoffset}
+                    className="transition-all duration-300 cursor-pointer"
+                    onMouseEnter={() => setActiveHover(item.key)}
+                    onMouseLeave={() => setActiveHover(null)}
+                  />
+                );
+              })}
           </svg>
 
           {/* Center Text */}
