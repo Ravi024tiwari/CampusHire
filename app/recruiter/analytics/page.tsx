@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecruiterAnalyticsStore, AnalyticsNavTab } from '@/store/useRecruiterAnalyticsStore';
+import { useRecruiterAnalyticsQuery } from '@/hooks/queries/useRecruiterQueries';
 import { RecruiterAnalyticsHeader } from './_components/RecruiterAnalyticsHeader';
 import { RecruiterAnalyticsNavTabs, ANALYTICS_INDEXED_TABS } from './_components/RecruiterAnalyticsNavTabs';
 import { RecruiterAnalyticsKpiCards } from './_components/RecruiterAnalyticsKpiCards';
@@ -19,12 +20,16 @@ import { CheckCircle2, AlertCircle, X, RefreshCw, ArrowUp, Sparkles } from 'luci
 export default function RecruiterAnalyticsPage() {
   const {
     data,
-    isLoading,
-    error,
     activeTab,
     setActiveTab,
-    fetchAnalytics,
   } = useRecruiterAnalyticsStore();
+
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+    error: queryError,
+    refetch: refetchAnalytics,
+  } = useRecruiterAnalyticsQuery();
 
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -34,9 +39,19 @@ export default function RecruiterAnalyticsPage() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const isUserClickScrolling = useRef(false);
 
+  // Sync TanStack query data into analytics store
   useEffect(() => {
-    fetchAnalytics();
-  }, []);
+    if (queryData) {
+      useRecruiterAnalyticsStore.setState({
+        data: queryData,
+        isLoading: false,
+        error: null,
+      });
+    }
+  }, [queryData]);
+
+  const isLoading = isQueryLoading && !queryData && !data;
+  const error = (queryError as any)?.message || null;
 
   // Intersection Observer for scrollspy synchronization
   useEffect(() => {
@@ -210,7 +225,7 @@ export default function RecruiterAnalyticsPage() {
         <p className="text-sm text-slate-500">{error || 'An unexpected error occurred while fetching company analytics.'}</p>
         <button
           type="button"
-          onClick={() => fetchAnalytics()}
+          onClick={() => refetchAnalytics()}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs cursor-pointer"
         >
           <RefreshCw className="w-4 h-4" />

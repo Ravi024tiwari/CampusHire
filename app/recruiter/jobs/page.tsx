@@ -25,6 +25,7 @@ import {
   useRecruiterJobsStore, 
   RecruiterJobItem 
 } from '@/store/useRecruiterJobsStore';
+import { useRecruiterJobsQuery } from '@/hooks/queries/useRecruiterQueries';
 import { RecruiterJobsStats } from './_components/RecruiterJobsStats';
 import { RecruiterJobsFilters } from './_components/RecruiterJobsFilters';
 import { RecruiterJobsStatusTabs } from './_components/RecruiterJobsStatusTabs';
@@ -38,13 +39,28 @@ export default function RecruiterJobsPage() {
   const { 
     jobs, 
     engagedColleges, 
-    isLoading, 
-    error, 
     filters, 
-    fetchJobs, 
     updateJob, 
     deleteJob 
   } = useRecruiterJobsStore();
+
+  const queryParams = useMemo(() => ({
+    collegeId: filters.collegeId,
+    type: filters.selectedType,
+    status: filters.selectedStatus,
+    location: filters.selectedLocation,
+    timeline: filters.selectedTimeline,
+    skills: filters.selectedSkills.length > 0 ? filters.selectedSkills.join(',') : undefined,
+    search: filters.searchQuery || undefined,
+    sortBy: filters.sortBy,
+  }), [filters]);
+
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+    error: queryError,
+    refetch: refetchJobs,
+  } = useRecruiterJobsQuery(queryParams);
 
   const [selectedJobIds, setSelectedJobIds] = useState<string[]>([]);
   const [selectedJobToEdit, setSelectedJobToEdit] = useState<RecruiterJobItem | null>(null);
@@ -54,22 +70,21 @@ export default function RecruiterJobsPage() {
   const [pageSize, setPageSize] = useState(5);
   const [lastRefreshed, setLastRefreshed] = useState<string>('Just now');
 
-  // Initial fetch and fetch on filter state change
+  // Sync query data into jobs store
   useEffect(() => {
-    fetchJobs();
-    setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-  }, [
-    fetchJobs,
-    filters.collegeId,
-    filters.selectedType,
-    filters.selectedStatus,
-    filters.selectedLocation,
-    filters.selectedTimeline,
-    filters.selectedSkills,
-    filters.skillMatchMode,
-    filters.searchQuery,
-    filters.sortBy,
-  ]);
+    if (queryData?.jobs) {
+      useRecruiterJobsStore.setState({
+        jobs: queryData.jobs,
+        engagedColleges: queryData.engagedColleges || [],
+        isLoading: false,
+        error: null,
+      });
+      setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }
+  }, [queryData]);
+
+  const isLoading = isQueryLoading && !queryData && jobs.length === 0;
+  const error = (queryError as any)?.message || null;
 
   const showToast = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
@@ -77,7 +92,7 @@ export default function RecruiterJobsPage() {
   };
 
   const handleManualRefresh = async () => {
-    await fetchJobs();
+    await refetchJobs();
     setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     showToast('Job listings & application telemetry refreshed');
   };
@@ -375,7 +390,7 @@ export default function RecruiterJobsPage() {
           onClose={() => setSelectedJobToEdit(null)}
           onSuccess={() => {
             setSelectedJobToEdit(null);
-            fetchJobs();
+            refetchJobs();
             showToast('Job posting updated successfully');
           }}
         />

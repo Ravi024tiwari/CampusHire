@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRecruiterOffersStore, RecruiterOfferItem } from '@/store/useRecruiterOffersStore';
+import { useRecruiterOffersQuery } from '@/hooks/queries/useRecruiterQueries';
 import { RecruiterOffersHeader } from './_components/RecruiterOffersHeader';
 import { RecruiterOffersKpiStats } from './_components/RecruiterOffersKpiStats';
 import { RecruiterOffersFilters } from './_components/RecruiterOffersFilters';
@@ -16,17 +17,36 @@ export default function RecruiterOffersPage() {
     offers,
     stats,
     filters,
-    isLoading,
-    fetchOffers,
   } = useRecruiterOffersStore();
+
+  const queryParams = React.useMemo(() => ({
+    status: filters.status,
+    collegeId: filters.collegeId,
+    search: filters.search || undefined,
+  }), [filters]);
+
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+    refetch: refetchOffers,
+  } = useRecruiterOffersQuery(queryParams);
 
   const [selectedOfferPdf, setSelectedOfferPdf] = useState<RecruiterOfferItem | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
+  // Sync TanStack query data into offers store
   useEffect(() => {
-    fetchOffers();
-  }, []);
+    if (queryData?.offers) {
+      useRecruiterOffersStore.setState({
+        offers: queryData.offers,
+        stats: queryData.stats || undefined,
+        isLoading: false,
+      });
+    }
+  }, [queryData]);
+
+  const isLoading = isQueryLoading && !queryData && offers.length === 0;
 
   const showToast = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });

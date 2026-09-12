@@ -19,34 +19,18 @@ import {
   AlertCircle, 
   Loader2 
 } from 'lucide-react';
+import { useRecruiterDashboardQuery } from '@/hooks/queries/useRecruiterQueries';
 
 export default function RecruiterDashboardPage() {
-  const [data, setData] = useState<RecruiterDashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    data, 
+    isLoading: isQueryLoading, 
+    error: queryError, 
+    refetch: fetchDashboard 
+  } = useRecruiterDashboardQuery();
 
-  const fetchDashboard = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await apiClient.get<ApiResponse<RecruiterDashboardData>>(
-        '/api/recruiter/dashboard'
-      );
-      if (response.data.success && response.data.data) {
-        setData(response.data.data);
-      } else {
-        setError(response.data.message || 'Failed to load company telemetry.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to load company recruitment data.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchDashboard();
-  }, [fetchDashboard]);
+  const isLoading = isQueryLoading && !data;
+  const error = (queryError as any)?.message || null;
 
   if (isLoading && !data) {
     return (
@@ -74,7 +58,7 @@ export default function RecruiterDashboardPage() {
         <h2 className="text-xl font-extrabold text-[#0A2540]">Unable to Load Company Portal</h2>
         <p className="text-sm text-slate-600">{error || 'Unknown error occurred while retrieving company data.'}</p>
         <button
-          onClick={fetchDashboard}
+          onClick={() => fetchDashboard()}
           className="py-2.5 px-6 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-md shadow-blue-500/20 inline-flex items-center gap-2 cursor-pointer hover:bg-blue-700 transition-all"
         >
           <RefreshCw className="w-4 h-4" />

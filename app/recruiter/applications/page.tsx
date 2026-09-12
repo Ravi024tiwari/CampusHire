@@ -18,6 +18,7 @@ import {
   useRecruiterApplicationsStore, 
   RecruiterApplicationItem 
 } from '@/store/useRecruiterApplicationsStore';
+import { useRecruiterApplicationsQuery } from '@/hooks/queries/useRecruiterQueries';
 import { RecruiterApplicationsStats } from './_components/RecruiterApplicationsStats';
 import { RecruiterApplicationsFilters } from './_components/RecruiterApplicationsFilters';
 import { RecruiterApplicationsStageTabs } from './_components/RecruiterApplicationsStageTabs';
@@ -33,28 +34,52 @@ export default function RecruiterApplicationsPage() {
     stats, 
     pagination, 
     filters, 
-    isLoading, 
-    fetchApplications 
   } = useRecruiterApplicationsStore();
+
+  const queryParams = React.useMemo(() => ({
+    jobId: filters.jobId,
+    status: filters.status,
+    collegeId: filters.collegeId,
+    branch: filters.branch,
+    minCgpa: filters.minCgpa,
+    search: filters.searchQuery || undefined,
+    sortBy: filters.sortBy,
+    page: pagination?.page ?? 1,
+    limit: pagination?.limit ?? 10,
+  }), [filters, pagination?.page, pagination?.limit]);
+
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+    error: queryError,
+    refetch: refetchApplications,
+  } = useRecruiterApplicationsQuery(queryParams);
 
   const [selectedCandidateForModal, setSelectedCandidateForModal] = useState<RecruiterApplicationItem | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<string>('Just now');
 
-  // Trigger initial fetch and reload on filter changes
+  // Sync TanStack query data into applications store
   useEffect(() => {
-    fetchApplications();
-    setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-  }, [
-    fetchApplications,
-    filters.jobId,
-    filters.status,
-    filters.collegeId,
-    filters.branch,
-    filters.minCgpa,
-    filters.searchQuery,
-    filters.sortBy,
-  ]);
+    if (queryData?.applications) {
+      useRecruiterApplicationsStore.setState({
+        applications: queryData.applications,
+        stats: queryData.stats || null,
+        pagination: queryData.pagination || {
+          page: pagination?.page ?? 1,
+          limit: pagination?.limit ?? 10,
+          total: queryData.applications.length,
+          totalPages: 1,
+          hasMore: false,
+        },
+        isLoading: false,
+        error: null,
+      });
+      setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }
+  }, [queryData, pagination?.page, pagination?.limit]);
+
+  const isLoading = isQueryLoading && !queryData && applications.length === 0;
 
   const showToast = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
@@ -62,7 +87,7 @@ export default function RecruiterApplicationsPage() {
   };
 
   const handleManualRefresh = async () => {
-    await fetchApplications();
+    await refetchApplications();
     setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     showToast('Candidate pipeline & telemetry refreshed');
   };
@@ -194,7 +219,11 @@ export default function RecruiterApplicationsPage() {
       {/* 7. Pagination */}
       <RecruiterApplicationsPagination
         pagination={pagination}
-        onPageChange={(p) => fetchApplications(p)}
+        onPageChange={(p) => {
+          useRecruiterApplicationsStore.setState((s) => ({
+            pagination: s.pagination ? { ...s.pagination, page: p } : null,
+          }));
+        }}
       />
 
       {/* 8. Candidate Review & Evaluation Modal */}

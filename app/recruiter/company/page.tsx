@@ -11,6 +11,7 @@ import {
   ArrowLeft 
 } from 'lucide-react';
 import { useRecruiterCompanyStore } from '@/store/useRecruiterCompanyStore';
+import { useRecruiterCompanyQuery } from '@/hooks/queries/useRecruiterQueries';
 import { CompanyHeroBanner } from './_components/CompanyHeroBanner';
 import { CompanyIdentityCard } from './_components/CompanyIdentityCard';
 import { CompanyProfileTabs } from './_components/CompanyProfileTabs';
@@ -25,16 +26,24 @@ import { CompanyEditProfileModal } from './_components/CompanyEditProfileModal';
 export default function RecruiterCompanyProfilePage() {
   const { 
     company, 
-    isLoading, 
     activeTab, 
     notification, 
     clearNotification, 
-    fetchCompanyProfile 
   } = useRecruiterCompanyStore();
 
+  const { data: queryCompany, isLoading: isQueryLoading } = useRecruiterCompanyQuery();
+
+  // Sync TanStack query data into company store
   useEffect(() => {
-    fetchCompanyProfile();
-  }, [fetchCompanyProfile]);
+    if (queryCompany) {
+      useRecruiterCompanyStore.setState({
+        company: queryCompany,
+        isLoading: false,
+      });
+    }
+  }, [queryCompany]);
+
+  const isLoading = isQueryLoading && !queryCompany && !company;
 
   if (isLoading) {
     return (

@@ -79,7 +79,7 @@ export function HeroCarousel() {
 
   return (
     <section 
-      className="relative w-full h-[calc(100svh-4rem)] md:h-[calc(100svh-5rem)] min-h-[460px] sm:min-h-[500px] md:min-h-[560px] max-h-[820px] flex items-stretch justify-center overflow-hidden bg-black text-white select-none isolate group"
+      className="relative w-full h-[calc(100svh-4rem)] md:h-[calc(100svh-5rem)] min-h-[460px] sm:min-h-[500px] md:min-h-[560px] max-h-[820px] flex items-stretch justify-center overflow-hidden bg-[#0A1120] text-white select-none isolate group"
       aria-label="Campus Placement Hero Showcase"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -87,21 +87,21 @@ export function HeroCarousel() {
       onTouchEnd={() => setIsPaused(false)}
     >
       {/* 1. Background Cinematic Images with Eager Preload & Seamless Crossfade */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#070D18]">
         {SLIDES.map((slide, index) => {
           const isActive = index === currentSlide;
 
           return (
             <div
               key={slide.id}
-              className={`absolute inset-0 will-change-transform will-change-opacity transition-opacity duration-1000 ease-in-out ${
+              className={`absolute inset-0 will-change-transform transition-opacity duration-700 ease-in-out ${
                 isActive
                   ? 'opacity-100 z-10 scale-100'
-                  : 'opacity-0 z-0 scale-[1.02] pointer-events-none'
+                  : 'opacity-0 z-0 scale-[1.01] pointer-events-none'
               }`}
               style={{
                 transitionProperty: 'opacity, transform',
-                transitionDuration: '1000ms',
+                transitionDuration: '700ms',
                 transformOrigin: 'center center',
               }}
             >
@@ -109,18 +109,19 @@ export function HeroCarousel() {
                 src={slide.image}
                 alt={`${slide.title} ${slide.highlightText}`}
                 fill
-                priority={true}
-                sizes="100vw"
-                quality={92}
-                className="object-cover object-center w-full h-full brightness-[0.92] contrast-[1.03]"
+                priority={index === 0}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+                quality={84}
+                className="object-cover object-center w-full h-full brightness-[0.96] contrast-[1.02]"
               />
             </div>
           );
         })}
 
-        {/* Soft, Clean Natural Vignette (Bright & Clean, perfectly balanced with text) */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/25 to-black/10" />
-        <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/75 via-black/30 to-transparent" />
+        {/* Soft, Clean Natural Vignette (Bright & Clean, ensures text readability without turning screen black) */}
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050B14]/85 via-[#050B14]/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#050B14]/80 via-[#050B14]/30 to-transparent sm:from-[#050B14]/70 sm:via-[#050B14]/20 sm:to-transparent pointer-events-none" />
       </div>
 
       {/* 2. Interactive Navigation Arrows (Hidden on very small mobile to avoid text clutter, visible on tablet+) */}
