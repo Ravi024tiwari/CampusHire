@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { useStudentApplicationsStore } from '@/store/useStudentApplicationsStore';
+import { useStudentApplicationsStore, AppliedJobItem } from '@/store/useStudentApplicationsStore';
+import { useStudentApplicationsQuery } from '@/hooks/queries/useStudentQueries';
 import { AppliedJobsHeroHeader } from './_components/AppliedJobsHeroHeader';
 import { AppliedJobsKpiStats } from './_components/AppliedJobsKpiStats';
 import { AppliedJobsFilterBar } from './_components/AppliedJobsFilterBar';
@@ -14,11 +15,94 @@ import { StudentApplicationsFooter } from './_components/StudentApplicationsFoot
 import { Briefcase, RotateCcw, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function StudentApplicationsPage() {
-  const { applications, summaryStats, isLoading, fetchApplications, resetFilters } = useStudentApplicationsStore();
+  const { applications, summaryStats, filters, resetFilters } = useStudentApplicationsStore();
+
+  const queryParams = useMemo(() => ({
+    page: filters.page,
+    limit: filters.limit,
+    status: filters.status,
+    search: filters.search || undefined,
+    jobType: filters.jobType,
+    location: filters.location,
+    sortBy: filters.sortBy,
+  }), [filters]);
+
+  const { data: queryData, isLoading: isQueryLoading, error: queryError } = useStudentApplicationsQuery(queryParams);
 
   useEffect(() => {
-    fetchApplications();
-  }, [fetchApplications]);
+    if (queryData?.applications) {
+      const rawApps = queryData.applications;
+      const stats = queryData.summaryStats;
+      const pagination = queryData.pagination;
+
+      const mapped: AppliedJobItem[] = (rawApps || []).map((a: any) => {
+        let displayStatus: AppliedJobItem['displayStatus'] = 'Under Review';
+        if (a.status === 'SHORTLISTED') displayStatus = 'Shortlisted';
+        else if (a.status === 'INTERVIEW_SCHEDULED') displayStatus = 'Interviewing';
+        else if (a.status === 'OFFERED' || a.status === 'ACCEPTED') displayStatus = 'Offer';
+        else if (a.status === 'REJECTED' || a.status === 'DECLINED') displayStatus = 'Rejected';
+
+        const created = new Date(a.createdAt);
+        const appliedDate = isNaN(created.getTime())
+          ? 'Recent'
+          : created.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            });
+
+        return {
+          id: a.id,
+          jobId: a.jobId,
+          title: a.job?.title || 'Job Application',
+          company: {
+            id: a.job?.company?.id || '',
+            name: a.job?.company?.name || 'Company',
+            logoUrl: a.job?.company?.logoUrl || null,
+            website: a.job?.company?.website || null,
+          },
+          type: a.job?.type || 'FULL_TIME',
+          mode: a.job?.collegeId ? 'On-campus' : 'Off-campus',
+          status: a.status,
+          displayStatus,
+          location: a.job?.location || 'India',
+          salaryPackage: a.job?.salaryPackage || 'Competitive',
+          appliedDate,
+          rawAppliedDate: a.createdAt,
+          skills: a.job?.skills || [],
+          offerDetails: a.offer || null,
+        };
+      });
+
+      useStudentApplicationsStore.setState({
+        applications: mapped,
+        summaryStats: stats || {
+          total: 0,
+          underReview: 0,
+          shortlisted: 0,
+          interviewing: 0,
+          offers: 0,
+          rejected: 0,
+        },
+        pagination: pagination || {
+          page: filters.page,
+          limit: filters.limit,
+          total: mapped.length,
+          totalPages: Math.ceil(mapped.length / filters.limit) || 1,
+          hasMore: false,
+        },
+        isLoading: false,
+        error: null,
+      });
+    } else if (queryData) {
+      useStudentApplicationsStore.setState({
+        applications: [],
+        isLoading: false,
+      });
+    }
+  }, [queryData, filters.page, filters.limit]);
+
+  const isLoading = isQueryLoading && !queryData && applications.length === 0;
 
   return (
     <div className="w-full bg-[#F8FAFC]">

@@ -34,15 +34,18 @@ import { OfferCard } from './_components/OfferCard';
 import { DigitalAcceptanceModal } from './_components/DigitalAcceptanceModal';
 import { DeclineOfferModal } from './_components/DeclineOfferModal';
 import { StudentOfferKpiStats } from './_components/StudentOfferKpiStats';
+import { useStudentOffersQuery } from '@/hooks/queries/useStudentQueries';
 
 function StudentOffersPageContent() {
   const searchParams = useSearchParams();
   const queryOfferId = searchParams.get('offerId');
   const queryAction = searchParams.get('action'); // 'accept' | 'decline' | 'review'
 
-  const [offers, setOffers] = useState<any[]>([]);
-  const [student, setStudent] = useState<any | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: queryData, isLoading, refetch: fetchOffers } = useStudentOffersQuery();
+
+  const offers: any[] = queryData?.offers || [];
+  const student: any = queryData?.student || null;
+
   const [selectedOfferForAccept, setSelectedOfferForAccept] = useState<any | null>(null);
   const [selectedOfferForDecline, setSelectedOfferForDecline] = useState<any | null>(null);
   const [highlightedOfferId, setHighlightedOfferId] = useState<string | null>(null);
@@ -56,33 +59,12 @@ function StudentOffersPageContent() {
     setTimeout(() => setNotification(null), 6000);
   };
 
-  const fetchOffers = async () => {
-    setIsLoading(true);
-    try {
-      const res = await apiClient.get<ApiResponse<{ student: any; offers: any[] }>>('/api/student/offers');
-      if (res.data?.success && res.data.data) {
-        setOffers(res.data.data.offers || []);
-        setStudent(res.data.data.student || null);
-      } else {
-        showToast(res.data?.message || 'Failed to load offers', 'error');
-      }
-    } catch (err: any) {
-      showToast(err.response?.data?.message || err.message || 'Error fetching placement offers', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchOffers();
-  }, []);
-
   // Deep-link handling when coming from an email action click
   useEffect(() => {
     if (offers.length > 0 && queryOfferId && !hasHandledQueryRef.current) {
       hasHandledQueryRef.current = true;
       const targetOffer = offers.find(
-        (o) =>
+        (o: any) =>
           o.id === queryOfferId ||
           o.applicationId === queryOfferId ||
           o.application?.id === queryOfferId
@@ -130,11 +112,11 @@ function StudentOffersPageContent() {
     }
   }, [offers, queryOfferId, queryAction]);
 
-  const pendingOffers = offers.filter((o) => o.status === 'PENDING');
-  const acceptedOffer = offers.find((o) => o.status === 'ACCEPTED');
-  const declinedOffers = offers.filter((o) => o.status === 'DECLINED' || o.status === 'EXPIRED');
+  const pendingOffers = offers.filter((o: any) => o.status === 'PENDING');
+  const acceptedOffer = offers.find((o: any) => o.status === 'ACCEPTED');
+  const declinedOffers = offers.filter((o: any) => o.status === 'DECLINED' || o.status === 'EXPIRED');
 
-  const filteredOffers = offers.filter((o) => {
+  const filteredOffers = offers.filter((o: any) => {
     if (activeTab === 'ALL') return true;
     if (activeTab === 'PENDING') return o.status === 'PENDING';
     if (activeTab === 'ACCEPTED') return o.status === 'ACCEPTED';
@@ -183,7 +165,7 @@ function StudentOffersPageContent() {
         </div>
 
         <button
-          onClick={fetchOffers}
+          onClick={() => fetchOffers()}
           disabled={isLoading}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition shadow-2xs cursor-pointer self-start md:self-auto"
         >
@@ -301,13 +283,13 @@ function StudentOffersPageContent() {
         </div>
       ) : (
         <div className="space-y-5">
-          {filteredOffers.map((offer) => (
+          {filteredOffers.map((offer: any) => (
             <OfferCard
               key={offer.id}
               offer={offer}
               isHighlighted={highlightedOfferId === offer.id}
-              onAccept={(off) => setSelectedOfferForAccept(off)}
-              onDecline={(off) => setSelectedOfferForDecline(off)}
+              onAccept={(off: any) => setSelectedOfferForAccept(off)}
+              onDecline={(off: any) => setSelectedOfferForDecline(off)}
             />
           ))}
         </div>

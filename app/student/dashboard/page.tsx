@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useStudentDashboardStore } from '@/store/useStudentDashboardStore';
+import { useStudentDashboardQuery } from '@/hooks/queries/useStudentQueries';
 import { StudentHeroBanner } from './_components/StudentHeroBanner';
 import { StudentKpiStats } from './_components/StudentKpiStats';
 import { UpcomingDrivesSection } from './_components/UpcomingDrivesSection';
@@ -13,11 +14,22 @@ import { MotivationalCard } from './_components/MotivationalCard';
 import { StudentFooterTagline } from './_components/StudentFooterTagline';
 
 export default function StudentDashboardPage() {
-  const { fetchDashboardData } = useStudentDashboardStore();
+  const { data: queryData, isLoading: isQueryLoading, isError } = useStudentDashboardQuery();
 
+  // Sync TanStack query cache directly into student dashboard store for instant reactive rendering
   useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+    if (queryData) {
+      useStudentDashboardStore.setState({
+        data: queryData,
+        isLoading: false,
+        error: null,
+      });
+    } else if (isError) {
+      useStudentDashboardStore.setState({
+        isLoading: false,
+      });
+    }
+  }, [queryData, isError]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 w-full max-w-[1700px] mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-300">

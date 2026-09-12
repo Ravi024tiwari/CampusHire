@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useStudentProfileStore } from '@/store/useStudentProfileStore';
+import { useStudentProfileQuery } from '@/hooks/queries/useStudentQueries';
 import { ProfileHeroBanner } from './_components/ProfileHeroBanner';
 import { ProfileKpiStats } from './_components/ProfileKpiStats';
 import { PersonalInfoCard } from './_components/PersonalInfoCard';
@@ -28,15 +29,23 @@ import {
 export default function StudentProfilePage() {
   const { 
     profile, 
-    isLoading, 
-    fetchProfile, 
     activeTab, 
     setActiveTab 
   } = useStudentProfileStore();
 
+  const { data: queryProfile, isLoading: isQueryLoading } = useStudentProfileQuery();
+
   useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
+    if (queryProfile) {
+      useStudentProfileStore.setState({
+        profile: queryProfile,
+        isLoading: false,
+        error: null,
+      });
+    }
+  }, [queryProfile]);
+
+  const isLoading = isQueryLoading && !queryProfile && !profile;
 
   if (isLoading && !profile) {
     return (

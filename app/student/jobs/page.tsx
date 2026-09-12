@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useStudentJobsStore } from '@/store/useStudentJobsStore';
+import React, { useEffect, useMemo } from 'react';
+import { useStudentJobsStore, StudentJobItem } from '@/store/useStudentJobsStore';
+import { useStudentJobsQuery, useStudentResumesQuery } from '@/hooks/queries/useStudentQueries';
 import { BrowseJobsHeroBanner } from './_components/BrowseJobsHeroBanner';
 import { BrowseJobsFilterSidebar } from './_components/BrowseJobsFilterSidebar';
 import { BrowseJobsMobileFilterDrawer } from './_components/BrowseJobsMobileFilterDrawer';
@@ -15,20 +16,93 @@ import { Button } from '@/components/ui/button';
 export default function StudentBrowseJobsPage() {
   const {
     jobs,
-    isLoading,
-    error,
+    isLoading: isStoreLoading,
+    error: storeError,
     filters,
     pagination,
-    fetchJobs,
-    fetchStudentResumes,
     setPage,
     resetFilters,
   } = useStudentJobsStore();
 
+  const queryParams = useMemo(() => ({
+    page: filters.page,
+    limit: filters.limit,
+    search: filters.search || undefined,
+    type: filters.jobTypes.length > 0 ? filters.jobTypes.join(',') : undefined,
+    location: filters.locations.length > 0 ? filters.locations.join(',') : undefined,
+    category: filters.categories.length > 0 ? filters.categories.join(',') : undefined,
+    skills: filters.skills.length > 0 ? filters.skills.join(',') : undefined,
+    sortBy: filters.sortBy,
+  }), [filters]);
+
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+    error: queryError,
+    refetch: refetchJobs,
+  } = useStudentJobsQuery(queryParams);
+
+  const { data: resumesData } = useStudentResumesQuery();
+
+  // Sync TanStack query data to jobs store
   useEffect(() => {
-    fetchJobs();
-    fetchStudentResumes();
-  }, [fetchJobs, fetchStudentResumes]);
+    if (queryData?.jobs && queryData.jobs.length > 0) {
+      const rawJobs = queryData.jobs;
+      const mapped: StudentJobItem[] = rawJobs.map((j: any) => {
+        const created = new Date(j.createdAt);
+        const daysAgo = Math.floor((Date.now() - created.getTime()) / (1000 * 60 * 60 * 24));
+        const postedAgo = daysAgo <= 0 ? 'Posted today' : daysAgo === 1 ? 'Posted 1 day ago' : `Posted ${daysAgo} days ago`;
+
+        return {
+          ...j,
+          postedAgo,
+          company: {
+            id: j.company?.id || '',
+            name: j.company?.name || 'Company',
+            logoUrl: j.company?.logoUrl || null,
+            website: j.company?.website || null,
+            isVerified: j.company?.isVerified ?? true,
+          },
+        };
+      });
+
+      useStudentJobsStore.setState({
+        jobs: mapped,
+        pagination: queryData.pagination || {
+          page: filters.page,
+          limit: filters.limit,
+          total: mapped.length,
+          totalPages: Math.ceil(mapped.length / filters.limit) || 1,
+          hasMore: false,
+        },
+        isLoading: false,
+        error: null,
+      });
+    } else if (queryData) {
+      // Empty result from API
+      useStudentJobsStore.setState({
+        jobs: [],
+        pagination: {
+          page: filters.page,
+          limit: filters.limit,
+          total: 0,
+          totalPages: 1,
+          hasMore: false,
+        },
+        isLoading: false,
+      });
+    }
+  }, [queryData, filters.page, filters.limit]);
+
+  // Sync resumes data
+  useEffect(() => {
+    if (resumesData && Array.isArray(resumesData)) {
+      useStudentJobsStore.setState({ studentResumes: resumesData });
+    }
+  }, [resumesData]);
+
+  const isLoading = isQueryLoading && !queryData && jobs.length === 0;
+  const error = (queryError as any)?.message || storeError;
 
   // Loading skeleton placeholder
   const renderSkeletons = () => (
@@ -100,7 +174,7 @@ export default function StudentBrowseJobsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => fetchJobs()}
+                  onClick={() => refetchJobs()}
                   className="h-8 border-red-200 hover:bg-red-100 text-red-700"
                 >
                   <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
