@@ -27,11 +27,12 @@ import { OfferLetterViewerModal } from './OfferLetterViewerModal';
 
 interface OfferCardProps {
   offer: any;
+  isHighlighted?: boolean;
   onAccept: (offer: any) => void;
   onDecline: (offer: any) => void;
 }
 
-export function OfferCard({ offer, onAccept, onDecline }: OfferCardProps) {
+export function OfferCard({ offer, isHighlighted, onAccept, onDecline }: OfferCardProps) {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
   const [isExpired, setIsExpired] = useState(false);
@@ -68,7 +69,10 @@ export function OfferCard({ offer, onAccept, onDecline }: OfferCardProps) {
   return (
     <>
       <div
+        id={`offer-card-${offer.id}`}
         className={`relative rounded-3xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-xl ${
+          isHighlighted ? 'ring-3 ring-blue-500 shadow-2xl shadow-blue-500/20' : ''
+        } ${
           isAccepted
             ? 'bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30 border-emerald-300 ring-2 ring-emerald-500/20'
             : isDeclined

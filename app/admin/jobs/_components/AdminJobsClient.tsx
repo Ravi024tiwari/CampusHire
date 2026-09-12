@@ -10,7 +10,6 @@ import { AdminJobsPagination } from './AdminJobsPagination';
 import { AdminJobsSidebar } from './AdminJobsSidebar';
 import { AdminJobsMobileList } from './AdminJobsMobileList';
 import { AdminJobsFilterDrawer } from './AdminJobsFilterDrawer';
-import { AdminAddJobModal } from './AdminAddJobModal';
 
 export function AdminJobsClient() {
   const {
@@ -31,7 +30,6 @@ export function AdminJobsClient() {
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
-  const [isAddJobOpen, setIsAddJobOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -142,7 +140,6 @@ export function AdminJobsClient() {
       {/* 1. Header with Title & Actions */}
       <AdminJobsHeader
         onExport={handleExportData}
-        onAddJob={() => setIsAddJobOpen(true)}
         isExporting={isExporting}
       />
 
@@ -226,16 +223,6 @@ export function AdminJobsClient() {
         filterOptions={adminJobFilterOptions}
         onApplyFilters={(filters) => setAdminJobFilters(filters)}
         onResetFilters={resetAdminJobFilters}
-      />
-
-      {/* 6. Add Job Modal */}
-      <AdminAddJobModal
-        isOpen={isAddJobOpen}
-        onClose={() => setIsAddJobOpen(false)}
-        onSuccess={() => {
-          setToast({ type: 'success', message: 'New placement drive created successfully!' });
-          fetchAdminJobs();
-        }}
       />
 
     </div>

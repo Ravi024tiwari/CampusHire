@@ -1,17 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Download, Plus } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 interface AdminJobsHeaderProps {
   onExport: () => void;
-  onAddJob: () => void;
   isExporting?: boolean;
 }
 
 export function AdminJobsHeader({
   onExport,
-  onAddJob,
   isExporting = false,
 }: AdminJobsHeaderProps) {
   return (
@@ -38,19 +36,6 @@ export function AdminJobsHeader({
         >
           <Download className="w-3.5 h-3.5 text-slate-500" />
           <span>{isExporting ? 'Exporting...' : 'Export Data'}</span>
-        </button>
-
-        {/* Add Job Button */}
-        <button
-          type="button"
-          onClick={onAddJob}
-          className="inline-flex items-center gap-2 px-4 sm:px-4.5 py-2 sm:py-2.5 rounded-xl bg-[#0D8B8A] hover:bg-[#0F766E] active:scale-95 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer"
-        >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
-          <span>
-            <span className="hidden sm:inline">Add Job</span>
-            <span className="sm:hidden">Add</span>
-          </span>
         </button>
       </div>
     </div>

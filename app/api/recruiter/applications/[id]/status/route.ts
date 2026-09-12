@@ -112,6 +112,8 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
 
       // Asynchronous email dispatch (non-blocking)
       sendOfferLetterEmail({
+        offerId: offerRecord.id,
+        applicationId,
         studentName: application.student.user.name,
         studentEmail: application.student.user.email,
         companyName: recruiter.company.name,

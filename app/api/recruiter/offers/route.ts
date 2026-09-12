@@ -377,6 +377,8 @@ export async function POST(req: NextRequest) {
 
     // Asynchronously dispatch styled HTML email to student's email via Resend
     sendOfferLetterEmail({
+      offerId: offer.id,
+      applicationId: application.id,
       studentName: application.student.user.name,
       studentEmail: application.student.user.email,
       companyName: recruiter.company.name,

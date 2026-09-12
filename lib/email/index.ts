@@ -6,6 +6,8 @@ const emailFrom = process.env.EMAIL_FROM || 'CampusHire <onboarding@resend.dev>'
 export const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 interface OfferLetterEmailParams {
+  offerId?: string | null;
+  applicationId?: string | null;
   studentName: string;
   studentEmail: string;
   companyName: string;
@@ -44,6 +46,8 @@ interface OfferConfirmationEmailParams {
  */
 export async function sendOfferLetterEmail(params: OfferLetterEmailParams) {
   const {
+    offerId,
+    applicationId,
     studentName,
     studentEmail,
     companyName,
@@ -59,6 +63,18 @@ export async function sendOfferLetterEmail(params: OfferLetterEmailParams) {
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const currentYear = new Date().getFullYear();
+
+  // Action URLs for the student portal
+  const offerQueryParam = offerId ? `offerId=${encodeURIComponent(offerId)}` : '';
+  const portalAcceptUrl = offerId
+    ? `${appUrl}/student/offers?${offerQueryParam}&action=accept`
+    : `${appUrl}/student/offers?action=accept`;
+  const portalDeclineUrl = offerId
+    ? `${appUrl}/student/offers?${offerQueryParam}&action=decline`
+    : `${appUrl}/student/offers?action=decline`;
+  const portalReviewUrl = offerId
+    ? `${appUrl}/student/offers?${offerQueryParam}&action=review`
+    : `${appUrl}/student/offers`;
 
   // Format Salary Package cleanly with currency symbol
   const salaryDisplay = salaryPackage
@@ -342,6 +358,45 @@ export async function sendOfferLetterEmail(params: OfferLetterEmailParams) {
                 </td>
               </tr>
             </table>
+          </div>
+
+          <!-- Action Required: Accept / Decline Interactive Box -->
+          <div style="background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 22px 20px; margin-bottom: 24px; text-align: center;">
+            <div style="font-size: 11px; font-weight: 800; color: #475569; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;">
+              ACTION REQUIRED
+            </div>
+            <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">
+              Respond to Your Job Offer
+            </div>
+            <p style="margin: 0 0 16px 0; font-size: 13px; color: #64748b; line-height: 1.45;">
+              Please submit your decision to confirm your placement with <strong>${companyName}</strong>:
+            </p>
+
+            <!-- Buttons Table -->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 14px auto;">
+              <tr>
+                <td style="padding: 0 6px;" align="center">
+                  <a href="${portalAcceptUrl}" target="_blank" style="display: inline-block; background-color: #16a34a; color: #ffffff; font-weight: 700; font-size: 13.5px; padding: 11px 22px; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3); border: 1px solid #15803d; white-space: nowrap;">
+                    &#10003; Accept Offer
+                  </a>
+                </td>
+                <td style="padding: 0 6px;" align="center">
+                  <a href="${portalDeclineUrl}" target="_blank" style="display: inline-block; background-color: #ffffff; color: #dc2626; font-weight: 700; font-size: 13.5px; padding: 11px 20px; border-radius: 10px; text-decoration: none; border: 1px solid #fca5a5; box-shadow: 0 1px 3px rgba(0,0,0,0.04); white-space: nowrap;">
+                    &#10005; Decline Offer
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <div style="margin-top: 8px;">
+              <a href="${portalReviewUrl}" target="_blank" style="font-size: 12.5px; font-weight: 600; color: #2563eb; text-decoration: underline;">
+                View full contract details on your CampusHire Dashboard &rarr;
+              </a>
+            </div>
+
+            <p style="margin: 12px 0 0 0; font-size: 11px; color: #94a3b8; line-height: 1.4;">
+              <em>Security Notice: Clicking opens your verified student portal where you will digitally confirm your response before any status changes.</em>
+            </p>
           </div>
 
           <!-- Closing Body -->

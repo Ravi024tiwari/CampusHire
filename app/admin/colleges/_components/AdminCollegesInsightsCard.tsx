@@ -12,15 +12,15 @@ export function AdminCollegesInsightsCard({
   insights,
   isLoading = false,
 }: AdminCollegesInsightsCardProps) {
-  const total = insights?.total || 186;
-  const verifiedCount = insights?.verified?.count !== undefined ? insights.verified.count : 142;
-  const verifiedPct = insights?.verified?.percentage !== undefined ? insights.verified.percentage : 76;
+  const total = insights?.total ?? 0;
+  const verifiedCount = insights?.verified?.count !== undefined ? insights.verified.count : 0;
+  const verifiedPct = insights?.verified?.percentage !== undefined ? insights.verified.percentage : 0;
 
-  const pendingCount = insights?.pending?.count !== undefined ? insights.pending.count : 32;
-  const pendingPct = insights?.pending?.percentage !== undefined ? insights.pending.percentage : 17;
+  const pendingCount = insights?.pending?.count !== undefined ? insights.pending.count : 0;
+  const pendingPct = insights?.pending?.percentage !== undefined ? insights.pending.percentage : 0;
 
-  const rejectedCount = insights?.rejected?.count !== undefined ? insights.rejected.count : 12;
-  const rejectedPct = insights?.rejected?.percentage !== undefined ? insights.rejected.percentage : 7;
+  const rejectedCount = insights?.rejected?.count !== undefined ? insights.rejected.count : 0;
+  const rejectedPct = insights?.rejected?.percentage !== undefined ? insights.rejected.percentage : 0;
 
   // SVG Donut Circle Parameters
   const radius = 54;

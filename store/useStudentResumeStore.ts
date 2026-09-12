@@ -40,36 +40,6 @@ interface StudentResumeState {
   clearMessages: () => void;
 }
 
-const fallbackResumes: ResumeVersion[] = [
-  {
-    id: 'res-1',
-    title: 'Full Stack Developer',
-    fileUrl: 'https://res.cloudinary.com/sample/raw/upload/v1/campushire/resumes/Ravi_Tiwari_FullStack.pdf',
-    fileSize: 840 * 1024,
-    fileType: 'pdf',
-    isDefault: true,
-    createdAt: '2025-08-10T10:00:00Z',
-  },
-  {
-    id: 'res-2',
-    title: 'Data Analyst & Python',
-    fileUrl: 'https://res.cloudinary.com/sample/raw/upload/v1/campushire/resumes/Ravi_Tiwari_DataAnalyst.pdf',
-    fileSize: 920 * 1024,
-    fileType: 'pdf',
-    isDefault: false,
-    createdAt: '2025-08-18T14:30:00Z',
-  },
-  {
-    id: 'res-3',
-    title: 'Core Software Engineer (DSA & C++)',
-    fileUrl: 'https://res.cloudinary.com/sample/raw/upload/v1/campushire/resumes/Ravi_Tiwari_SDE.pdf',
-    fileSize: 760 * 1024,
-    fileType: 'pdf',
-    isDefault: false,
-    createdAt: '2025-08-25T09:15:00Z',
-  },
-];
-
 export const useStudentResumeStore = create<StudentResumeState>((set, get) => ({
   resumes: [],
   isLoading: true,
@@ -90,15 +60,16 @@ export const useStudentResumeStore = create<StudentResumeState>((set, get) => ({
       );
       if (res.data.success && res.data.data?.resumes) {
         set({
-          resumes: res.data.data.resumes.length > 0 ? res.data.data.resumes : fallbackResumes,
+          resumes: res.data.data.resumes,
           isLoading: false,
         });
         return;
       }
-      set({ resumes: fallbackResumes, isLoading: false });
+      set({ resumes: [], isLoading: false });
     } catch (err: any) {
-      console.warn('[useStudentResumeStore] Fallback to sample resumes:', err?.message);
-      set({ resumes: fallbackResumes, isLoading: false });
+      const msg = err.response?.data?.message || err.message || 'Failed to fetch resumes';
+      console.error('[useStudentResumeStore] Error fetching resumes:', msg);
+      set({ resumes: [], isLoading: false, error: msg });
     }
   },
 
@@ -135,7 +106,8 @@ export const useStudentResumeStore = create<StudentResumeState>((set, get) => ({
       if (dbRes.data.success && dbRes.data.data) {
         const created = dbRes.data.data;
         const current = get().resumes;
-        const updated = isDefault
+        const isDef = created.isDefault || isDefault;
+        const updated = isDef
           ? [created, ...current.map((r) => ({ ...r, isDefault: false }))]
           : [created, ...current];
 
@@ -175,16 +147,9 @@ export const useStudentResumeStore = create<StudentResumeState>((set, get) => ({
       }
       return false;
     } catch (err: any) {
-      // Local fallback for offline/demo mode
-      set({
-        resumes: get().resumes.map((r) => ({
-          ...r,
-          isDefault: r.id === id,
-        })),
-        isProcessingId: null,
-        successMessage: 'Primary resume updated!',
-      });
-      return true;
+      const msg = err.response?.data?.message || err.message || 'Failed to update default resume';
+      set({ isProcessingId: null, error: msg });
+      return false;
     }
   },
 
@@ -207,14 +172,9 @@ export const useStudentResumeStore = create<StudentResumeState>((set, get) => ({
       }
       return false;
     } catch (err: any) {
-      // Local fallback
-      set({
-        resumes: get().resumes.map((r) => (r.id === id ? { ...r, title: newTitle.trim() } : r)),
-        isProcessingId: null,
-        renameResumeItem: null,
-        successMessage: 'Resume title updated!',
-      });
-      return true;
+      const msg = err.response?.data?.message || err.message || 'Failed to rename resume';
+      set({ isProcessingId: null, error: msg });
+      return false;
     }
   },
 
@@ -238,18 +198,9 @@ export const useStudentResumeStore = create<StudentResumeState>((set, get) => ({
       }
       return false;
     } catch (err: any) {
-      // Local fallback
-      const remaining = get().resumes.filter((r) => r.id !== id);
-      if (remaining.length > 0 && !remaining.some((r) => r.isDefault)) {
-        remaining[0].isDefault = true;
-      }
-      set({
-        resumes: remaining,
-        isProcessingId: null,
-        deleteConfirmItem: null,
-        successMessage: 'Resume deleted successfully!',
-      });
-      return true;
+      const msg = err.response?.data?.message || err.message || 'Failed to delete resume';
+      set({ isProcessingId: null, error: msg });
+      return false;
     }
   },
 

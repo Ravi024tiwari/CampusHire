@@ -9,22 +9,6 @@ import { adminCollegeQuerySchema } from '@/lib/validations/admin.schema';
 /**
  * GET /api/admin/colleges
  * 
- * Production-grade Super Admin College Directory API:
- * - High-performance 10-item pagination (default limit 10).
- * - Multi-criteria dynamic filtering:
- *   - Search: name, code, domain, city, state.
- *   - Status: All, Verified, Pending, Rejected.
- *   - Location: specific city or state.
- *   - Type: Government, Private, Autonomous, Deemed.
- *   - Domain: Engineering, Management, Arts & Science.
- * - Top 4 Summary KPI Metrics with Month-over-Month (MoM) growth:
- *   1. Total Colleges (186 | +12% from last month)
- *   2. Verified Colleges (142 | +18% from last month)
- *   3. Pending Verification (32 | -8% from last month)
- *   4. Rejected Colleges (12 | -4% from last month)
- * - College Insights distribution breakdown for interactive Donut Chart.
- * - Real-time Recent Activity feed of institution onboarding and verification.
- * - Selectable filter metadata (Locations, Types, Domains, Statuses).
  */
 export async function GET(req: NextRequest) {
   try {
@@ -191,30 +175,41 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // Rejected / Unaccredited count estimate
-    const rejectedCollegesCount = Math.max(0, Math.floor(pendingCollegesCount * 0.25)) || 12;
-
     // Helper to calculate percentage growth strings
-    const calcGrowth = (current: number, prev: number, isReversed: boolean = false) => {
-      if (prev === 0) return current > 0 ? '+100%' : '+0%';
-      const growth = ((current - prev) / prev) * 100;
-      const isPositive = growth >= 0;
+    const calcGrowth = (
+      current: number,
+      prev: number,
+      isReversed: boolean = false
+    ): { growth: string; trend: 'up' | 'down' } => {
+      if (prev === 0) {
+        if (current === 0) return { growth: '0%', trend: 'up' };
+        return { growth: '+100%', trend: isReversed ? 'down' : 'up' };
+      }
+      const diff = ((current - prev) / prev) * 100;
+      const isPositive = diff >= 0;
       const sign = isPositive ? (isReversed ? '↓ ' : '↑ ') : (isReversed ? '↑ ' : '↓ ');
-      return `${sign}${Math.abs(growth).toFixed(0)}%`;
+      const growthStr = `${sign}${Math.abs(diff).toFixed(0)}%`;
+      const trend: 'up' | 'down' = isPositive ? (isReversed ? 'down' : 'up') : (isReversed ? 'up' : 'down');
+      return { growth: growthStr, trend };
     };
 
-    // Calculate Donut Breakdown Percentages
-    const totalGlobal = totalCollegesCount || 186;
-    const verifiedVal = verifiedCollegesCount || 142;
-    const pendingVal = pendingCollegesCount || 32;
-    const rejectedVal = rejectedCollegesCount;
+    const totalGrowth = calcGrowth(totalCollegesCount, prevMonthTotalCount);
+    const verifiedGrowth = calcGrowth(verifiedCollegesCount, prevMonthVerifiedCount);
+    const pendingGrowth = calcGrowth(pendingCollegesCount, prevMonthPendingCount, true);
+    const rejectedGrowth: { growth: string; trend: 'up' | 'down' } = { growth: '0%', trend: 'down' };
 
-    const verifiedPercent = Math.round((verifiedVal / totalGlobal) * 100) || 76;
-    const pendingPercent = Math.round((pendingVal / totalGlobal) * 100) || 17;
-    const rejectedPercent = Math.max(0, 100 - (verifiedPercent + pendingPercent)) || 7;
+    // Calculate Donut Breakdown Percentages
+    const totalGlobal = totalCollegesCount;
+    const verifiedVal = verifiedCollegesCount;
+    const pendingVal = pendingCollegesCount;
+    const rejectedVal = 0;
+
+    const verifiedPercent = totalGlobal > 0 ? Math.round((verifiedVal / totalGlobal) * 100) : 0;
+    const pendingPercent = totalGlobal > 0 ? Math.round((pendingVal / totalGlobal) * 100) : 0;
+    const rejectedPercent = totalGlobal > 0 ? Math.max(0, 100 - (verifiedPercent + pendingPercent)) : 0;
 
     // Format lean list for Table & Mobile Cards
-    const colleges = collegesRoster.map((c, index) => {
+    const colleges = collegesRoster.map((c) => {
       // Determine Type (Government vs Private vs Autonomous)
       const isGov = c.name.toLowerCase().includes('indian institute') ||
                     c.name.toLowerCase().includes('national institute') ||
@@ -224,31 +219,26 @@ export async function GET(req: NextRequest) {
       const institutionType = isGov ? 'Government' : 'Private';
 
       // Determine verification status
-      let status: 'Verified' | 'Pending' | 'Rejected' = 'Pending';
-      if (c.isVerified) {
-        status = 'Verified';
-      } else if (index % 7 === 0) {
-        status = 'Rejected';
-      }
+      const status: 'Verified' | 'Pending' | 'Rejected' = c.isVerified ? 'Verified' : 'Pending';
 
       return {
         id: c.id,
         name: c.name,
         code: c.code || c.name.slice(0, 6).toUpperCase(),
-        domain: c.domain || `${(c.code || 'college').toLowerCase()}.ac.in`,
-        city: c.city || 'Mumbai',
-        state: c.state || 'MH',
-        location: `${c.city || 'City'}, ${c.state || 'State'}`,
+        domain: c.domain || (c.code ? `${c.code.toLowerCase()}.ac.in` : 'college.ac.in'),
+        city: c.city || '',
+        state: c.state || '',
+        location: c.city && c.state ? `${c.city}, ${c.state}` : c.city || c.state || 'Not Specified',
         logoUrl: c.logoUrl,
         type: institutionType,
         isVerified: c.isVerified,
         status,
-        studentsCount: c._count.students || Math.floor(900 + (index * 140)),
-        jobsCount: c._count.jobs || Math.floor(50 + (index * 8)),
-        offersCount: c._count.offers,
-        tposCount: c._count.tpos,
-        contactEmail: c.contactEmail || `tpo@${(c.code || 'college').toLowerCase()}.ac.in`,
-        contactPhone: c.contactPhone || '+91 98765 43210',
+        studentsCount: c._count.students ?? 0,
+        jobsCount: c._count.jobs ?? 0,
+        offersCount: c._count.offers ?? 0,
+        tposCount: c._count.tpos ?? 0,
+        contactEmail: c.contactEmail || '',
+        contactPhone: c.contactPhone || '',
         createdAt: c.createdAt,
       };
     });
@@ -321,27 +311,27 @@ export async function GET(req: NextRequest) {
         colleges,
         kpis: {
           totalColleges: {
-            value: totalCollegesCount || 186,
-            growth: '12%',
-            trend: 'up',
+            value: totalCollegesCount,
+            growth: totalGrowth.growth,
+            trend: totalGrowth.trend,
             period: 'from last month',
           },
           verifiedColleges: {
-            value: verifiedCollegesCount || 142,
-            growth: '18%',
-            trend: 'up',
+            value: verifiedCollegesCount,
+            growth: verifiedGrowth.growth,
+            trend: verifiedGrowth.trend,
             period: 'from last month',
           },
           pendingVerification: {
-            value: pendingCollegesCount || 32,
-            growth: '8%',
-            trend: 'down',
+            value: pendingCollegesCount,
+            growth: pendingGrowth.growth,
+            trend: pendingGrowth.trend,
             period: 'from last month',
           },
           rejectedColleges: {
-            value: rejectedCollegesCount,
-            growth: '4%',
-            trend: 'down',
+            value: rejectedVal,
+            growth: rejectedGrowth.growth,
+            trend: rejectedGrowth.trend,
             period: 'from last month',
           },
         },

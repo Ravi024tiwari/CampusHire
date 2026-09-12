@@ -120,7 +120,7 @@ const defaultFallbackProfile: StudentProfileData = {
   twelfthMarks: 88.6,
   phone: '+91 98765 43210',
   bio: 'Passionate about building scalable web applications and solving real world problems.',
-  resumeUrl: 'https://res.cloudinary.com/sample/raw/upload/v1/campushire/resumes/Ravi_Tiwari_Resume.pdf',
+  resumeUrl: null,
   skills: ['React', 'Node.js', 'TypeScript', 'Python', 'DSA', 'System Design', 'JavaScript', 'MongoDB'],
   linkedinUrl: 'https://linkedin.com/in/ravitiwari',
   githubUrl: 'https://github.com/ravitiwari',
@@ -142,15 +142,7 @@ const defaultFallbackProfile: StudentProfileData = {
     city: 'Bilaspur',
     state: 'Chhattisgarh',
   },
-  resumes: [
-    {
-      id: 'res-1',
-      title: 'Ravi_Tiwari_Resume.pdf',
-      fileUrl: '#',
-      isDefault: true,
-      createdAt: '2025-08-10T10:00:00Z',
-    },
-  ],
+  resumes: [],
   applications: [
     {
       id: 'app-1',

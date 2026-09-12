@@ -25,8 +25,9 @@ export function ResumeCard() {
   if (!profile) return null;
 
   const defaultResume = profile.resumes?.find((r) => r.isDefault) || profile.resumes?.[0];
-  const resumeTitle = defaultResume?.title || (profile.user.name ? `${profile.user.name.replace(/\s+/g, '_')}_Resume.pdf` : 'Ravi_Tiwari_Resume.pdf');
-  const resumeUrl = defaultResume?.fileUrl || profile.resumeUrl || '#';
+  const hasResume = Boolean(defaultResume || profile.resumeUrl);
+  const resumeTitle = defaultResume?.title || (profile.resumeUrl ? 'Primary_Resume.pdf' : 'No Resume Uploaded');
+  const resumeUrl = defaultResume?.fileUrl || profile.resumeUrl || null;
   
   const formattedDate = defaultResume?.createdAt
     ? new Date(defaultResume.createdAt).toLocaleDateString('en-US', {
@@ -34,7 +35,7 @@ export function ResumeCard() {
         day: 'numeric',
         year: 'numeric',
       })
-    : 'Aug 10, 2025';
+    : null;
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -77,52 +78,72 @@ export function ResumeCard() {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-xs hover:bg-blue-700 lg:bg-blue-50 lg:text-blue-700 lg:border lg:border-blue-100 lg:hover:bg-blue-600 lg:hover:text-white lg:hover:border-blue-600 active:scale-95 transition-all duration-200 cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5" />
-            <span>Edit</span>
+            <span>Manage</span>
           </button>
         </div>
 
         {/* Document Details Block */}
-        <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/60 space-y-3">
-          <div className="flex items-center gap-3">
-            {/* Red PDF Badge */}
-            <div className="h-10 w-10 rounded-lg bg-rose-500 text-white flex flex-col items-center justify-center font-black text-[9px] shadow-xs shrink-0 tracking-wider">
-              <span>PDF</span>
+        {hasResume ? (
+          <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/60 space-y-3">
+            <div className="flex items-center gap-3">
+              {/* Red PDF Badge */}
+              <div className="h-10 w-10 rounded-lg bg-rose-500 text-white flex flex-col items-center justify-center font-black text-[9px] shadow-xs shrink-0 tracking-wider">
+                <span>PDF</span>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-slate-900 truncate">
+                  {resumeTitle}
+                </p>
+                {formattedDate && (
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    Updated on {formattedDate}
+                  </p>
+                )}
+              </div>
             </div>
 
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-slate-900 truncate">
-                {resumeTitle}
-              </p>
-              <p className="text-[11px] text-slate-500 font-medium">
-                Updated on {formattedDate}
-              </p>
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                onClick={handleViewResume}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 text-xs font-bold shadow-2xs transition-all cursor-pointer"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>View Resume</span>
+              </button>
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingResume}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold shadow-2xs transition-all cursor-pointer"
+              >
+                {isUploadingResume ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" />
+                ) : (
+                  <UploadCloud className="w-3.5 h-3.5 text-slate-500" />
+                )}
+                <span>Replace</span>
+              </button>
             </div>
           </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2 pt-1">
-            <button
-              onClick={handleViewResume}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 text-xs font-bold shadow-2xs transition-all cursor-pointer"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>View Resume</span>
-            </button>
-
+        ) : (
+          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/60 text-center space-y-2.5">
+            <p className="text-xs font-semibold text-slate-600">No resume uploaded yet</p>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingResume}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold shadow-2xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
             >
               {isUploadingResume ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <UploadCloud className="w-3.5 h-3.5 text-slate-500" />
+                <UploadCloud className="w-3.5 h-3.5" />
               )}
-              <span>Replace</span>
+              <span>Upload Resume</span>
             </button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Tip Banner + Link to full Resume Hub */}

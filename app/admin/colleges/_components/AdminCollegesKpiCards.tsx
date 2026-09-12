@@ -14,8 +14,8 @@ export function AdminCollegesKpiCards({ kpis, isLoading = false }: AdminColleges
     {
       id: 'total-colleges',
       title: 'Total Colleges',
-      value: kpis?.totalColleges?.value !== undefined ? kpis.totalColleges.value.toLocaleString() : '186',
-      growth: kpis?.totalColleges?.growth || '12%',
+      value: kpis?.totalColleges?.value !== undefined ? kpis.totalColleges.value.toLocaleString() : '0',
+      growth: kpis?.totalColleges?.growth || '0%',
       trend: kpis?.totalColleges?.trend || 'up',
       period: kpis?.totalColleges?.period || 'from last month',
       icon: Landmark,
@@ -24,8 +24,8 @@ export function AdminCollegesKpiCards({ kpis, isLoading = false }: AdminColleges
     {
       id: 'verified-colleges',
       title: 'Verified Colleges',
-      value: kpis?.verifiedColleges?.value !== undefined ? kpis.verifiedColleges.value.toLocaleString() : '142',
-      growth: kpis?.verifiedColleges?.growth || '18%',
+      value: kpis?.verifiedColleges?.value !== undefined ? kpis.verifiedColleges.value.toLocaleString() : '0',
+      growth: kpis?.verifiedColleges?.growth || '0%',
       trend: kpis?.verifiedColleges?.trend || 'up',
       period: kpis?.verifiedColleges?.period || 'from last month',
       icon: CheckCircle2,
@@ -34,8 +34,8 @@ export function AdminCollegesKpiCards({ kpis, isLoading = false }: AdminColleges
     {
       id: 'pending-verification',
       title: 'Pending Verification',
-      value: kpis?.pendingVerification?.value !== undefined ? kpis.pendingVerification.value.toLocaleString() : '32',
-      growth: kpis?.pendingVerification?.growth || '8%',
+      value: kpis?.pendingVerification?.value !== undefined ? kpis.pendingVerification.value.toLocaleString() : '0',
+      growth: kpis?.pendingVerification?.growth || '0%',
       trend: kpis?.pendingVerification?.trend || 'down',
       period: kpis?.pendingVerification?.period || 'from last month',
       icon: Clock,
@@ -44,8 +44,8 @@ export function AdminCollegesKpiCards({ kpis, isLoading = false }: AdminColleges
     {
       id: 'rejected-colleges',
       title: 'Rejected Colleges',
-      value: kpis?.rejectedColleges?.value !== undefined ? kpis.rejectedColleges.value.toLocaleString() : '12',
-      growth: kpis?.rejectedColleges?.growth || '4%',
+      value: kpis?.rejectedColleges?.value !== undefined ? kpis.rejectedColleges.value.toLocaleString() : '0',
+      growth: kpis?.rejectedColleges?.growth || '0%',
       trend: kpis?.rejectedColleges?.trend || 'down',
       period: kpis?.rejectedColleges?.period || 'from last month',
       icon: XCircle,

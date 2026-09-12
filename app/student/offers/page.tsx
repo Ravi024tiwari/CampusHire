@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import apiClient from '@/lib/axios';
 import type { ApiResponse } from '@/lib/api-response';
 import {
@@ -27,21 +28,28 @@ import {
   Zap,
   TrendingUp,
   Download,
-  Share2
+  Share2,
 } from 'lucide-react';
 import { OfferCard } from './_components/OfferCard';
 import { DigitalAcceptanceModal } from './_components/DigitalAcceptanceModal';
 import { DeclineOfferModal } from './_components/DeclineOfferModal';
 import { StudentOfferKpiStats } from './_components/StudentOfferKpiStats';
 
-export default function StudentOffersPage() {
+function StudentOffersPageContent() {
+  const searchParams = useSearchParams();
+  const queryOfferId = searchParams.get('offerId');
+  const queryAction = searchParams.get('action'); // 'accept' | 'decline' | 'review'
+
   const [offers, setOffers] = useState<any[]>([]);
   const [student, setStudent] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOfferForAccept, setSelectedOfferForAccept] = useState<any | null>(null);
   const [selectedOfferForDecline, setSelectedOfferForDecline] = useState<any | null>(null);
+  const [highlightedOfferId, setHighlightedOfferId] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [activeTab, setActiveTab] = useState<'ALL' | 'PENDING' | 'ACCEPTED' | 'DECLINED'>('ALL');
+
+  const hasHandledQueryRef = useRef(false);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ message, type });
@@ -68,6 +76,59 @@ export default function StudentOffersPage() {
   useEffect(() => {
     fetchOffers();
   }, []);
+
+  // Deep-link handling when coming from an email action click
+  useEffect(() => {
+    if (offers.length > 0 && queryOfferId && !hasHandledQueryRef.current) {
+      hasHandledQueryRef.current = true;
+      const targetOffer = offers.find(
+        (o) =>
+          o.id === queryOfferId ||
+          o.applicationId === queryOfferId ||
+          o.application?.id === queryOfferId
+      );
+
+      if (targetOffer) {
+        setHighlightedOfferId(targetOffer.id);
+
+        if (queryAction === 'accept') {
+          if (targetOffer.status === 'PENDING') {
+            setActiveTab('PENDING');
+            setSelectedOfferForAccept(targetOffer);
+          } else if (targetOffer.status === 'ACCEPTED') {
+            setActiveTab('ACCEPTED');
+            showToast(`You have already accepted the offer from ${targetOffer.company?.name || 'the company'}.`, 'success');
+          } else if (targetOffer.status === 'DECLINED') {
+            setActiveTab('DECLINED');
+            showToast(`This offer from ${targetOffer.company?.name || 'the company'} was previously declined.`, 'error');
+          }
+        } else if (queryAction === 'decline') {
+          if (targetOffer.status === 'PENDING') {
+            setActiveTab('PENDING');
+            setSelectedOfferForDecline(targetOffer);
+          } else if (targetOffer.status === 'DECLINED') {
+            setActiveTab('DECLINED');
+            showToast(`You have already declined this offer.`, 'error');
+          } else if (targetOffer.status === 'ACCEPTED') {
+            setActiveTab('ACCEPTED');
+            showToast(`Cannot decline: this offer is already accepted and locked.`, 'error');
+          }
+        } else if (queryAction === 'review') {
+          if (targetOffer.status === 'ACCEPTED') setActiveTab('ACCEPTED');
+          else if (targetOffer.status === 'DECLINED') setActiveTab('DECLINED');
+          else setActiveTab('PENDING');
+        }
+
+        // Smooth scroll into focus
+        setTimeout(() => {
+          const el = document.getElementById(`offer-card-${targetOffer.id}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+      }
+    }
+  }, [offers, queryOfferId, queryAction]);
 
   const pendingOffers = offers.filter((o) => o.status === 'PENDING');
   const acceptedOffer = offers.find((o) => o.status === 'ACCEPTED');
@@ -244,6 +305,7 @@ export default function StudentOffersPage() {
             <OfferCard
               key={offer.id}
               offer={offer}
+              isHighlighted={highlightedOfferId === offer.id}
               onAccept={(off) => setSelectedOfferForAccept(off)}
               onDecline={(off) => setSelectedOfferForDecline(off)}
             />
@@ -283,5 +345,22 @@ export default function StudentOffersPage() {
       )}
 
     </div>
+  );
+}
+
+export default function StudentOffersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50/50 p-6 max-w-[1500px] mx-auto flex items-center justify-center">
+          <div className="flex items-center gap-3 text-slate-500 font-bold text-sm">
+            <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+            <span>Loading Placement Offers...</span>
+          </div>
+        </div>
+      }
+    >
+      <StudentOffersPageContent />
+    </Suspense>
   );
 }

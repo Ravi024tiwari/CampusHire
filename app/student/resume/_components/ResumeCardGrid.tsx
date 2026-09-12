@@ -36,16 +36,31 @@ export function ResumeCardGrid() {
   }
 
   if (resumes.length === 0) {
+    const scrollToUpload = () => {
+      const uploadElement = document.getElementById('resume-upload-section');
+      if (uploadElement) {
+        uploadElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
     return (
-      <div className="rounded-3xl bg-white border border-slate-200/90 p-8 text-center space-y-3 shadow-xs">
-        <div className="h-12 w-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-          <FileText className="w-6 h-6" />
+      <div className="rounded-3xl bg-white border border-slate-200/90 p-8 sm:p-12 text-center space-y-4 shadow-xs">
+        <div className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto shadow-inner">
+          <FileText className="w-7 h-7" />
         </div>
-        <div>
-          <h3 className="text-sm font-bold text-slate-800">No Resumes Uploaded Yet</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-            Use the upload section above to upload your first PDF resume version for campus placement drives.
+        <div className="space-y-1">
+          <h3 className="text-base font-bold text-slate-900 font-heading">No Resumes Uploaded Yet</h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+            You don&apos;t have any resume versions saved. Upload your specialized PDF resume above to start applying for campus placement drives with 1-click apply.
           </p>
+        </div>
+        <div className="pt-2">
+          <button
+            onClick={scrollToUpload}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer active:scale-95"
+          >
+            <span>Upload Your First Resume</span>
+          </button>
         </div>
       </div>
     );
