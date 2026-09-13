@@ -110,7 +110,7 @@ export function HeroCarousel() {
                 alt={`${slide.title} ${slide.highlightText}`}
                 fill
                 priority={index === 0}
-                loading={index === 0 ? 'eager' : 'lazy'}
+                loading="eager"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
                 quality={84}
                 className="object-cover object-center w-full h-full brightness-[0.96] contrast-[1.02]"

@@ -2,8 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output:"standalone",
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
+  },
   images: {
-    qualities: [75, 92],
+    qualities: [75, 84, 90, 92],
     remotePatterns: [
       {
         protocol: 'https',

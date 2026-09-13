@@ -89,14 +89,14 @@ export const useAuthStore = create<AuthStore>()(
             });
             return;
           }
-          set({ user: null, isAuthenticated: false, isLoading: false });
+          set({ user: null, isAuthenticated: false, isLoading: false, error: null });
         } catch (err: any) {
-          // If 401 unauthenticated, smoothly reset without loud errors
+          // Reset cleanly on any network or session check error
           set({
             user: null,
             isAuthenticated: false,
             isLoading: false,
-            error: err.status === 401 ? null : (err.message || 'Session verification failed'),
+            error: null,
           });
         }
       },

@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (!session) {
-      return errorResponse('Not authenticated', 401);
+      return successResponse({ user: null }, 'No active session');
     }
 
     // Fetch latest user data from database
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
 
     if (!user || !user.isActive) {
       await clearSessionCookie();
-      return errorResponse('User account not found or deactivated', 401);
+      return successResponse({ user: null }, 'User account not found or deactivated');
     }
 
     // Exclude passwordHash

@@ -36,28 +36,35 @@ export function Navbar() {
       return;
     }
 
+    let ticking = false;
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 120;
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sy = window.scrollY;
+          const newIsScrolled = sy > 20;
+          setIsScrolled((prev) => (prev !== newIsScrolled ? newIsScrolled : prev));
 
-      const sectionElements = NAV_ITEMS.map(item => ({
-        id: item.id,
-        element: document.getElementById(item.id)
-      })).filter(item => item.element !== null);
-
-      for (let i = sectionElements.length - 1; i >= 0; i--) {
-        const item = sectionElements[i];
-        if (item.element) {
-          const top = item.element.offsetTop;
-          if (scrollPosition >= top) {
-            setActiveSection(item.id);
+          if (sy < 300) {
+            setActiveSection((prev) => (prev !== '' ? '' : prev));
+            ticking = false;
             return;
           }
-        }
-      }
 
-      if (window.scrollY < 300) {
-        setActiveSection('');
+          const scrollPosition = sy + 140;
+          for (let i = NAV_ITEMS.length - 1; i >= 0; i--) {
+            const item = NAV_ITEMS[i];
+            const element = document.getElementById(item.id);
+            if (element) {
+              const top = element.offsetTop;
+              if (scrollPosition >= top) {
+                setActiveSection((prev) => (prev !== item.id ? item.id : prev));
+                break;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
