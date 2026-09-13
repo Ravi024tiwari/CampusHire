@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
-import { useStudentJobsStore } from '@/store/useStudentJobsStore';
+import { StudentJobItem, useStudentJobsStore } from '@/store/useStudentJobsStore';
+import { useStudentJobDetailsQuery } from '@/hooks/queries/useStudentQueries';
 import { JobDetailHeroHeader } from './_components/JobDetailHeroHeader';
 import { JobDetailNavigationTabs, JobDetailTabKey } from './_components/JobDetailNavigationTabs';
 import { JobDetailOverviewSection } from './_components/JobDetailOverviewSection';
@@ -24,11 +25,13 @@ export default function StudentJobDetailPage({
 
   const {
     currentJobDetail,
-    isDetailLoading,
+    isDetailLoading: isStoreDetailLoading,
     fetchJobById,
     fetchStudentResumes,
     openJobDetail,
   } = useStudentJobsStore();
+
+  const { data: jobQueryData, isLoading: isQueryLoading } = useStudentJobDetailsQuery(jobId);
 
   const [activeTab, setActiveTab] = useState<JobDetailTabKey>('overview');
 
@@ -38,6 +41,36 @@ export default function StudentJobDetailPage({
       fetchStudentResumes();
     }
   }, [jobId, fetchJobById, fetchStudentResumes]);
+
+  // Sync TanStack Query job details cache directly into store for instant rendering
+  useEffect(() => {
+    if (jobQueryData?.job) {
+      const { job: j, eligibility, hasApplied, application } = jobQueryData;
+      const created = new Date(j.createdAt);
+      const daysAgo = Math.floor((Date.now() - created.getTime()) / (1000 * 60 * 60 * 24));
+      const postedAgo = daysAgo <= 0 ? 'Posted today' : daysAgo === 1 ? 'Posted 1 day ago' : `Posted ${daysAgo} days ago`;
+
+      const jobItem: StudentJobItem = {
+        ...j,
+        postedAgo,
+        company: {
+          id: j.company?.id || '',
+          name: j.company?.name || 'Company',
+          logoUrl: j.company?.logoUrl || null,
+          website: j.company?.website || null,
+          industry: j.company?.industry || null,
+          isVerified: j.company?.isVerified ?? true,
+        },
+        eligibility,
+        hasApplied,
+        application,
+      };
+
+      useStudentJobsStore.setState({ currentJobDetail: jobItem, isDetailLoading: false });
+    }
+  }, [jobQueryData]);
+
+  const isDetailLoading = isStoreDetailLoading || (isQueryLoading && !currentJobDetail);
 
   // ScrollSpy: Automatically highlight active tab based on scroll position
   useEffect(() => {

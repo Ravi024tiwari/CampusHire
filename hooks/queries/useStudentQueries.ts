@@ -77,6 +77,24 @@ export function useStudentJobsQuery(params?: {
 }
 
 // ==========================================
+// 3.5 Student Job Detail Query Hook
+// ==========================================
+export function useStudentJobDetailsQuery(jobId: string) {
+  return useQuery({
+    queryKey: studentKeys.jobDetails(jobId),
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<any>>(`/api/student/jobs/${jobId}`);
+      if (!response.data.success || !response.data.data) {
+        throw new Error(response.data.message || 'Failed to fetch job details');
+      }
+      return response.data.data;
+    },
+    enabled: Boolean(jobId),
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+// ==========================================
 // 4. Student Applications Query Hook
 // ==========================================
 export function useStudentApplicationsQuery(params?: {

@@ -65,12 +65,12 @@ export function PersonalInfoCard() {
     {
       icon: Percent,
       label: '10th Marks',
-      value: profile.tenthMarks ? `${profile.tenthMarks}%` : '92.4%',
+      value: profile.tenthMarks ? `${profile.tenthMarks}%` : 'Not Specified',
     },
     {
       icon: Percent,
       label: '12th Marks',
-      value: profile.twelfthMarks ? `${profile.twelfthMarks}%` : '88.6%',
+      value: profile.twelfthMarks ? `${profile.twelfthMarks}%` : 'Not Specified',
     },
   ];
 

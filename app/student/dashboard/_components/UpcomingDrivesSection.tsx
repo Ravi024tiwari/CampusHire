@@ -76,9 +76,11 @@ export function UpcomingDrivesSection() {
       {/* Drives Items List */}
       <div className="space-y-3">
         {drives.map((drive) => (
-          <div
+          <Link
             key={drive.id}
-            className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-slate-100 hover:border-blue-200/80 hover:bg-slate-50/60 transition-all duration-200 group cursor-pointer"
+            href={`/student/jobs/${drive.id}`}
+            prefetch={true}
+            className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-slate-100 hover:border-blue-200/80 hover:bg-slate-50/60 transition-all duration-200 group cursor-pointer block"
           >
             {/* Left: Logo + Title + Tags */}
             <div className="flex items-center gap-3 min-w-0">
@@ -129,7 +131,7 @@ export function UpcomingDrivesSection() {
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-white" />
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

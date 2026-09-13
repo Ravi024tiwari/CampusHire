@@ -75,9 +75,11 @@ export function RecommendedJobsSection() {
       {/* Recommended Jobs List */}
       <div className="space-y-3">
         {recommended.map((job) => (
-          <div
+          <Link
             key={job.id}
-            className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-slate-100 hover:border-blue-200/80 hover:bg-slate-50/60 transition-all duration-200 group cursor-pointer"
+            href={`/student/jobs/${job.id}`}
+            prefetch={true}
+            className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border border-slate-100 hover:border-blue-200/80 hover:bg-slate-50/60 transition-all duration-200 group cursor-pointer block"
           >
             {/* Left: Brand + Details */}
             <div className="flex items-center gap-3 min-w-0">
@@ -122,7 +124,7 @@ export function RecommendedJobsSection() {
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-white" />
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

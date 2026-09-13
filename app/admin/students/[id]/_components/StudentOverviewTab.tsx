@@ -155,14 +155,14 @@ export function StudentOverviewTab({
             <div className="flex items-center justify-between gap-2">
               <span className="text-slate-400">10th Percentage</span>
               <span className="font-bold text-slate-800 text-right">
-                {student.tenthPercentage ? `${student.tenthPercentage}%` : '96%'}
+                {student.tenthPercentage ? `${student.tenthPercentage}%` : '—'}
               </span>
             </div>
 
             <div className="flex items-center justify-between gap-2">
               <span className="text-slate-400">12th Percentage</span>
               <span className="font-bold text-slate-800 text-right">
-                {student.twelfthPercentage ? `${student.twelfthPercentage}%` : '93%'}
+                {student.twelfthPercentage ? `${student.twelfthPercentage}%` : '—'}
               </span>
             </div>
           </div>

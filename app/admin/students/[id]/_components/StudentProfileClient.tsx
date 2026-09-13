@@ -196,11 +196,11 @@ export function StudentProfileClient({ studentId }: StudentProfileClientProps) {
               </div>
               <div className="space-y-1">
                 <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Secondary (10th)</span>
-                <p className="text-sm font-bold text-slate-800">{student.tenthPercentage || 96}%</p>
+                <p className="text-sm font-bold text-slate-800">{student.tenthPercentage ? `${student.tenthPercentage}%` : '—'}</p>
               </div>
               <div className="space-y-1">
                 <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Higher Secondary (12th)</span>
-                <p className="text-sm font-bold text-slate-800">{student.twelfthPercentage || 93}%</p>
+                <p className="text-sm font-bold text-slate-800">{student.twelfthPercentage ? `${student.twelfthPercentage}%` : '—'}</p>
               </div>
             </div>
           </div>

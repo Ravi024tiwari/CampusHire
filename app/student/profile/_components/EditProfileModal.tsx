@@ -32,15 +32,25 @@ export function EditProfileModal() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    phone: string;
+    bio: string;
+    branch: string;
+    batchYear: number;
+    cgpa: number;
+    tenthMarks: string | number;
+    twelfthMarks: string | number;
+    avatarUrl: string;
+  }>({
     name: '',
     phone: '',
     bio: '',
     branch: '',
     batchYear: 2026,
     cgpa: 8.75,
-    tenthMarks: 90,
-    twelfthMarks: 85,
+    tenthMarks: '',
+    twelfthMarks: '',
     avatarUrl: '',
   });
 
@@ -57,8 +67,8 @@ export function EditProfileModal() {
         branch: profile.branch || '',
         batchYear: profile.batchYear || 2026,
         cgpa: profile.cgpa || 8.75,
-        tenthMarks: profile.tenthMarks || 90,
-        twelfthMarks: profile.twelfthMarks || 85,
+        tenthMarks: profile.tenthMarks !== null && profile.tenthMarks !== undefined ? profile.tenthMarks : '',
+        twelfthMarks: profile.twelfthMarks !== null && profile.twelfthMarks !== undefined ? profile.twelfthMarks : '',
         avatarUrl: profile.user.avatarUrl || '',
       });
       setAvatarPreview(profile.user.avatarUrl || null);
@@ -96,8 +106,8 @@ export function EditProfileModal() {
       branch: formData.branch.trim(),
       batchYear: Number(formData.batchYear),
       cgpa: Number(formData.cgpa),
-      tenthMarks: formData.tenthMarks ? Number(formData.tenthMarks) : null,
-      twelfthMarks: formData.twelfthMarks ? Number(formData.twelfthMarks) : null,
+      tenthMarks: formData.tenthMarks !== '' && !isNaN(Number(formData.tenthMarks)) ? Number(formData.tenthMarks) : null,
+      twelfthMarks: formData.twelfthMarks !== '' && !isNaN(Number(formData.twelfthMarks)) ? Number(formData.twelfthMarks) : null,
       avatarUrl: formData.avatarUrl || null,
     });
 
@@ -321,9 +331,9 @@ export function EditProfileModal() {
                 min="0"
                 max="100"
                 value={formData.tenthMarks}
-                onChange={(e) => setFormData({ ...formData, tenthMarks: Number(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, tenthMarks: e.target.value === '' ? '' : e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="92.4"
+                placeholder="e.g. 85.5"
               />
             </div>
 
@@ -339,9 +349,9 @@ export function EditProfileModal() {
                 min="0"
                 max="100"
                 value={formData.twelfthMarks}
-                onChange={(e) => setFormData({ ...formData, twelfthMarks: Number(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, twelfthMarks: e.target.value === '' ? '' : e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="88.6"
+                placeholder="e.g. 88.0"
               />
             </div>
 
