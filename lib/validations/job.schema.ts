@@ -11,6 +11,9 @@ export const createJobSchema = z.object({
   location: z.string().trim().min(2, 'Location is required (e.g. Remote, Bangalore)'),
   salaryPackage: z.string().trim().min(2, 'Salary package or stipend is required (e.g. 14 LPA)'),
   skills: z.array(z.string().trim().min(1)).default([]),
+  responsibilities: z
+    .array(z.string().trim().min(3, 'Each responsibility must be at least 3 characters'))
+    .min(1, 'Please provide at least 1 key responsibility for this role'),
   
   // Eligibility criteria
   minCgpa: z.coerce.number().min(0.0, 'CGPA cannot be negative').max(10.0, 'CGPA cannot exceed 10.0').default(0.0),

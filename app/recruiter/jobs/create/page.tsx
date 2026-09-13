@@ -44,6 +44,15 @@ const SUGGESTED_SKILLS = [
   'Machine Learning', 'Data Structures', 'Git', 'System Design'
 ];
 
+const SUGGESTED_RESPONSIBILITIES = [
+  'Architect, develop, and maintain high-throughput microservices and responsive web applications.',
+  'Collaborate with cross-functional teams including product managers and designers to deliver robust features.',
+  'Write clean, modular, scalable, and well-tested code following best engineering practices.',
+  'Participate in active code reviews, system design sessions, and sprint architectural discussions.',
+  'Diagnose latency bottlenecks, optimize database queries, and ensure 99.9% platform availability.',
+  'Build and maintain CI/CD pipelines, automated testing suites, and containerized cloud services.',
+];
+
 function CreateJobForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -66,6 +75,12 @@ function CreateJobForm() {
   const [salaryPackage, setSalaryPackage] = useState('');
   const [minCgpa, setMinCgpa] = useState<number>(0);
   const [skills, setSkills] = useState<string[]>(['React', 'TypeScript', 'Node.js']);
+  const [responsibilities, setResponsibilities] = useState<string[]>([
+    'Architect, develop, and maintain high-throughput microservices and responsive web applications.',
+    'Collaborate with cross-functional teams including product managers and designers to deliver robust features.',
+    'Write clean, modular, scalable, and well-tested code following best engineering practices.',
+  ]);
+  const [responsibilityInput, setResponsibilityInput] = useState('');
   const [allowedBranches, setAllowedBranches] = useState<string[]>([
     'Computer Science & Engineering (CSE)',
     'Information Technology (IT)',
@@ -126,6 +141,26 @@ function CreateJobForm() {
     }
   };
 
+  const handleAddResponsibility = (itemToAdd: string) => {
+    const trimmed = itemToAdd.trim();
+    if (!trimmed) return;
+    if (!responsibilities.includes(trimmed)) {
+      setResponsibilities([...responsibilities, trimmed]);
+    }
+    setResponsibilityInput('');
+  };
+
+  const handleRemoveResponsibility = (index: number) => {
+    setResponsibilities(responsibilities.filter((_, i) => i !== index));
+  };
+
+  const handleResponsibilityKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddResponsibility(responsibilityInput);
+    }
+  };
+
   const toggleBranch = (branch: string) => {
     if (allowedBranches.includes(branch)) {
       setAllowedBranches(allowedBranches.filter((b) => b !== branch));
@@ -167,6 +202,10 @@ function CreateJobForm() {
       setErrorMessage('Job description must be at least 20 characters');
       return;
     }
+    if (!responsibilities || responsibilities.length === 0) {
+      setErrorMessage('Please add at least 1 key responsibility for this position');
+      return;
+    }
     if (!deadline) {
       setErrorMessage('Application deadline is required');
       return;
@@ -185,6 +224,7 @@ function CreateJobForm() {
       location: location.trim(),
       salaryPackage: salaryPackage.trim(),
       skills,
+      responsibilities,
       minCgpa: Number(minCgpa),
       allowedBranches,
       eligibleBatches,
@@ -454,6 +494,99 @@ function CreateJobForm() {
                     + {suggestion}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Key Responsibilities Builder (Required) */}
+            <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-blue-50/40 via-slate-50/60 to-slate-50 border border-blue-100 shadow-2xs">
+              <div className="flex items-center justify-between gap-2">
+                <label className="text-xs font-bold text-[#0A2540] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>Key Responsibilities & Deliverables <span className="text-red-500">*</span></span>
+                </label>
+                <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                  responsibilities.length > 0 
+                    ? 'bg-blue-50 text-blue-700 border-blue-200' 
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {responsibilities.length} Defined {responsibilities.length === 0 && '(Required)'}
+                </span>
+              </div>
+
+              {/* Add Input Bar */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. Lead full-stack microservice architecture, optimize REST APIs..."
+                  value={responsibilityInput}
+                  onChange={(e) => setResponsibilityInput(e.target.value)}
+                  onKeyDown={handleResponsibilityKeyDown}
+                  className="flex-1 rounded-xl border border-slate-200 bg-white p-2.5 sm:p-3 text-xs sm:text-sm font-medium text-[#0A2540] focus:border-blue-600 focus:outline-none shadow-2xs"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleAddResponsibility(responsibilityInput)}
+                  disabled={!responsibilityInput.trim()}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 sm:py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-all cursor-pointer shrink-0"
+                >
+                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span className="hidden sm:inline">Add Point</span>
+                </button>
+              </div>
+
+              {/* Bullet Points List */}
+              {responsibilities.length > 0 ? (
+                <div className="space-y-2 pt-1">
+                  {responsibilities.map((resp, idx) => (
+                    <div
+                      key={`resp-item-${idx}`}
+                      className="group flex items-start gap-2.5 p-2.5 sm:p-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-blue-300 transition-all"
+                    >
+                      <div className="h-5 w-5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 font-mono">
+                        {idx + 1}
+                      </div>
+                      <p className="flex-1 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                        {resp}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveResponsibility(idx)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+                        title="Remove responsibility"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-3 text-center rounded-xl bg-white border border-dashed border-amber-300 text-amber-800 text-xs font-medium">
+                  No responsibilities added yet. Please specify at least 1 key responsibility for candidates to see.
+                </div>
+              )}
+
+              {/* Suggested Responsibilities */}
+              <div className="space-y-1.5 pt-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Quick Add Recommended Responsibilities:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {SUGGESTED_RESPONSIBILITIES.map((sug, i) => (
+                    <button
+                      key={`sug-resp-${i}`}
+                      type="button"
+                      onClick={() => handleAddResponsibility(sug)}
+                      disabled={responsibilities.includes(sug)}
+                      className={`text-left text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                        responsibilities.includes(sug)
+                          ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed hidden'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50/50'
+                      }`}
+                    >
+                      + {sug.slice(0, 55)}...
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

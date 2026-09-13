@@ -10688,6 +10688,7 @@ export namespace Prisma {
     location: number
     salaryPackage: number
     skills: number
+    responsibilities: number
     minCgpa: number
     allowedBranches: number
     eligibleBatches: number
@@ -10751,6 +10752,7 @@ export namespace Prisma {
     location?: true
     salaryPackage?: true
     skills?: true
+    responsibilities?: true
     minCgpa?: true
     allowedBranches?: true
     eligibleBatches?: true
@@ -10857,6 +10859,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills: string[]
+    responsibilities: string[]
     minCgpa: number
     allowedBranches: string[]
     eligibleBatches: number[]
@@ -10895,6 +10898,7 @@ export namespace Prisma {
     location?: boolean
     salaryPackage?: boolean
     skills?: boolean
+    responsibilities?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10920,6 +10924,7 @@ export namespace Prisma {
     location?: boolean
     salaryPackage?: boolean
     skills?: boolean
+    responsibilities?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10941,6 +10946,7 @@ export namespace Prisma {
     location?: boolean
     salaryPackage?: boolean
     skills?: boolean
+    responsibilities?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10962,6 +10968,7 @@ export namespace Prisma {
     location?: boolean
     salaryPackage?: boolean
     skills?: boolean
+    responsibilities?: boolean
     minCgpa?: boolean
     allowedBranches?: boolean
     eligibleBatches?: boolean
@@ -10970,7 +10977,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "collegeId" | "title" | "description" | "type" | "status" | "location" | "salaryPackage" | "skills" | "minCgpa" | "allowedBranches" | "eligibleBatches" | "deadline" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "collegeId" | "title" | "description" | "type" | "status" | "location" | "salaryPackage" | "skills" | "responsibilities" | "minCgpa" | "allowedBranches" | "eligibleBatches" | "deadline" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     college?: boolean | CollegeDefaultArgs<ExtArgs>
@@ -11008,6 +11015,7 @@ export namespace Prisma {
       location: string
       salaryPackage: string
       skills: string[]
+      responsibilities: string[]
       minCgpa: number
       allowedBranches: string[]
       eligibleBatches: number[]
@@ -11452,6 +11460,7 @@ export namespace Prisma {
     readonly location: FieldRef<"Job", 'String'>
     readonly salaryPackage: FieldRef<"Job", 'String'>
     readonly skills: FieldRef<"Job", 'String[]'>
+    readonly responsibilities: FieldRef<"Job", 'String[]'>
     readonly minCgpa: FieldRef<"Job", 'Float'>
     readonly allowedBranches: FieldRef<"Job", 'String[]'>
     readonly eligibleBatches: FieldRef<"Job", 'Int[]'>
@@ -15722,6 +15731,7 @@ export namespace Prisma {
     location: 'location',
     salaryPackage: 'salaryPackage',
     skills: 'skills',
+    responsibilities: 'responsibilities',
     minCgpa: 'minCgpa',
     allowedBranches: 'allowedBranches',
     eligibleBatches: 'eligibleBatches',
@@ -16659,6 +16669,7 @@ export namespace Prisma {
     location?: StringFilter<"Job"> | string
     salaryPackage?: StringFilter<"Job"> | string
     skills?: StringNullableListFilter<"Job">
+    responsibilities?: StringNullableListFilter<"Job">
     minCgpa?: FloatFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -16683,6 +16694,7 @@ export namespace Prisma {
     location?: SortOrder
     salaryPackage?: SortOrder
     skills?: SortOrder
+    responsibilities?: SortOrder
     minCgpa?: SortOrder
     allowedBranches?: SortOrder
     eligibleBatches?: SortOrder
@@ -16710,6 +16722,7 @@ export namespace Prisma {
     location?: StringFilter<"Job"> | string
     salaryPackage?: StringFilter<"Job"> | string
     skills?: StringNullableListFilter<"Job">
+    responsibilities?: StringNullableListFilter<"Job">
     minCgpa?: FloatFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -16734,6 +16747,7 @@ export namespace Prisma {
     location?: SortOrder
     salaryPackage?: SortOrder
     skills?: SortOrder
+    responsibilities?: SortOrder
     minCgpa?: SortOrder
     allowedBranches?: SortOrder
     eligibleBatches?: SortOrder
@@ -16761,6 +16775,7 @@ export namespace Prisma {
     location?: StringWithAggregatesFilter<"Job"> | string
     salaryPackage?: StringWithAggregatesFilter<"Job"> | string
     skills?: StringNullableListFilter<"Job">
+    responsibilities?: StringNullableListFilter<"Job">
     minCgpa?: FloatWithAggregatesFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -17856,6 +17871,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -17880,6 +17896,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -17900,6 +17917,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -17924,6 +17942,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -17946,6 +17965,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -17963,6 +17983,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -17982,6 +18003,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -19083,6 +19105,7 @@ export namespace Prisma {
     location?: SortOrder
     salaryPackage?: SortOrder
     skills?: SortOrder
+    responsibilities?: SortOrder
     minCgpa?: SortOrder
     allowedBranches?: SortOrder
     eligibleBatches?: SortOrder
@@ -20203,6 +20226,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type JobCreateresponsibilitiesInput = {
+    set: string[]
+  }
+
   export type JobCreateallowedBranchesInput = {
     set: string[]
   }
@@ -20274,6 +20301,11 @@ export namespace Prisma {
   }
 
   export type JobUpdateskillsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type JobUpdateresponsibilitiesInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -21295,6 +21327,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -21317,6 +21350,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -21491,6 +21525,7 @@ export namespace Prisma {
     location?: StringFilter<"Job"> | string
     salaryPackage?: StringFilter<"Job"> | string
     skills?: StringNullableListFilter<"Job">
+    responsibilities?: StringNullableListFilter<"Job">
     minCgpa?: FloatFilter<"Job"> | number
     allowedBranches?: StringNullableListFilter<"Job">
     eligibleBatches?: IntNullableListFilter<"Job">
@@ -22358,6 +22393,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -22380,6 +22416,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -23024,6 +23061,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -23047,6 +23085,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -23213,6 +23252,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -23236,6 +23276,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -23488,6 +23529,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -23511,6 +23553,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -23726,6 +23769,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -23749,6 +23793,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -23919,6 +23964,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -23942,6 +23988,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -24038,6 +24085,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24061,6 +24109,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24114,6 +24163,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -24258,6 +24308,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24280,6 +24331,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24301,6 +24353,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24669,6 +24722,7 @@ export namespace Prisma {
     location: string
     salaryPackage: string
     skills?: JobCreateskillsInput | string[]
+    responsibilities?: JobCreateresponsibilitiesInput | string[]
     minCgpa?: number
     allowedBranches?: JobCreateallowedBranchesInput | string[]
     eligibleBatches?: JobCreateeligibleBatchesInput | number[]
@@ -24730,6 +24784,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24752,6 +24807,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]
@@ -24773,6 +24829,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     salaryPackage?: StringFieldUpdateOperationsInput | string
     skills?: JobUpdateskillsInput | string[]
+    responsibilities?: JobUpdateresponsibilitiesInput | string[]
     minCgpa?: FloatFieldUpdateOperationsInput | number
     allowedBranches?: JobUpdateallowedBranchesInput | string[]
     eligibleBatches?: JobUpdateeligibleBatchesInput | number[]

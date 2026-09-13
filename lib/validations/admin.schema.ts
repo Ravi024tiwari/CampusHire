@@ -124,6 +124,7 @@ export const createAdminJobSchema = z.object({
     .default([]),
   eligibleBatches: z.array(z.coerce.number()).default([]),
   skills: z.array(z.string()).default([]),
+  responsibilities: z.array(z.string().trim()).default([]),
   deadline: z.string().min(1, 'Deadline date is required'),
 });
 

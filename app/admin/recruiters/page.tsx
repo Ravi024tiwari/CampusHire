@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAdminStore } from '@/store/useAdminStore';
+import { useAdminRecruitersQuery } from '@/hooks/queries/useAdminQueries';
 import { 
   UserCheck, 
   Plus, 
@@ -26,39 +27,60 @@ function RecruitersHubContent() {
   const initialCompanyName = searchParams.get('companyName') || '';
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedCompanyId, setSelectedCompanyId] = useState(initialCompanyId);
   const [selectedDesignation, setSelectedDesignation] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Global Zustand Admin Store
-  const {
-    recruiters,
-    recruiterCompanies,
-    recruiterMeta,
-    recruiterStats,
-    isRecruitersLoading,
-    fetchRecruiters,
-  } = useAdminStore();
-
-  // Fetch or filter through Zustand Store / API
-  const handleFetch = useCallback(() => {
-    fetchRecruiters({
-      search: searchQuery,
-      companyId: selectedCompanyId,
-      designation: selectedDesignation,
-      page: currentPage,
-      limit: 20,
-    });
-  }, [fetchRecruiters, searchQuery, selectedCompanyId, selectedDesignation, currentPage]);
-
-  // Reactive debounce fetch
+  // Debounce search query
   useEffect(() => {
     const handler = setTimeout(() => {
-      handleFetch();
-    }, 200);
+      setDebouncedSearch(searchQuery);
+    }, 250);
     return () => clearTimeout(handler);
-  }, [handleFetch]);
+  }, [searchQuery]);
+
+  // TanStack Query for instant SWR cache
+  const {
+    data: recruitersData,
+    isLoading: isRecruitersLoading,
+    refetch: refetchRecruiters,
+  } = useAdminRecruitersQuery({
+    search: debouncedSearch,
+    companyId: selectedCompanyId,
+    page: currentPage,
+    limit: 20,
+  });
+
+  const recruiters = recruitersData?.recruiters || [];
+  const recruiterCompanies = recruitersData?.companies || [];
+  const recruiterMeta = recruitersData?.meta || {
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  };
+  const recruiterStats = recruitersData?.stats || {
+    totalRecruiters: 0,
+    verifiedCompaniesCount: 0,
+    totalDrivesCount: 0,
+  };
+
+  // Sync with store for child components/modals
+  useEffect(() => {
+    if (recruitersData) {
+      useAdminStore.setState({
+        recruiters: recruitersData.recruiters || [],
+        recruiterCompanies: recruitersData.companies || [],
+        recruiterMeta: recruitersData.meta,
+        recruiterStats: recruitersData.stats,
+        isRecruitersLoading: false,
+      });
+    }
+  }, [recruitersData]);
 
   // Sync URL search parameter changes
   useEffect(() => {
@@ -177,13 +199,6 @@ function RecruitersHubContent() {
         meta={recruiterMeta}
         onPageChange={(page) => {
           setCurrentPage(page);
-          fetchRecruiters({
-            search: searchQuery,
-            companyId: selectedCompanyId,
-            designation: selectedDesignation,
-            page,
-            limit: 20,
-          });
         }}
         onOpenAddModal={() => setIsAddModalOpen(true)}
         isLoading={isRecruitersLoading}
@@ -196,7 +211,7 @@ function RecruitersHubContent() {
         companies={recruiterCompanies}
         preSelectedCompanyId={selectedCompanyId !== 'all' ? selectedCompanyId : undefined}
         onSuccess={() => {
-          handleFetch();
+          refetchRecruiters();
         }}
       />
 

@@ -41,6 +41,8 @@ export function RecruiterJobEditModal({
   const [salaryPackage, setSalaryPackage] = useState('');
   const [minCgpa, setMinCgpa] = useState<number>(0);
   const [skills, setSkills] = useState<string[]>([]);
+  const [responsibilities, setResponsibilities] = useState<string[]>([]);
+  const [responsibilityInput, setResponsibilityInput] = useState('');
   const [allowedBranches, setAllowedBranches] = useState<string[]>([]);
   const [eligibleBatches, setEligibleBatches] = useState<number[]>([]);
   const [deadline, setDeadline] = useState('');
@@ -59,6 +61,7 @@ export function RecruiterJobEditModal({
       setSalaryPackage(job.salaryPackage || '');
       setMinCgpa(job.minCgpa || 0);
       setSkills(Array.isArray(job.skills) ? job.skills : []);
+      setResponsibilities(Array.isArray(job.responsibilities) ? job.responsibilities : []);
       setAllowedBranches(Array.isArray(job.allowedBranches) ? job.allowedBranches : []);
       setEligibleBatches(Array.isArray(job.eligibleBatches) ? job.eligibleBatches : []);
       if (job.deadline) {
@@ -93,6 +96,26 @@ export function RecruiterJobEditModal({
     }
   };
 
+  const handleAddResponsibility = (itemToAdd: string) => {
+    const trimmed = itemToAdd.trim();
+    if (!trimmed) return;
+    if (!responsibilities.includes(trimmed)) {
+      setResponsibilities([...responsibilities, trimmed]);
+    }
+    setResponsibilityInput('');
+  };
+
+  const handleRemoveResponsibility = (index: number) => {
+    setResponsibilities(responsibilities.filter((_, i) => i !== index));
+  };
+
+  const handleResponsibilityKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddResponsibility(responsibilityInput);
+    }
+  };
+
   const toggleBranch = (branch: string) => {
     if (allowedBranches.includes(branch)) {
       setAllowedBranches(allowedBranches.filter((b) => b !== branch));
@@ -101,11 +124,11 @@ export function RecruiterJobEditModal({
     }
   };
 
-  const toggleBatch = (batchYear: number) => {
-    if (eligibleBatches.includes(batchYear)) {
-      setEligibleBatches(eligibleBatches.filter((b) => b !== batchYear));
+  const toggleBatch = (year: number) => {
+    if (eligibleBatches.includes(year)) {
+      setEligibleBatches(eligibleBatches.filter((y) => y !== year));
     } else {
-      setEligibleBatches([...eligibleBatches, batchYear].sort((a, b) => a - b));
+      setEligibleBatches([...eligibleBatches, year].sort((a, b) => a - b));
     }
   };
 
@@ -122,7 +145,15 @@ export function RecruiterJobEditModal({
       return;
     }
     if (!salaryPackage.trim()) {
-      setErrorMessage('Salary package or stipend is required');
+      setErrorMessage('Compensation package is required');
+      return;
+    }
+    if (!description.trim() || description.trim().length < 20) {
+      setErrorMessage('Job description must be at least 20 characters');
+      return;
+    }
+    if (!responsibilities || responsibilities.length === 0) {
+      setErrorMessage('Please provide at least 1 key responsibility for this position');
       return;
     }
     if (!deadline) {
@@ -143,6 +174,7 @@ export function RecruiterJobEditModal({
       location: location.trim(),
       salaryPackage: salaryPackage.trim(),
       skills,
+      responsibilities,
       minCgpa: Number(minCgpa),
       allowedBranches,
       eligibleBatches,
@@ -340,6 +372,66 @@ export function RecruiterJobEditModal({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Key Responsibilities Builder (Required) */}
+          <div className="space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-blue-600" />
+                <span>Key Responsibilities & Deliverables <span className="text-red-500">*</span></span>
+              </label>
+              <span className="text-[11px] font-mono font-bold text-blue-700">
+                {responsibilities.length} Points
+              </span>
+            </div>
+
+            {/* Add Input Bar */}
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Type responsibility and click Add or press Enter..."
+                value={responsibilityInput}
+                onChange={(e) => setResponsibilityInput(e.target.value)}
+                onKeyDown={handleResponsibilityKeyDown}
+                className="flex-1 rounded-xl border border-slate-200 bg-white p-2.5 text-xs sm:text-sm font-medium text-[#0A2540] focus:border-blue-600 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => handleAddResponsibility(responsibilityInput)}
+                disabled={!responsibilityInput.trim()}
+                className="inline-flex items-center gap-1 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-all cursor-pointer shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add</span>
+              </button>
+            </div>
+
+            {/* Bullet Points */}
+            {responsibilities.length > 0 ? (
+              <div className="space-y-1.5 pt-1">
+                {responsibilities.map((resp, idx) => (
+                  <div
+                    key={`edit-resp-${idx}`}
+                    className="flex items-start gap-2 p-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-700"
+                  >
+                    <span className="font-bold text-blue-600 shrink-0 font-mono mt-0.5">{idx + 1}.</span>
+                    <span className="flex-1 leading-normal font-medium">{resp}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveResponsibility(idx)}
+                      className="p-0.5 text-slate-400 hover:text-red-600 cursor-pointer shrink-0"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-2 text-center text-xs text-amber-700 font-medium">
+                Please add at least 1 responsibility bullet.
+              </div>
+            )}
           </div>
 
           {/* Row 4: CGPA, Deadline */}

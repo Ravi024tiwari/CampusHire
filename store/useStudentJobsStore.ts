@@ -22,6 +22,7 @@ export interface StudentJobItem {
   location: string;
   salaryPackage: string;
   skills: string[];
+  responsibilities?: string[];
   minCgpa: number;
   allowedBranches: string[];
   eligibleBatches: number[];

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useTransition } from 'react';
 import { useAdminStore } from '@/store/useAdminStore';
+import { useAdminCollegesQuery, useVerifyCollegeMutation } from '@/hooks/queries/useAdminQueries';
 import { AdminCollegesHeader } from './AdminCollegesHeader';
 import { AdminCollegesKpiCards } from './AdminCollegesKpiCards';
 import { AdminCollegesFilterBar } from './AdminCollegesFilterBar';
@@ -23,11 +24,8 @@ export function AdminCollegesClient() {
     adminCollegesFilters,
     adminCollegesPagination,
     adminCollegesFilterOptions,
-    isAdminCollegesLoading,
-    fetchAdminColleges,
     setAdminCollegesFilters,
     resetAdminCollegesFilters,
-    verifyCollege,
     setToast,
   } = useAdminStore();
 
@@ -37,10 +35,29 @@ export function AdminCollegesClient() {
   const [isExporting, setIsExporting] = useState(false);
   const [, startTransition] = useTransition();
 
-  // Initial fetch on mount
+  // TanStack Query for instant SWR caching & zero latency
+  const { 
+    data: collegesData, 
+    isLoading: isCollegesLoading,
+    refetch: refetchColleges
+  } = useAdminCollegesQuery(adminCollegesFilters);
+
+  const verifyMutation = useVerifyCollegeMutation();
+
+  // Sync query data with store for backwards compatibility with subcomponents
   useEffect(() => {
-    fetchAdminColleges();
-  }, [fetchAdminColleges]);
+    if (collegesData) {
+      useAdminStore.setState({
+        adminCollegesRoster: collegesData.colleges || [],
+        adminCollegesKpis: collegesData.kpis,
+        adminCollegesInsights: collegesData.insights,
+        adminCollegesRecentActivity: collegesData.recentActivity || [],
+        adminCollegesPagination: collegesData.pagination,
+        adminCollegesFilterOptions: collegesData.filterOptions,
+        isAdminCollegesLoading: false,
+      });
+    }
+  }, [collegesData]);
 
   // Handle Multi-Selection
   const handleToggleSelect = (id: string) => {
@@ -57,11 +74,19 @@ export function AdminCollegesClient() {
     }
   };
 
-  // Quick Verification handler
+  // Quick Verification handler via TanStack Mutation
   const handleVerifyCollege = async (id: string, isVerified: boolean) => {
-    const success = await verifyCollege(id, isVerified);
-    if (success) {
-      fetchAdminColleges();
+    try {
+      await verifyMutation.mutateAsync({ collegeId: id, isVerified });
+      setToast({
+        type: 'success',
+        message: `University accreditation ${isVerified ? 'approved' : 'revoked'} successfully!`,
+      });
+    } catch (err: any) {
+      setToast({
+        type: 'error',
+        message: err.message || 'Failed to update university verification',
+      });
     }
   };
 
@@ -143,7 +168,7 @@ export function AdminCollegesClient() {
       {/* 2. Top 4 Metric KPI Cards with smooth swipe on mobile */}
       <AdminCollegesKpiCards
         kpis={adminCollegesKpis}
-        isLoading={isAdminCollegesLoading && !adminCollegesKpis}
+        isLoading={isCollegesLoading && !adminCollegesKpis}
       />
 
       {/* 3. Omni Search & Dropdowns Filter Bar */}
@@ -167,7 +192,7 @@ export function AdminCollegesClient() {
           <div className="hidden lg:block">
             <AdminCollegesTable
               colleges={adminCollegesRoster}
-              isLoading={isAdminCollegesLoading}
+              isLoading={isCollegesLoading}
               selectedIds={selectedIds}
               onToggleSelect={handleToggleSelect}
               onToggleSelectAll={handleToggleSelectAll}
@@ -180,7 +205,7 @@ export function AdminCollegesClient() {
             colleges={adminCollegesRoster}
             kpis={adminCollegesKpis}
             filters={adminCollegesFilters}
-            isLoading={isAdminCollegesLoading}
+            isLoading={isCollegesLoading}
             onFilterChange={(newFilters) => {
               startTransition(() => {
                 setAdminCollegesFilters(newFilters);
@@ -213,13 +238,13 @@ export function AdminCollegesClient() {
           {/* College Insights Donut Card */}
           <AdminCollegesInsightsCard
             insights={adminCollegesInsights}
-            isLoading={isAdminCollegesLoading && !adminCollegesInsights}
+            isLoading={isCollegesLoading && !adminCollegesInsights}
           />
 
           {/* Recent Activity Timeline Stream */}
           <AdminCollegesRecentActivityCard
             recentActivity={adminCollegesRecentActivity}
-            isLoading={isAdminCollegesLoading && adminCollegesRecentActivity.length === 0}
+            isLoading={isCollegesLoading && adminCollegesRecentActivity.length === 0}
           />
         </div>
       </div>
@@ -239,7 +264,7 @@ export function AdminCollegesClient() {
         isOpen={isAddCollegeOpen}
         onClose={() => setIsAddCollegeOpen(false)}
         onSuccess={() => {
-          fetchAdminColleges();
+          refetchColleges();
         }}
       />
     </div>

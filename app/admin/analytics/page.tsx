@@ -2,16 +2,23 @@
 
 import React, { useEffect } from 'react';
 import { useAdminStore } from '@/store/useAdminStore';
+import { useAdminDashboardQuery } from '@/hooks/queries/useAdminQueries';
 import { PlacementVelocityMatrix } from '../dashboard/_components/PlacementVelocityMatrix';
 import { KpiMetricsRow } from '../dashboard/_components/KpiMetricsRow';
 import { TrendingUp, BarChart3, Award } from 'lucide-react';
 
 export default function AnalyticsAdminPage() {
-  const { fetchDashboardData, kpis } = useAdminStore();
+  const { data: dashboardData } = useAdminDashboardQuery();
+  const { kpis } = useAdminStore();
 
   useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+    if (dashboardData) {
+      useAdminStore.setState({
+        dashboardData,
+        kpis: dashboardData.kpis as any,
+      });
+    }
+  }, [dashboardData]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-[1700px] mx-auto space-y-5 sm:space-y-6 xl:space-y-8 transition-all duration-300 ease-in-out">

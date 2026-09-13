@@ -513,6 +513,7 @@ export async function POST(req: NextRequest) {
         allowedBranches: data.allowedBranches,
         eligibleBatches: data.eligibleBatches,
         skills: data.skills,
+        responsibilities: data.responsibilities || [],
         deadline: new Date(data.deadline),
         companyId: data.companyId,
         collegeId: data.collegeId,

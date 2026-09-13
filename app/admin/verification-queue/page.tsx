@@ -2,18 +2,26 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAdminStore } from '@/store/useAdminStore';
+import { useAdminDashboardQuery } from '@/hooks/queries/useAdminQueries';
 import { PendingApprovalsQueue } from '../dashboard/_components/PendingApprovalsQueue';
 import { PendingCompaniesQueue } from '../dashboard/_components/PendingCompaniesQueue';
 import { GraduationCap, Building2, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function VerificationQueuePage() {
-  const { fetchDashboardData, pendingColleges } = useAdminStore();
+  const { data: dashboardData } = useAdminDashboardQuery();
+  const { pendingColleges } = useAdminStore();
   const [activeTab, setActiveTab] = useState<'COLLEGES' | 'COMPANIES'>('COLLEGES');
   const [pendingCompaniesCount, setPendingCompaniesCount] = useState<number>(0);
 
   useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+    if (dashboardData) {
+      useAdminStore.setState({
+        dashboardData,
+        pendingColleges: dashboardData.pendingColleges || [],
+        verifiedColleges: dashboardData.verifiedColleges || [],
+      });
+    }
+  }, [dashboardData]);
 
   const totalPending = pendingColleges.length + pendingCompaniesCount;
 

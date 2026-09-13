@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
         location: parsedData.location,
         salaryPackage: parsedData.salaryPackage,
         skills: parsedData.skills,
+        responsibilities: parsedData.responsibilities,
         minCgpa: parsedData.minCgpa,
         allowedBranches: parsedData.allowedBranches,
         eligibleBatches: parsedData.eligibleBatches,

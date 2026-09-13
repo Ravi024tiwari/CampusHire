@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useTransition } from 'react';
 import { useAdminStore, type AdminStudentItem } from '@/store/useAdminStore';
+import { useAdminStudentsQuery } from '@/hooks/queries/useAdminQueries';
 import { AdminStudentsHeader } from './AdminStudentsHeader';
 import { AdminStudentsKpiCards } from './AdminStudentsKpiCards';
 import { AdminStudentsFilterBar } from './AdminStudentsFilterBar';
@@ -18,8 +19,6 @@ export function AdminStudentsClient() {
     adminStudentFilters,
     adminStudentPagination,
     adminStudentFilterOptions,
-    isAdminStudentsLoading,
-    fetchAdminStudents,
     setAdminStudentFilters,
     resetAdminStudentFilters,
     setToast,
@@ -31,10 +30,25 @@ export function AdminStudentsClient() {
   const [isExporting, setIsExporting] = useState(false);
   const [, startTransition] = useTransition();
 
-  // Initial fetch on mount
+  // TanStack Query for instant SWR cache & zero latency
+  const {
+    data: studentsData,
+    isLoading: isStudentsLoading,
+    refetch: refetchStudents,
+  } = useAdminStudentsQuery(adminStudentFilters);
+
+  // Sync with store for child components/modals
   useEffect(() => {
-    fetchAdminStudents();
-  }, [fetchAdminStudents]);
+    if (studentsData) {
+      useAdminStore.setState({
+        adminStudents: studentsData.students || [],
+        adminStudentKpis: studentsData.kpis,
+        adminStudentPagination: studentsData.pagination,
+        adminStudentFilterOptions: studentsData.filterOptions,
+        isAdminStudentsLoading: false,
+      });
+    }
+  }, [studentsData]);
 
   // Handle Multi-Selection
   const handleToggleSelect = (id: string) => {
@@ -137,7 +151,7 @@ export function AdminStudentsClient() {
       {/* 2. Top 4 Metric KPI Cards */}
       <AdminStudentsKpiCards
         kpis={adminStudentKpis}
-        isLoading={isAdminStudentsLoading && !adminStudentKpis}
+        isLoading={isStudentsLoading && !adminStudentKpis}
       />
 
       {/* 3. Search & Filter Bar */}
@@ -157,7 +171,7 @@ export function AdminStudentsClient() {
       <div className="hidden lg:block">
         <AdminStudentsTable
           students={adminStudents}
-          isLoading={isAdminStudentsLoading}
+          isLoading={isStudentsLoading}
           selectedIds={selectedIds}
           onToggleSelect={handleToggleSelect}
           onToggleSelectAll={handleToggleSelectAll}
@@ -168,7 +182,7 @@ export function AdminStudentsClient() {
       {/* 5. Mobile Card View List */}
       <AdminStudentsMobileCardList
         students={adminStudents}
-        isLoading={isAdminStudentsLoading}
+        isLoading={isStudentsLoading}
         onViewStudent={handleViewStudent}
       />
 
@@ -200,7 +214,7 @@ export function AdminStudentsClient() {
         filterOptions={adminStudentFilterOptions}
         onSuccess={() => {
           setToast({ type: 'success', message: 'Candidate added to directory!' });
-          fetchAdminStudents();
+          refetchStudents();
         }}
       />
 

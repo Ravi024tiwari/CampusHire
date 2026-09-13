@@ -172,12 +172,43 @@ export function JobDetailAndApplyModal() {
         {/* Job Description */}
         <div className="space-y-1.5">
           <h4 className="text-xs font-black text-[#0A2540] uppercase tracking-wider">
-            Job Description & Responsibilities
+            About the Role & Description
           </h4>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
             {job.description}
           </p>
         </div>
+
+        {/* Key Responsibilities */}
+        {(() => {
+          const responsibilities = Array.isArray(job.responsibilities) && job.responsibilities.length > 0
+            ? job.responsibilities
+            : [
+                'Design, develop, and maintain high-throughput, low-latency microservices and full-stack applications.',
+                'Collaborate with product managers, UX designers, and cross-functional teams to ship impactful user-facing features.',
+                'Write clean, efficient, robust, and well-tested code following industry best practices and design patterns.',
+                'Participate in peer code reviews, architectural discussions, and technical sprint plannings.',
+                'Identify performance bottlenecks, optimize system architecture, and ensure 99.99% service reliability.',
+              ];
+
+          return (
+            <div className="space-y-2">
+              <h4 className="text-xs font-black text-[#0A2540] uppercase tracking-wider">
+                Key Responsibilities
+              </h4>
+              <ul className="space-y-1.5">
+                {responsibilities.map((resp, idx) => (
+                  <li key={`modal-resp-${idx}`} className="flex items-start gap-2 text-xs text-slate-600">
+                    <div className="h-4 w-4 rounded-full bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-2.5 h-2.5" />
+                    </div>
+                    <span className="leading-normal font-medium">{resp}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })()}
 
         {/* Evaluated Skills */}
         {job.skills.length > 0 && (

@@ -22,6 +22,7 @@ export interface RecruiterJobItem {
   location: string;
   salaryPackage: string;
   skills: string[];
+  responsibilities: string[];
   minCgpa: number;
   allowedBranches: string[];
   eligibleBatches: number[];
@@ -65,6 +66,7 @@ export interface CreateJobFormData {
   location: string;
   salaryPackage: string;
   skills: string[];
+  responsibilities: string[];
   minCgpa: number;
   allowedBranches: string[];
   eligibleBatches: number[];
@@ -80,6 +82,11 @@ export const initialCreateJobForm: CreateJobFormData = {
   location: '',
   salaryPackage: '',
   skills: [],
+  responsibilities: [
+    'Design, develop, and maintain high-throughput, low-latency microservices and full-stack applications.',
+    'Collaborate with product managers, UX designers, and cross-functional teams to ship impactful features.',
+    'Write clean, efficient, robust, and well-tested code following best practices.',
+  ],
   minCgpa: 0,
   allowedBranches: ['Computer Science & Engineering (CSE)', 'Information Technology (IT)'],
   eligibleBatches: [new Date().getFullYear(), new Date().getFullYear() + 1],

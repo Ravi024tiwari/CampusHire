@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useTransition } from 'react';
 import { useAdminStore, type AdminJobItem } from '@/store/useAdminStore';
+import { useAdminJobsQuery } from '@/hooks/queries/useAdminQueries';
 import { AdminJobsHeader } from './AdminJobsHeader';
 import { AdminJobsKpiCards } from './AdminJobsKpiCards';
 import { AdminJobsFilterBar } from './AdminJobsFilterBar';
@@ -21,8 +22,6 @@ export function AdminJobsClient() {
     adminJobFilters,
     adminJobPagination,
     adminJobFilterOptions,
-    isAdminJobsLoading,
-    fetchAdminJobs,
     setAdminJobFilters,
     resetAdminJobFilters,
     setToast,
@@ -33,10 +32,28 @@ export function AdminJobsClient() {
   const [isExporting, setIsExporting] = useState(false);
   const [, startTransition] = useTransition();
 
-  // Fetch jobs on component mount
+  // TanStack Query for instant SWR cache & zero latency
+  const {
+    data: jobsData,
+    isLoading: isJobsLoading,
+    refetch: refetchJobs,
+  } = useAdminJobsQuery(adminJobFilters);
+
+  // Sync with store for child components
   useEffect(() => {
-    fetchAdminJobs();
-  }, [fetchAdminJobs]);
+    if (jobsData) {
+      useAdminStore.setState({
+        adminJobs: jobsData.jobs || [],
+        adminJobKpis: jobsData.kpis,
+        adminJobInsights: jobsData.insights,
+        adminJobTopCompanies: jobsData.topCompanies || [],
+        adminJobRecentActivity: jobsData.recentActivity || [],
+        adminJobPagination: jobsData.pagination,
+        adminJobFilterOptions: jobsData.filterOptions,
+        isAdminJobsLoading: false,
+      });
+    }
+  }, [jobsData]);
 
   // Handle Multi-Selection
   const handleToggleSelect = (id: string) => {
@@ -131,7 +148,7 @@ export function AdminJobsClient() {
       type: 'success',
       message: `Job status updated to ${newStatus}`,
     });
-    fetchAdminJobs();
+    refetchJobs();
   };
 
   return (
@@ -146,7 +163,7 @@ export function AdminJobsClient() {
       {/* 2. Top 4 Metric KPI Cards */}
       <AdminJobsKpiCards
         kpis={adminJobKpis}
-        isLoading={isAdminJobsLoading && !adminJobKpis}
+        isLoading={isJobsLoading && !adminJobKpis}
       />
 
       {/* 3. Search & 2-Row Filters Bar */}
@@ -172,7 +189,7 @@ export function AdminJobsClient() {
           <div className="hidden lg:block">
             <AdminJobsTable
               jobs={adminJobs}
-              isLoading={isAdminJobsLoading}
+              isLoading={isJobsLoading}
               selectedIds={selectedIds}
               onToggleSelect={handleToggleSelect}
               onToggleSelectAll={handleToggleSelectAll}
@@ -184,7 +201,7 @@ export function AdminJobsClient() {
           {/* Mobile Card List View */}
           <AdminJobsMobileList
             jobs={adminJobs}
-            isLoading={isAdminJobsLoading}
+            isLoading={isJobsLoading}
             activeStatus={adminJobFilters.status}
             onStatusSelect={(status) => setAdminJobFilters({ status, page: 1 })}
             onViewJob={handleViewJob}

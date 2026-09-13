@@ -61,15 +61,17 @@ export function JobDetailOverviewSection({ job }: JobDetailOverviewSectionProps)
     }
   };
 
-  // Responsibilities
-  const responsibilities = [
-    'Design, develop, and maintain high-throughput, low-latency microservices and full-stack applications.',
-    'Collaborate with product managers, UX designers, and cross-functional teams to ship impactful user-facing features.',
-    'Write clean, efficient, robust, and well-tested code following industry best practices and design patterns.',
-    'Participate in peer code reviews, architectural discussions, and technical sprint plannings.',
-    'Identify performance bottlenecks, optimize system architecture, and ensure 99.99% service reliability.',
-    'Solve complex algorithmic challenges and contribute to foundational developer tooling and CI/CD pipelines.',
-  ];
+  // Dynamic Key Responsibilities from Database
+  const responsibilities = Array.isArray(job.responsibilities) && job.responsibilities.length > 0
+    ? job.responsibilities
+    : [
+        'Design, develop, and maintain high-throughput, low-latency microservices and full-stack applications.',
+        'Collaborate with product managers, UX designers, and cross-functional teams to ship impactful user-facing features.',
+        'Write clean, efficient, robust, and well-tested code following industry best practices and design patterns.',
+        'Participate in peer code reviews, architectural discussions, and technical sprint plannings.',
+        'Identify performance bottlenecks, optimize system architecture, and ensure 99.99% service reliability.',
+        'Solve complex algorithmic challenges and contribute to foundational developer tooling and CI/CD pipelines.',
+      ];
 
   // Format date
   const deadlineDate = new Date(job.deadline);

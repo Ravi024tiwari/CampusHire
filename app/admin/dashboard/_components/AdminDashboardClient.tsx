@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAdminStore } from '@/store/useAdminStore';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useAdminDashboardQuery } from '@/hooks/queries/useAdminQueries';
 import { AdminHeroBanner } from './AdminHeroBanner';
 import { AdminKpiCards } from './AdminKpiCards';
 import { AdminUserGrowthChart } from './AdminUserGrowthChart';
@@ -26,26 +27,39 @@ import {
 
 export function AdminDashboardClient() {
   const { 
-    dashboardData,
     timeframe,
     setTimeframe,
-    fetchDashboardData, 
-    isLoading,
     toast, 
     dismissToast,
   } = useAdminStore();
 
   const { user } = useAuthStore();
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { 
+    data: dashboardData, 
+    isLoading, 
+    isFetching,
+    refetch 
+  } = useAdminDashboardQuery(timeframe);
 
+  const [isManualRefreshing, setIsManualRefreshing] = useState(false);
+
+  // Synchronize dashboard store state for any child components/modals that consume store
   useEffect(() => {
-    fetchDashboardData(timeframe);
-  }, []);
+    if (dashboardData) {
+      useAdminStore.setState({
+        dashboardData,
+        pendingColleges: dashboardData.pendingColleges || [],
+        verifiedColleges: dashboardData.verifiedColleges || [],
+        allColleges: [...(dashboardData.pendingColleges || []), ...(dashboardData.verifiedColleges || [])],
+        isLoading: false,
+      });
+    }
+  }, [dashboardData]);
 
   const handleManualRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchDashboardData(timeframe);
-    setTimeout(() => setIsRefreshing(false), 500);
+    setIsManualRefreshing(true);
+    await refetch();
+    setTimeout(() => setIsManualRefreshing(false), 400);
   };
 
   // Auto-dismiss toast notification
@@ -123,10 +137,10 @@ export function AdminDashboardClient() {
         <div className="flex items-center justify-end px-1">
           <button
             onClick={handleManualRefresh}
-            disabled={isLoading || isRefreshing}
+            disabled={isLoading || isFetching || isManualRefreshing}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-300 active:scale-95 transition-all cursor-pointer disabled:opacity-60"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-[#0D8B8A] ${isRefreshing || isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 text-[#0D8B8A] ${isFetching || isManualRefreshing ? 'animate-spin' : ''}`} />
             <span>Refresh Data</span>
           </button>
         </div>

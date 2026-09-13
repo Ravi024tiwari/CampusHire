@@ -136,6 +136,7 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
         ...(parsedData.location ? { location: parsedData.location } : {}),
         ...(parsedData.salaryPackage ? { salaryPackage: parsedData.salaryPackage } : {}),
         ...(parsedData.skills ? { skills: parsedData.skills } : {}),
+        ...(parsedData.responsibilities ? { responsibilities: parsedData.responsibilities } : {}),
         ...(parsedData.minCgpa !== undefined ? { minCgpa: parsedData.minCgpa } : {}),
         ...(parsedData.allowedBranches ? { allowedBranches: parsedData.allowedBranches } : {}),
         ...(parsedData.eligibleBatches ? { eligibleBatches: parsedData.eligibleBatches } : {}),
