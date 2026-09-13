@@ -12,6 +12,44 @@ export const studentRegisterSchema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters'),
   email: z.string().trim().email('Please enter a valid student email'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
+  phone: z
+    .string()
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const digits = val.replace(/\D/g, '');
+        return (
+          digits.length === 10 ||
+          (digits.length === 12 && digits.startsWith('91')) ||
+          (digits.length === 11 && digits.startsWith('0'))
+        );
+      },
+      { message: 'Mobile number must be a valid 10-digit number' }
+    )
+    .optional()
+    .or(z.literal('')),
+  dob: z
+    .string()
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const dob = new Date(val);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (isNaN(dob.getTime()) || dob >= today) return false;
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+        return age >= 18 && age <= 30;
+      },
+      { message: 'Date of birth must correspond to an age between 18 and 30 years and cannot be today or a future date' }
+    )
+    .optional()
+    .or(z.literal('')),
   
   collegeId: z.string().min(1, 'College selection is required'),
   enrollmentNumber: z.string().trim().min(3, 'Enrollment number is required'),
@@ -20,7 +58,7 @@ export const studentRegisterSchema = z.object({
     .trim()
     .min(1, 'Academic branch selection is required')
     .transform((val) => normalizeBranchCode(val)),
-  batchYear: z.coerce.number().int().min(2020).max(2028, 'Please provide a valid batch year'),
+  batchYear: z.coerce.number().int().min(2020).max(2035, 'Please provide a valid batch year'),
   cgpa: z.coerce.number().min(0.0).max(10.0, 'CGPA must be between 0.0 and 10.0'),
   tenthMarks: z.coerce.number().min(0).max(100).optional(),
   twelfthMarks: z.coerce.number().min(0).max(100).optional(),
@@ -67,7 +105,23 @@ export const tpoRegisterSchema = z.object({
   collegeCity: z.string().trim().optional().or(z.literal('')),
   collegeState: z.string().trim().optional().or(z.literal('')),
   collegeContactEmail: z.string().email('Invalid college contact email').optional().or(z.literal('')),
-  collegeContactPhone: z.string().trim().optional().or(z.literal('')),
+  collegeContactPhone: z
+    .string()
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const digits = val.replace(/\D/g, '');
+        return (
+          digits.length === 10 ||
+          (digits.length === 12 && digits.startsWith('91')) ||
+          (digits.length === 11 && digits.startsWith('0'))
+        );
+      },
+      { message: 'Helpline phone number must be a valid 10-digit number' }
+    )
+    .optional()
+    .or(z.literal('')),
   collegeLogoUrl: z.string().url('Invalid campus image URL').optional().or(z.literal('')),
 });
 

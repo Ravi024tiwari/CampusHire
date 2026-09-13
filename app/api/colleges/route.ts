@@ -10,7 +10,23 @@ const createCollegeSchema = z.object({
   city: z.string().trim().optional(),
   state: z.string().trim().optional(),
   contactEmail: z.string().email('Invalid contact email').optional().or(z.literal('')),
-  contactPhone: z.string().optional(),
+  contactPhone: z
+    .string()
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const digits = val.replace(/\D/g, '');
+        return (
+          digits.length === 10 ||
+          (digits.length === 12 && digits.startsWith('91')) ||
+          (digits.length === 11 && digits.startsWith('0'))
+        );
+      },
+      { message: 'Helpline phone number must be a valid 10-digit number' }
+    )
+    .optional()
+    .or(z.literal('')),
   logoUrl: z.string().url('Invalid logo URL').optional().or(z.literal('')),
 });
 

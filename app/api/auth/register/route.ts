@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
                   branch: parsedData.branch.trim(),
                   batchYear: parsedData.batchYear,
                   cgpa: parsedData.cgpa,
+                  phone: parsedData.phone || null,
                   tenthMarks: parsedData.tenthMarks ?? null,
                   twelfthMarks: parsedData.twelfthMarks ?? null,
                   skills: parsedData.skills ?? [],

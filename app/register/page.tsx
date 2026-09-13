@@ -33,7 +33,8 @@ import {
   Sparkles,
   Layers,
   BookOpen,
-  Info
+  Info,
+  AlertCircle
 } from 'lucide-react';
 
 interface CollegeOption {
@@ -66,6 +67,64 @@ interface SubmittedCompanyDetails {
 }
 
 type RegistrationTab = 'STUDENT' | 'COMPANY' | 'TPO_ADMIN';
+
+// Helpers for Phone and DOB Validation (10-digit phone & 18-30 years age limits)
+function getDobConstraints() {
+  const today = new Date();
+  const maxYear = today.getFullYear() - 18;
+  const minYear = today.getFullYear() - 30;
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return {
+    maxDob: `${maxYear}-${month}-${day}`, // User must be at least 18 years old
+    minDob: `${minYear}-${month}-${day}`, // User cannot be older than 30 years
+  };
+}
+
+function validateDobInput(dobStr: string): { valid: boolean; message?: string; age?: number } {
+  if (!dobStr) return { valid: true };
+  const birthDate = new Date(dobStr);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (isNaN(birthDate.getTime())) {
+    return { valid: false, message: 'Please enter a valid date' };
+  }
+  if (birthDate >= today) {
+    return { valid: false, message: 'Date of birth cannot be today or a future date' };
+  }
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  if (age < 18) {
+    return { valid: false, message: `Minimum age required is 18 years (Selected age: ${age < 0 ? 0 : age})`, age };
+  }
+  if (age > 30) {
+    return { valid: false, message: `Maximum age allowed is 30 years (Selected age: ${age})`, age };
+  }
+
+  return { valid: true, age };
+}
+
+function validatePhoneInput(phoneStr: string): { valid: boolean; message?: string } {
+  if (!phoneStr || !phoneStr.trim()) return { valid: true };
+  const digits = phoneStr.replace(/\D/g, '');
+  if (
+    digits.length === 10 ||
+    (digits.length === 12 && digits.startsWith('91')) ||
+    (digits.length === 11 && digits.startsWith('0'))
+  ) {
+    return { valid: true };
+  }
+  return {
+    valid: false,
+    message: `Mobile number must be exactly 10 digits (Entered ${digits.length} digits)`,
+  };
+}
 
 function RegisterForm() {
   const router = useRouter();
@@ -125,6 +184,12 @@ function RegisterForm() {
   // Form State
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Live validation calculations
+  const { minDob, maxDob } = getDobConstraints();
+  const studentPhoneValidation = validatePhoneInput(studentPhone);
+  const studentDobValidation = validateDobInput(studentDob);
+  const collegePhoneValidation = validatePhoneInput(collegeContactPhone);
 
   const handleTabChange = (newTab: RegistrationTab) => {
     if (newTab === tab) return;
@@ -231,6 +296,12 @@ function RegisterForm() {
         if (!collegeName.trim()) {
           throw new Error('Please enter your official College or University name');
         }
+        if (collegeContactPhone.trim()) {
+          const phoneCheck = validatePhoneInput(collegeContactPhone);
+          if (!phoneCheck.valid) {
+            throw new Error(phoneCheck.message || 'Placement helpline phone must be a 10-digit number');
+          }
+        }
 
         const collegePayload = {
           name: collegeName.trim(),
@@ -316,6 +387,18 @@ function RegisterForm() {
         if (!studentPassword || studentPassword.length < 6) {
           throw new Error('Password must be at least 6 characters long');
         }
+        if (studentPhone.trim()) {
+          const phoneCheck = validatePhoneInput(studentPhone);
+          if (!phoneCheck.valid) {
+            throw new Error(phoneCheck.message || 'Mobile number must be a valid 10-digit number');
+          }
+        }
+        if (studentDob.trim()) {
+          const dobCheck = validateDobInput(studentDob);
+          if (!dobCheck.valid) {
+            throw new Error(dobCheck.message || 'Date of birth must correspond to an age between 18 and 30 years');
+          }
+        }
 
         const payload = {
           name: studentName.trim(),
@@ -328,6 +411,7 @@ function RegisterForm() {
           batchYear: Number(batchYear),
           cgpa: parsedCgpa,
           phone: studentPhone.trim() || undefined,
+          dob: studentDob.trim() || undefined,
         };
 
         const response = await apiClient.post<ApiResponse<{ user: any }>>('/api/auth/register', payload);
@@ -811,34 +895,105 @@ function RegisterForm() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 mb-1">
-                              Phone Number
-                            </label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-xs font-bold text-slate-700">
+                                Phone Number
+                              </label>
+                              <span className="text-[10px] text-slate-400 font-medium">10 Digits</span>
+                            </div>
                             <div className="relative group">
-                              <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                              <Phone className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+                                studentPhone.trim() 
+                                  ? studentPhoneValidation.valid 
+                                    ? 'text-emerald-500' 
+                                    : 'text-rose-500' 
+                                  : 'text-slate-400 group-focus-within:text-blue-600'
+                              }`} />
                               <input
                                 type="tel"
                                 value={studentPhone}
+                                maxLength={14}
                                 onChange={(e) => setStudentPhone(e.target.value)}
-                                placeholder="+91 98765 43210"
-                                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-white"
+                                placeholder="e.g. 9876543210"
+                                className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium placeholder:text-slate-400 bg-white focus:outline-none focus:ring-2 transition-all ${
+                                  studentPhone.trim()
+                                    ? studentPhoneValidation.valid
+                                      ? 'border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500/20 text-slate-800'
+                                      : 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/20 text-rose-900 bg-rose-50/20'
+                                    : 'border-slate-200 focus:border-blue-600 focus:ring-blue-600/20 text-slate-800'
+                                }`}
                               />
                             </div>
+                            {studentPhone.trim() && (
+                              <p className={`mt-1 text-[11px] flex items-center gap-1 font-medium ${
+                                studentPhoneValidation.valid ? 'text-emerald-600' : 'text-rose-600'
+                              }`}>
+                                {studentPhoneValidation.valid ? (
+                                  <>
+                                    <CheckCircle2 className="w-3 h-3 shrink-0" />
+                                    <span>Valid 10-digit mobile number</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertCircle className="w-3 h-3 shrink-0" />
+                                    <span>{studentPhoneValidation.message}</span>
+                                  </>
+                                )}
+                              </p>
+                            )}
                           </div>
 
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 mb-1">
-                              Date of Birth
-                            </label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-xs font-bold text-slate-700">
+                                Date of Birth
+                              </label>
+                              <span className="text-[10px] text-slate-400 font-medium">Age 18 - 30 yrs</span>
+                            </div>
                             <div className="relative group">
-                              <Calendar className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                              <Calendar className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+                                studentDob
+                                  ? studentDobValidation.valid
+                                    ? 'text-emerald-500'
+                                    : 'text-rose-500'
+                                  : 'text-slate-400 group-focus-within:text-blue-600'
+                              }`} />
                               <input
                                 type="date"
+                                min={minDob}
+                                max={maxDob}
                                 value={studentDob}
                                 onChange={(e) => setStudentDob(e.target.value)}
-                                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-medium text-slate-800 bg-white"
+                                className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 transition-all ${
+                                  studentDob
+                                    ? studentDobValidation.valid
+                                      ? 'border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500/20 text-slate-800'
+                                      : 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/20 text-rose-900 bg-rose-50/20'
+                                    : 'border-slate-200 focus:border-blue-600 focus:ring-blue-600/20 text-slate-800'
+                                }`}
                               />
                             </div>
+                            {studentDob ? (
+                              <p className={`mt-1 text-[11px] flex items-center gap-1 font-medium ${
+                                studentDobValidation.valid ? 'text-emerald-600' : 'text-rose-600'
+                              }`}>
+                                {studentDobValidation.valid ? (
+                                  <>
+                                    <CheckCircle2 className="w-3 h-3 shrink-0" />
+                                    <span>Age: {studentDobValidation.age} years (Eligible)</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertCircle className="w-3 h-3 shrink-0" />
+                                    <span>{studentDobValidation.message}</span>
+                                  </>
+                                )}
+                              </p>
+                            ) : (
+                              <p className="mt-1 text-[10.5px] text-slate-400 font-medium">
+                                Eligible age: 18 - 30 years (No future dates)
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1369,19 +1524,52 @@ function RegisterForm() {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">
-                            Placement Helpline Phone
-                          </label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="block text-xs font-bold text-slate-700">
+                              Placement Helpline Phone
+                            </label>
+                            <span className="text-[10px] text-slate-400 font-medium">10 Digits</span>
+                          </div>
                           <div className="relative group">
-                            <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 transition-colors" />
+                            <Phone className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+                              collegeContactPhone.trim()
+                                ? collegePhoneValidation.valid
+                                  ? 'text-emerald-500'
+                                  : 'text-rose-500'
+                                : 'text-slate-400 group-focus-within:text-blue-600'
+                            }`} />
                             <input
                               type="tel"
                               value={collegeContactPhone}
+                              maxLength={14}
                               onChange={(e) => setCollegeContactPhone(e.target.value)}
-                              placeholder="+91 11 27871018"
-                              className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs sm:text-sm font-mono text-slate-800 placeholder:text-slate-400 bg-white"
+                              placeholder="e.g. 9876543210"
+                              className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium placeholder:text-slate-400 bg-white focus:outline-none focus:ring-2 transition-all ${
+                                collegeContactPhone.trim()
+                                  ? collegePhoneValidation.valid
+                                    ? 'border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500/20 text-slate-800'
+                                    : 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/20 text-rose-900 bg-rose-50/20'
+                                  : 'border-slate-200 focus:border-blue-600 focus:ring-blue-600/20 text-slate-800'
+                              }`}
                             />
                           </div>
+                          {collegeContactPhone.trim() && (
+                            <p className={`mt-1 text-[11px] flex items-center gap-1 font-medium ${
+                              collegePhoneValidation.valid ? 'text-emerald-600' : 'text-rose-600'
+                            }`}>
+                              {collegePhoneValidation.valid ? (
+                                <>
+                                  <CheckCircle2 className="w-3 h-3 shrink-0" />
+                                  <span>Valid 10-digit helpline number</span>
+                                </>
+                              ) : (
+                                <>
+                                  <AlertCircle className="w-3 h-3 shrink-0" />
+                                  <span>{collegePhoneValidation.message}</span>
+                                </>
+                              )}
+                            </p>
+                          )}
                         </div>
                       </div>
 
